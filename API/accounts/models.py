@@ -16,15 +16,15 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     # cpf = models.CharField(max_length=14)
-
     birth_date = models.DateField(null=True, blank=True,)
     cellphone = models.CharField(max_length=11, null=False)
+    
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self) -> str:
         return self.first_name + " " + self.last_name + " > > " + self.email
