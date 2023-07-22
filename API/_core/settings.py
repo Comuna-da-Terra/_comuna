@@ -45,7 +45,8 @@ THIRD_PARTY_APPS = [
 ]
 PROJECT_APPS = [
     "accounts",
-    "products"
+    "products",
+    "orders",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -132,7 +133,7 @@ STATIC_URL = "static/"
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
