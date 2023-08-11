@@ -13,6 +13,8 @@ from accounts.utils.random_username import random_username
 class UserView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwnerOrSuperuser]
+
+    serializer_class = UserSerializer
     
     def get_queryset(self):
         if(self.request.user.is_superuser): 
