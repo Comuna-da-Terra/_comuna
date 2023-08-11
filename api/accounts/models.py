@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import uuid
-
+from django.utils import timezone
 
 class User(AbstractUser):
     id = models.UUIDField(
@@ -16,7 +16,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     # cpf = models.CharField(max_length=14)
-    birth_date = models.DateField(null=True, blank=True,)
+    birth_date = models.DateField(default=timezone.now)
     cellphone = models.CharField(max_length=11, null=False)
     
     is_active = models.BooleanField(default=True)
@@ -30,8 +30,22 @@ class User(AbstractUser):
         return self.first_name + " " + self.last_name + " > > " + self.email
 
 
-# class Cliet(User):
-# IMPROVE
+class Client(User):
+    # id = models.UUIDField(
+    #     default=uuid.uuid4,
+    #     primary_key=True,
+    #     editable=False,
+    # )
 
-# class Producer(User):
-# IMPROVE
+    level = models.PositiveIntegerField(default=0)
+    
+
+
+class Member(User):
+    # id = models.UUIDField(
+    #     default=uuid.uuid4,
+    #     primary_key=True,
+    #     editable=False,
+    # )
+    
+    coop_number = models.PositiveIntegerField(unique=True )
