@@ -14,22 +14,10 @@ import ipdb
 
 class UserSerializer(ModelSerializer):
     class Meta:
-        model = User
-        fields = "__all__" 
-        # [
-        #     "id",
-        #     "first_name",
-        #     "last_name",
-        #     "birth_date",
-        #     "username",
-        #     "email",
-        #     "password",
-        #     "cellphone",
-        #     "created_at",
-        #     "updated_at",
-        # ]
-        read_only_fields = ["created_at", "updated_at"]
-        extra_kwargs = {
+        model               = User
+        fields              = "__all__" 
+        read_only_fields    = ["created_at", "updated_at"]
+        extra_kwargs        = {
             "password": {"write_only": True},
             "email": {
                 "validators": [UniqueValidator(queryset=User.objects.all())],
@@ -37,31 +25,14 @@ class UserSerializer(ModelSerializer):
         }
 
     def create(self, validated_data) -> Client or Member:
-        
-        member = 'coop_number' in validated_data
+        member              = 'coop_number' in validated_data
     
         if member:
-            member = Member.objects.create(**validated_data)
-
+            member          = Member.objects.create(**validated_data)
             return member
         else:
-            client = Client.objects.create(**validated_data)
+            client          = Client.objects.create(**validated_data)
             return client
-
-
-        # total_price = product.price * validated_data['quantity']
-        # order.subtotal = order.subtotal + total_price
-
-        # order.save()
-
-        # product_order = ProductOrder.objects.create(
-        #     id_order=order,
-        #     id_product=product,
-        #     quantity=validated_data['quantity'],
-        #     total_price=total_price
-        # )
-
-        # return product_order
              
 
     def update(self, instance: User, validated_data: dict) -> User:
