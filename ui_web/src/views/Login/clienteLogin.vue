@@ -1,21 +1,21 @@
 <template>
-  <main>
-    <form class="form" action="">
+  <main class="cont_all">
+    <form class="form" @submit.prevent="handleSubmit">
   
        <div class="cont_input_form">
         <label for="email">E-mail:</label>
-        <input type="text" name="email" placeholder="E-mail">
+        <input v-model="formData.email" type="text" name="email" placeholder="E-mail">
       </div>
 
        <div class="cont_input_form">
         <label for="senha">Senha:</label>
-        <input type="text" name="senha" placeholder="Senha">
+        <input v-model="formData.password" type="password" name="senha" placeholder="Senha">
       </div>
 
       <div class="cont_btn_login">
-        <RouterLink style="width: 100%" to="/dashboard">
-          <button type="submit" class="btn_register"> Login </button> 
-        </RouterLink>
+        <!-- <RouterLink style="width: 100%" to="/dashboard"> -->
+          <button type="submit" class="btn_login"> Login </button> 
+        <!-- </RouterLink> -->
       </div>
 
       
@@ -28,13 +28,32 @@
 
 // ____________SCRIPT____________
 <script>
+import apiAuth from '@/services/clients/authService';
+import { useRoute, useRouter } from 'vue-router';
+
 export default {
     data() {
         return {
-      
+          router: useRouter(),
+          formData: {
+              email: '',
+              password: ''
+            }
         }
     },
     methods: {
+      async handleSubmit() {
+        await apiAuth.login(this.formData).then(resp=>{
+          this.$notify({ type: "success", text: "Wow, Seja bem vindo !", duration: 2000});
+          setTimeout(()=>{
+            // this.router.push({name: 'dashboard'});
+          }, 2000);
+          
+        }).catch((err)=>{
+          console.log(err)
+          this.$notify({ type: "warn", text: "Hum... algo errado com seu E-mail ou senha !", duration: 3000 , position: "bottom right"});
+        })
+      }
       
     },
     mounted() {
@@ -45,9 +64,11 @@ export default {
 
 <style scoped>
      .form {
+        /* width: 70%; */
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        justify-content: center;
     }
     .cont_input_form{
       display: flex;
