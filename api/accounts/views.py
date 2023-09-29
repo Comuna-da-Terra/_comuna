@@ -5,6 +5,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+
 from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
 from .serializer import CustomJWTSerializer
 from .serializer import UserSerializer
@@ -37,37 +41,14 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     serializer_class = UserSerializer
 
+
+
+# _________________________________________AUTH_VIEW
 class LoginJWTView(TokenObtainPairView):
     serializer_class = CustomJWTSerializer
 
-# class UserDetailView(APIView):
-#     authentication_classes = [JWTAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     serializer_class = UserSerializer
-#     queryset = User
-
-#     # def post(self, request: Request) -> Response:
-#     #     serializer = UserSerializer(request)
-
-#     def get(self, request: Request) -> Response:
-#         user = get_object_or_404(User, id=self.request.user.id)
-#         serializer = UserSerializer(user)
-
-#         return Response(serializer.data)
-
-#     def patch(self, request: Request) -> Response:
-#         user_id = self.request.user.id
-#         user = get_object_or_404(User, id=user_id)
-#         serializer = UserSerializer(user, data=request.data, partial=True)
-#         serializer.is_valid(raise_exception=True)
-
-#         serializer.save()
-
-#         return Response(serializer.data)
-
-#     def delete(self, request: Request) -> Response:
-#         user = get_object_or_404(User, id=self.request.user.id)
-#         user.delete()
-
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+class TokenVerifyView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response({'valid': True}, status=status.HTTP_200_OK)

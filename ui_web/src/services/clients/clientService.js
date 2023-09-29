@@ -3,7 +3,7 @@ import api from '@/services/api'
 
 export default {
   async registerAccount(formData) {
-    return await api.post('/api/account/', formData)
+    return await api.post('/account', formData)
       .then(response => {
         console.log(response)
         return response.data;
@@ -14,7 +14,7 @@ export default {
   },
   
   async getAccount(data) {
-    return await api.post('/api/account/', data)
+    return await api.post('/account', data)
       .then(response => {
         console.log(response)
         return response.data;

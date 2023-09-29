@@ -9,7 +9,7 @@
                     <li>Perfil</li>
                     <li>Pedido</li>
                     <li>Histórico</li>
-                    <li>Sair</li>
+                    <li @click="logout">Sair</li>
                 </ul>
             </div>
         </div>
@@ -36,29 +36,49 @@
 // ____________SCRIPT____________
 <script>
 import contProduct from '../../components/cont_product.vue';
+import { useAuthStore } from '@/stores/auth.js';
+import { useRoute, useRouter } from 'vue-router';
 
 
 export default {
+    
     data() {
+        const authStore = useAuthStore();
+
         return {
-            list: {
-                
-            }
+            router: useRouter(),
+            client_id: authStore.client_id,
+            list: {}
         };
     },
 
     methods: {
+        async logout(){
+            const token = localStorage.getItem('token')
+            const refresh_token = localStorage.getItem('refresh_token')
 
+            if(token && refresh_token){ 
+                localStorage.removeItem('token')
+                localStorage.removeItem('refresh_token')
+                
+                this.$notify({ type: "success", text: "Obrigado, volte sempre!", duration: 2000});
+                return setTimeout(()=>{
+                    this.router.push({name: 'login'});
+                }, 2000);
+            } else {
+                this.$notify({ type: "warn", text: "Hum... parece que você ja não esta conosco !", duration: 2000});
+                this.router.push({name: 'login'});
+
+            }
+        },
         load_data(){
-            console.log("heloo")
-           
+            console.log(this.client_id)
         }
     },
     mounted() {
         this.load_data()
     },
-    computed() {
-    },
+    computed() {},
     components: { 
         contProduct, 
     }

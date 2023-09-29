@@ -1,15 +1,21 @@
-import axios from 'axios';
 import api from '@/services/api'
+import {useAuthStore} from '@/stores/auth.js'
 
 export default {
+  
   async login(formData) {
-    return await api.post('/api/login/', formData)
-      .then(response => {
-        console.log(response)
-        return response.data;
-      })
+    const auth = useAuthStore()
+
+    return await api.post('/auth/', formData)
+    .then((resp) => {
+      localStorage.setItem('token', resp.data.access)
+      localStorage.setItem('refresh_token', resp.data.refresh)
+      auth.verificarTokenDeAcesso()
+
+      return resp.data;
+    })
       .catch(error => {
-        throw error; // Rejeita a promessa com o erro
+        throw error;
       });
   },
 };
