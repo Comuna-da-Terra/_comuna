@@ -14,6 +14,19 @@ class OrderSerializer(serializers.ModelSerializer):
         model   = Order
         fields  = "__all__"
 
+    # def delete(self, instance):
+    #     order                                   = instance
+    #     orders_products = ProductOrder.objects.filter(id_order = order.id)
+    #     print(order)
+    #     print(orders_products)
+    #     # product                                 = instance.id_product
+    #     order.subtotal                         -= instance.total_price
+    #     order.save()
+
+    #     instance.delete()
+
+
+
 class ProductOrderSerializer(serializers.ModelSerializer):
     id_order    = OrderSerializer(read_only=True)
     id_product  = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
@@ -60,8 +73,12 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
     def delete(self, instance):
         order                                   = instance.id_order
-        # product                                 = instance.id_product
         order.subtotal                         -= instance.total_price
         order.save()
 
         instance.delete()
+        order_products = ProductOrder.objects.filter(id_order = order.id)
+        
+        print(order_products.exists())
+        if order_products.exists() == False:
+            order.delete()
