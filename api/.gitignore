@@ -3,3 +3,4 @@ venv
 *migrations*
 .env
 db.sqlite3
+mock_data.txt
