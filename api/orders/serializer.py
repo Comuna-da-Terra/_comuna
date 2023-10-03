@@ -14,16 +14,14 @@ class OrderSerializer(serializers.ModelSerializer):
         model   = Order
         fields  = "__all__"
 
-    # def delete(self, instance):
-    #     order                                   = instance
-    #     orders_products = ProductOrder.objects.filter(id_order = order.id)
-    #     print(order)
-    #     print(orders_products)
-    #     # product                                 = instance.id_product
-    #     order.subtotal                         -= instance.total_price
-    #     order.save()
+    def delete(self, instance):
+        order                                   = instance
+        orders_products = ProductOrder.objects.filter(id_order = order.id)
+        print(orders_products)
+        for op in orders_products:
+            op.delete()
 
-    #     instance.delete()
+        instance.delete()
 
 
 

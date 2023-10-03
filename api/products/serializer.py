@@ -1,9 +1,10 @@
-from .models import Product, Category
+from .models import Product
 
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from orders.serializer import OrderSerializer, ProductOrderSerializer
 
-class ProductSerializer(ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
@@ -16,7 +17,7 @@ class ProductSerializer(ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["created_at", "updated_at"]
+        read_only_fields = ["id", "created_at", "updated_at"]
         extra_kwargs = {
                 "name": {
                 "validators": [UniqueValidator(queryset=Product.objects.all())],
@@ -28,3 +29,8 @@ class ProductSerializer(ModelSerializer):
                 setattr(instance, key, value)
         instance.save()
         return instance
+
+class ProductsInOrderAccountSerializer(serializers.Serializer):
+    order = OrderSerializer()
+    order_products = ProductOrderSerializer(many=True)
+    products = ProductSerializer(many=True)
