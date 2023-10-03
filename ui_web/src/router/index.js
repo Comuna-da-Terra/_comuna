@@ -9,14 +9,28 @@ const routes = [
   },
   {path: "/client/login",
     name: 'login',
-    component: () => import('../views/Login/clienteLogin.vue')},
-  {path: "/client/register",
+    component: () => import('../views/Login/clienteLogin.vue'),
+    meta: {
+      auth: true
+    }
+  },
+    {path: "/client/register",
     name: 'register',
     component: () => import('../views/Register/clientRegister.vue'),
+    meta: {
+      auth: true
+    }
   },
   {path: "/dashboard",
     name: 'dashboard',  
     component: () => import('../views/Dashboard/dashboard.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/dashboard/order/",
+    name: 'order',  
+    component: () => import('../views/Products/finish_order.vue'),
     meta: {
       auth: true
     }
@@ -35,9 +49,23 @@ router.beforeEach(async (to, from, next)=>{
     const isAuthenticated = await auth.verifyAccessToken();
     
     if (isAuthenticated) {
+      if(to.name == 'login'){
+        next({name: 'dashboard'})
+
+      } else if(to.name == 'register'){
+        next({name: 'dashboard'})
+
+      }
       next();
     } else {
-      next({ name: 'login' });
+      if(to.name == 'login'){
+        next()
+      } else if (to.name == 'register'){
+        next()
+
+      } else {
+        next({ name: 'login' });
+      }
     }
   } else {
     next();

@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: null,
-    client_id: null
+    user_id: null
   }),
 
   actions: {
@@ -19,19 +19,21 @@ export const useAuthStore = defineStore('auth', {
 
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const response = await api.get('/auth/verify/')
-
-        if (response.status === 200 && response.data.valid) {;
-          this.client_id = jwtDecode(token).user_id;
-          console.log(jwtDecode(token))
+        if (response.status === 200 && response.data.valid) {
+          this.user_id = jwtDecode(token).user_id;
           this.accessToken = true;
           return true;
         
         } else {
+          localStorage.removeItem('token')
+          localStorage.removeItem('refresh_token')
           this.accessToken = false;
           return false;
 
         }
       } catch (error) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('refresh_token')
         this.accessToken = false;
         return false;
 

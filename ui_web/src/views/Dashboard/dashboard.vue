@@ -1,8 +1,8 @@
 <template>
-    <main class="all_container">
+    <main class="cont_all">
         <div class="cont_header">
             <div>
-                <h1 class="welcome_text">Bem vindo, Celso Furtado !</h1>
+                <h1 class="welcome_text">Bem vindo, {{ user.first_name }} {{ user.last_name}} !</h1>
             </div>
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">
@@ -28,16 +28,18 @@
                 <li>Sucos/Pol.</li>
                 <li>Outros...</li>
             </ul>
-            <contProduct :products="list.products"></contProduct>
         </div>
+        <contProduct></contProduct>
     </main>
 </template>
 
 // ____________SCRIPT____________
 <script>
-import contProduct from '../../components/cont_product.vue';
+import contProduct from '../Products/cont_product.vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
+import apiAccountService from "../../services/clients/clientService"
+
 
 
 export default {
@@ -47,7 +49,8 @@ export default {
 
         return {
             router: useRouter(),
-            client_id: authStore.client_id,
+            user_id: authStore.user_id,
+            user: {},
             list: {}
         };
     },
@@ -71,8 +74,10 @@ export default {
 
             }
         },
-        load_data(){
-            console.log(this.client_id)
+        async load_data(){
+            await apiAccountService.getAccount(this.user_id).then((response)=>{
+                this.user = response.data
+            })
         }
     },
     mounted() {
@@ -86,13 +91,10 @@ export default {
 </script>
 
 <style scoped>
-.all_container {
-    justify-content: space-between;
-}
 
 .cont_header {
     /* height: 10vh; */
-    width: 100vw;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     /* top: 0; */
@@ -120,9 +122,11 @@ export default {
     list-style: none;
     margin-right: 1rem;
 }
-
+.cont_body{
+    width: 100%;
+}
 .cont_input_search {
-    width: 100vw;
+    width: 100%;
     display: flex;
     justify-content: center;
 }
@@ -152,17 +156,6 @@ export default {
     cursor: pointer;
 }
 
-.table_list {
-    display: flex;
-    justify-content: space-around;
-    height: 100%;
-    width: 100%;
-}
-
-.table_list ul {
-    padding: 15px;
-    gap: 1rem;
-}
 
 .cont_product {
     width: 100%;

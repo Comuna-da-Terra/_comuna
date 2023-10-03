@@ -13,9 +13,9 @@
       </div>
 
       <div class="cont_btn_login">
-        <!-- <RouterLink style="width: 100%" to="/dashboard"> -->
-          <button type="submit" class="btn_login"> Login </button> 
-        <!-- </RouterLink> -->
+
+        <button type="submit" class="btn_login"> Login </button> 
+
       </div>
 
       
@@ -30,7 +30,6 @@
 <script>
 import serviceAuth from '@/services/clients/authService';
 import { useRoute, useRouter } from 'vue-router';
-
 
 export default {
     data() {
@@ -51,7 +50,7 @@ export default {
           }, 2000);
           
         }).catch((err)=>{
-          this.$notify({ type: "warn", text: "Hum... algo errado com seu E-mail ou senha !", duration: 3000 , position: "bottom right"});
+          this.$notify({ type: "warn", text: "Hum... algo errado com seu E-mail ou senha !", duration: 3000});
         })
       }
       
@@ -63,7 +62,11 @@ export default {
 </script>
 
 <style scoped>
-     .form {
+  .cont_all{
+    display: flex;
+    justify-content: center;
+  }
+  .form {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;

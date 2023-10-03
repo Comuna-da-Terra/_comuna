@@ -10,7 +10,7 @@ export default {
     .then((resp) => {
       localStorage.setItem('token', resp.data.access)
       localStorage.setItem('refresh_token', resp.data.refresh)
-      auth.verificarTokenDeAcesso()
+      auth.verifyAccessToken()
 
       return resp.data;
     })
