@@ -20,6 +20,9 @@ class User(AbstractUser):
     cellphone           = models.CharField(max_length=11, null=False)
     is_active           = models.BooleanField(default=True)
 
+    coop_number         = models.PositiveIntegerField(unique=True, null=True, blank=True )
+    # level               = models.PositiveIntegerField(default=0)
+
     address             = models.OneToOneField(
         "adresses.Address",
         null            = True,
@@ -37,17 +40,15 @@ class User(AbstractUser):
         return self.first_name + " " + self.last_name + " > > " + self.email
 
 
-class Client(User):
+# class Client(User):
 
-    level               = models.PositiveIntegerField(default=0)
 
-    class Meta:
-        verbose_name    = "Cliente"
+#     class Meta:
+#         verbose_name    = "Cliente"
     
 
 
-class Member(User):
-    coop_number         = models.PositiveIntegerField(unique=True )
+# class Member(User):
 
-    class Meta:
-        verbose_name    = "Cooperado"
+#     class Meta:
+#         verbose_name    = "Cooperado"

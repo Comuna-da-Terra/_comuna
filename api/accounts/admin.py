@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Client, Member
+from .models import User
 from django.contrib.auth.admin import UserAdmin
 
 class CustomUserAdmin(admin.ModelAdmin):
@@ -14,10 +14,11 @@ class ClientAdmin(admin.ModelAdmin):
         "last_name",
         # "cpf",
         "birth_date",
-        "cellphone"
+        "cellphone",
+        "coop_number"
         ]
 
 
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(Client, ClientAdmin)
-admin.site.register(Member)
+# admin.site.register(Client, ClientAdmin)
+# admin.site.register(Member)
