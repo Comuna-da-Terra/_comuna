@@ -70,9 +70,12 @@
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
 import apiProductService from "../../services/products/apiProductService"
 import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
 
 export default {
   data() {
+    const authStore = useAuthStore();
+
     return {
       router: useRouter(),
       products: [
@@ -114,7 +117,8 @@ export default {
       productSizes: [],
       orderAmount: [],
       cestaToBuy: [],
-      viewListBasket: false
+      viewListBasket: false,
+      id_user: authStore.user_id,
     };
   },
   props: {},
@@ -130,7 +134,8 @@ export default {
     async createOrderProduct(product, index) {
       const data = {
         id_product: product.id,
-        quantity: this.orderAmount[index]
+        quantity: this.orderAmount[index],
+        user: this.id_user
       }
       if (this.orderAmount[index] > 0 && this.orderAmount[index] !== undefined) {
         await apiOrderProductService.createOrderProduct(data).then((resp)=>{

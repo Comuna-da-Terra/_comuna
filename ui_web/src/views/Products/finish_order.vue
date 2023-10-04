@@ -7,16 +7,24 @@
         <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="100" />
       </div>
       <div>
-        <h1 style="margin: 2rem 0 0 1rem ;">Finalizando Pedido</h1>
+        <h1 style="margin: 2rem 0 2rem 1rem ;">Finalizando Pedido</h1>
       </div>
       <div>
-        <form action="">
-          <label for="delivery">Entregar </label>
-          <input type="checkbox" name="delivery">
-          
-          <label for="address"></label>
-          <input type="number" name="address">
+        <form style="display: flex; justify-content: space-around;" action="">
+          <div>
+            <label for="delivery">Entregar em casa </label>
+            <input type="checkbox" name="delivery" v-model="delivery_status">
+          </div>
+          <div v-if="!delivery_status || (delivery_status && address_user.length != 0)">
+            <label for="address">Endereço: </label>
+            <select name="address" v-model="order.delivery_address">
+              <option v-if="!delivery_status" v-for="opcao in address_options" :value="opcao">{{ opcao.street }}, {{ opcao.number }} - {{ opcao.neighborhood }}</option>
+              <option v-if="delivery_status" v-for="opcao in address_user" :value="opcao" >{{ opcao.street }}, {{ opcao.number }} - {{ opcao.neighborhood }}</option>
+            </select>
+          </div>
+          <button v-if="delivery_status && address_user.length == 0">Criar Endereço</button>
         </form>
+        <button @click="conclude_order">Concluído</button>
       </div>
       <div>
         
@@ -46,31 +54,55 @@
 <script>
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
 import apiProductService from "../../services/products/apiProductService"
+import apiAddresses from "../../services/addresses/apiAddresses"
 import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
 
 export default {
-  components: {},
 
+  components: {},
   data() {
+    const authStore = useAuthStore();
+
     return {
+      user_id: authStore.user_id,
       router: useRouter(),
-      order_data: {}
+      order_data: {},
+      delivery_status: false,
+      order: {
+        delivery_home: null,
+      },
+      address_options: [],
+      address_user: [],
     };
   },
   props: {},
   methods: {
     async load_data(){
+      console.log(this.order)
       await apiProductService.ProductsInOrderAccountView().then((response)=>{
-      this.order_data = response.data
-      if(!this.order_data){
-        this.router.push({name: 'dashboard'});
-      }
-    })
+        this.order_data = response.data
+        console.log(this.order_data)
+        if(!this.order_data){
+          this.router.push({name: 'dashboard'});
+        }
+      })
+      await apiAddresses.getListAddress().then((response)=>{
+        this.address_options = response.data.filter(address => address.is_default == true ) 
+        this.address_user = response.data.filter(address => address.user == this.user_id ) 
+        console.log(response.data[0].user)
+        console.log(this.address_user)
+      })
     },
     async removeFromBasket(id, index) {
       await apiOrderProductService.deleteOrderProduct(id)
       this.load_data()
     },
+    async conclude_order(){
+      this.order.delivery_home = this.delivery_status 
+      console.log(this.order)
+      console.log(this.delivery_status)
+    }
   },
   async mounted() {
     this.load_data()

@@ -1,10 +1,9 @@
-import axios from 'axios';
 import api from '@/services/api'
 
 export default {
-  async registerAccount(formData) {
+  async registerAddress(formData) {
     console.log(formData)
-    return await api.post('/account/register/', formData)
+    return await api.post('/account/address/', formData)
       .then(response => {
         console.log(response)
         return response.data;
@@ -15,8 +14,8 @@ export default {
       });
   },
   
-  async getAccount(id) {
-    return await api.get('/account/', {})
+  async getListAddress(id) {
+    return await api.get('/account/address/', {})
       .then(response => {
         return response;
       })
