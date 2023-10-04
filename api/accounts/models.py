@@ -21,14 +21,7 @@ class User(AbstractUser):
     is_active           = models.BooleanField(default=True)
 
     coop_number         = models.PositiveIntegerField(unique=True, null=True, blank=True )
-    # level               = models.PositiveIntegerField(default=0)
-
-    address             = models.OneToOneField(
-        "adresses.Address",
-        null            = True,
-        on_delete       = models.SET_NULL,
-        related_name    ='user'
-    ) 
+    # level               = models.PositiveIntegerField(default=0)         
     
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)

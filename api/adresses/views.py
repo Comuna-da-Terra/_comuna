@@ -7,6 +7,7 @@ from accounts.models import User
 from .permissions import IsAccountOwnerOrSuperuser
 import requests
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 
 class AddressView(ListCreateAPIView):
@@ -43,26 +44,16 @@ class AddressView(ListCreateAPIView):
             dict_address["complement"]      = dict_address.get("complemento", "")
             request.data.update({**dict_address})
 
+            request.data["user"] = request.user.id
+            request.data["is_default"] = False
+
             return super().create(request, *args, **kwargs)
-
-    def perform_create(self, serializer):
-        user                = User.objects.get(pk=self.request.user.id)
-        serializer.save()
-
-        address_id          = serializer.data.get("id")
-        address             = Address.objects.get(pk=address_id)
-        user.address        = address
-        user.save()
-
-        previous_address    = user.address
-        if previous_address is not None:
-            previous_address.delete()
 
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Address.objects.all()
         
-        return Address.objects.filter(user=self.request.user)
+        return Address.objects.filter(Q(user_id=self.request.user) | Q(is_default=True))
 
 
 class AddressDetailView(RetrieveUpdateDestroyAPIView):
@@ -102,7 +93,7 @@ class AddressDetailView(RetrieveUpdateDestroyAPIView):
 
             except requests.ConnectionError:
                 return Response({"message": "Falha ao buscar dados de endereço"}, status.HTTP_400_BAD_REQUEST)
-
+        request.data["is_default"] = False
         serializer  = self.get_serializer(address, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

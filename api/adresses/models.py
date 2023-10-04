@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import User
 import uuid
 
 class Address(models.Model):
@@ -17,6 +18,13 @@ class Address(models.Model):
     country         = models.CharField(max_length=64)
     number          = models.CharField(max_length=10)
     state           = models.CharField(max_length=64)
+    is_default         = models.BooleanField(default=False)
+
+    user = models.ForeignKey(
+        "accounts.User",
+        on_delete       = models.DO_NOTHING,
+        related_name    ='addresses'
+    ) 
 
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True)
