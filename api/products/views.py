@@ -35,10 +35,10 @@ class ProductsInOrderAccountView(APIView):
     serializer_class = ProductSerializer
 
     def get(self, request):
-        owner_id = self.request.user.id
+        user = self.request.user.id
         response = {}
 
-        user_orders = Order.objects.filter(owner_id=owner_id).exclude(status=3)
+        user_orders = Order.objects.filter(user=user).exclude(status=3)
         print(user_orders.exists())
         if not user_orders.exists():
             return Response({'detail': 'Nenhum pedido encontrado para este usuário.'}, status=status.HTTP_404_NOT_FOUND)

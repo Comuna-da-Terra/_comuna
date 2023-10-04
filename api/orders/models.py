@@ -11,7 +11,7 @@ class Order(models.Model):
         editable=False,
     )
 
-    owner               = models.ForeignKey(User, on_delete=models.CASCADE)
+    user               = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_address    = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
 
     STATUS_CHOICES      = [
@@ -38,6 +38,8 @@ class ProductOrder(models.Model):
         primary_key=True,
         editable=False,
     )
+
+    user               = models.ForeignKey(User, on_delete=models.CASCADE)
 
     id_order            = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="id_order")
     id_product          = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="id_product")

@@ -39,10 +39,10 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        account                                 = get_object_or_404(User, pk=validated_data['id_user'])
+        account                                 = get_object_or_404(User, pk=validated_data['user'])
         product                                 = get_object_or_404(Product, pk=validated_data['id_product'])
 
-        order, created                          = Order.objects.get_or_create(owner=account, active=True,)
+        order, created                          = Order.objects.get_or_create(user=account, active=True,)
         verify_product_order                    = ProductOrder.objects.filter(id_order=order, id_product=product).first()
 
         if verify_product_order:
@@ -63,8 +63,10 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         product_order                           = ProductOrder.objects.create(
             id_order=order,
             id_product=product,
+            user= account,
             quantity=validated_data['quantity'],
             total_price=total_price
+            
         )
 
         return product_order

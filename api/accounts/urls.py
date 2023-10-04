@@ -3,7 +3,8 @@ from rest_framework_simplejwt import views as jwt_views
 from . import views
 
 urlpatterns = [
-    path("account/", view=views.UserView.as_view()),
+    path("account/", view=views.ListUserView.as_view()),
+    path("account/register/", view=views.CreateUserView.as_view()),
     path("account/<uuid:pk>/", view=views.UserDetailView.as_view()),
 
     path("auth/", jwt_views.TokenObtainPairView.as_view()),

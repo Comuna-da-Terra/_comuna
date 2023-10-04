@@ -14,23 +14,24 @@ from .serializer import CustomJWTSerializer
 from .serializer import UserSerializer
 from accounts.utils.random_username import random_username
 
-class UserView(generics.ListCreateAPIView):
+class CreateUserView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+        
+    def perform_create(self, serializer):
+        serializer.save(
+            username=random_username(),
+        )
+
+class ListUserView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwnerOrSuperuser]
-
     serializer_class = UserSerializer
-    
+        
     def get_queryset(self):
         if(self.request.user.is_superuser): 
             return User.objects.all()
         else:
             return User.objects.filter(id=self.request.user.id)
-        
-    serializer_class = UserSerializer
-    def perform_create(self, serializer):
-        serializer.save(
-            username=random_username(),
-        )
     
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
