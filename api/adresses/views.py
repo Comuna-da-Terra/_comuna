@@ -41,7 +41,6 @@ class AddressView(ListCreateAPIView):
             dict_address["neighborhood"]    = dict_address.get("bairro", "")
             dict_address["uf"]              = dict_address.get("uf", "")
             dict_address["street"]          = dict_address.get("logradouro", "")
-            dict_address["complement"]      = dict_address.get("complemento", "")
             request.data.update({**dict_address})
 
             request.data["user"] = request.user.id
@@ -85,8 +84,7 @@ class AddressDetailView(RetrieveUpdateDestroyAPIView):
                 dict_address["neighborhood"]    = dict_address.get("bairro", "")
                 dict_address["uf"]              = dict_address.get("uf", "")
                 dict_address["street"]          = dict_address.get("logradouro", "")
-                dict_address["complement"]      = dict_address.get("complemento", "")
-
+                
                 for key, value in dict_address.items():
                     setattr(address, key, value)
                 address.save() 

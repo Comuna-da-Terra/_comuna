@@ -19,7 +19,7 @@ class Category(models.Model):
         verbose_name = "Categoria"
 
 class Product(models.Model):
-    id= models.UUIDField(
+    id = models.UUIDField(
         default=uuid.uuid4,
         primary_key=True,
         editable=False,

@@ -19,9 +19,10 @@ class ProductOrderView(generics.ListCreateAPIView):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return ProductOrder.objects.all()
-        order = Order.objects.filter(active = True)
         
-        return ProductOrder.objects.filter(id_order=order, id_order__user=self.request.user)
+        order = Order.objects.filter(active = True)
+ 
+        return ProductOrder.objects.filter(id_order=order[0].id)
 
     def perform_create(self, serializer):
 
@@ -45,7 +46,14 @@ class ProductOrderDeleteView(APIView):
 
         return Response({'message': 'ProductOrder excluído com sucesso.'}, status=status.HTTP_200_OK)
     
-class OrderPartialUpdateView(generics.RetrieveUpdateAPIView):
+class OrderPartialUpdateView(generics.UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAccountOwnerOrSuperuser]
+
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+class OrderView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwnerOrSuperuser]
 
