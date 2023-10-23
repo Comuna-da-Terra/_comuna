@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import Notifications from '@kyvg/vue3-notification'
+import 'primeicons/primeicons.css';
 import './assets/main.css'
 
 import router from './router'
