@@ -6,47 +6,60 @@
       <div class="cont_logo">
         <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="100" />
       </div>
-      <div>
+      <div v-if="order_status == 1">
         <h1 style="margin: 2rem 0 2rem 1rem ;">Finalizando Pedido</h1>
       </div>
+      <div v-if="order_status == 2">
+        <h1 style="margin: 2rem 0 2rem 1rem ;">Pedido já efetuado!</h1>
+      </div>
       <div>
-        <form style="display: flex; justify-content: space-around;" action="">
+        <form style="display: flex; justify-content: space-around;"  @submit.prevent="handleSubmit" action="">
           <div>
             <label for="delivery">Entregar em casa </label>
-            <input type="checkbox" name="delivery" v-model="delivery_status">
+            <input type="checkbox" name="delivery" v-model="delivery_status" :checked="delivery_status">
+            <p>{{ delivery_status }}</p>
           </div>
           <div v-if="!delivery_status || (delivery_status && address_user.length != 0)">
             <label for="address">Endereço: </label>
-            <select name="address" v-model="order.delivery_address">
-              <option v-if="!delivery_status" v-for="opcao in address_options" :value="opcao">{{ opcao.street }}, {{ opcao.number }} - {{ opcao.neighborhood }}</option>
-              <option v-if="delivery_status" v-for="opcao in address_user" :value="opcao" >{{ opcao.street }}, {{ opcao.number }} - {{ opcao.neighborhood }}</option>
+            <select style="max-width: 200px;" required name="address" v-model="delivery_address">
+              <option v-if="!delivery_status" v-for="opcao in address_options" :value="opcao.id">{{ opcao.street }}, {{ opcao.number }} - {{ opcao.neighborhood }}</option>
+              <option v-if="delivery_status" v-for="opcao in address_user" :value="opcao.id" >{{ opcao.street }}, {{ opcao.number }} - {{ opcao.neighborhood }}</option>
             </select>
+            <button style="height: min-content; padding: 0.5px;" type="button" v-if="delivery_status && address_user.length != 0" @click="modal_address = true">
+              <i type="button" @click.prevent="closeModal" class="pi pi-plus"></i>
+            </button>
           </div>
-          <button v-if="delivery_status && address_user.length == 0">Criar Endereço</button>
+          <button type="button" v-if="delivery_status && address_user.length == 0" @click="modal_address = true">Criar Endereço</button>
+          <button type="submit">Concluído</button>
         </form>
-        <button @click="conclude_order">Concluído</button>
       </div>
       <div>
         
         <ul class="cont-list-products">
-        <li v-for="(order_product, index) in order_data.order_products" :key="index">
-          <p>
-            {{ order_data?.products[index].name }}
-          </p>
-          <p>
-            {{ order_data?.products[index].type }}
-          </p>
-          <p>
-            {{ order_product?.quantity }} 
-          </p>
-          <p>
-            R$  {{ order_product?.total_price }}
-          </p>
-          <button @click="removeFromBasket(order_product.id, index)">Remover</button>
-        </li>
-      </ul>
+          <li> 
+            <p>Quantidade de produtos: {{ order_data.order_products?.reduce((total, product) => total + product.quantity, 0)}} </p>
+            <p>Valor Total: {{ order_data.order?.subtotal }}</p>
+          </li>
+          <li v-for="(order_product, index) in order_data.order_products" :key="index">
+            <p>
+              {{ order_data?.products[index].name }}
+            </p>
+            <p>
+              {{ order_data?.products[index].type }}
+            </p>
+            <p>
+              {{ order_product?.quantity }} 
+            </p>
+            <p>
+              R$  {{ order_product?.total_price }}
+            </p>
+            <button @click.prevent="removeFromBasket(order_product.id, index)">Remover</button>
+          </li>
+        </ul>
       </div>
-      
+    </div>
+    <div v-if="modal_address" class="modal-address">
+      <formAddress @close-modal="closeModal"></formAddress> 
     </div>
 </template>
   
@@ -54,13 +67,18 @@
 <script>
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
 import apiProductService from "../../services/products/apiProductService"
-import apiAddresses from "../../services/addresses/apiAddresses"
+import apiAddressService from "../../services/addresses/apiAddresses"
+import formAddress from "../Address/register_address.vue"
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
+import { ref } from 'vue';
+import apiOrder from '../../services/Order/apiOrder';
 
 export default {
 
-  components: {},
+  components: {
+    formAddress
+  },
   data() {
     const authStore = useAuthStore();
 
@@ -68,40 +86,61 @@ export default {
       user_id: authStore.user_id,
       router: useRouter(),
       order_data: {},
-      delivery_status: false,
-      order: {
-        delivery_home: null,
-      },
+      delivery_status: null,
+      delivery_address: null,
+      orderCurrent: null,
+      order_status: null,
       address_options: [],
       address_user: [],
+      modal_address: ref(false)
     };
   },
   props: {},
   methods: {
     async load_data(){
-      console.log(this.order)
       await apiProductService.ProductsInOrderAccountView().then((response)=>{
         this.order_data = response.data
-        console.log(this.order_data)
         if(!this.order_data){
           this.router.push({name: 'dashboard'});
         }
       })
-      await apiAddresses.getListAddress().then((response)=>{
+      await apiOrder.getOrder().then((response)=>{
+        this.orderCurrent = response.data
+        this.order_status = this.orderCurrent[0].status
+        this.delivery_status =  this.orderCurrent[0].delivery_home,
+        this.delivery_address = this.orderCurrent[0].delivery_address
+      })
+      await apiAddressService.getListAddress().then((response)=>{
         this.address_options = response.data.filter(address => address.is_default == true ) 
         this.address_user = response.data.filter(address => address.user == this.user_id ) 
-        console.log(response.data[0].user)
-        console.log(this.address_user)
       })
     },
     async removeFromBasket(id, index) {
       await apiOrderProductService.deleteOrderProduct(id)
       this.load_data()
     },
-    async conclude_order(){
-      this.order.delivery_home = this.delivery_status 
-      console.log(this.order)
-      console.log(this.delivery_status)
+    async handleSubmit(){  
+      const data = {
+        id: this.orderCurrent[0].id,
+        delivery_address: this.delivery_address,
+        delivery_home: this.delivery_status,
+        status: 2
+      }
+      await apiOrder.updateOrder(data).then((response)=>{
+        const IdAdress = response.data.delivery_address
+        apiAddressService.getAddress(IdAdress).then((response)=>{
+          let currentAdress = response.data
+
+          this.$notify({ type: "success", text: `Pedido executado! Aguardamos você na ${currentAdress.street} - ${currentAdress.neighborhood}`, duration: 2000});
+          setTimeout(()=>{
+              this.router.push({name: 'dashboard'});
+            }, 3000);
+          })
+        })
+    },
+    closeModal(){
+      this.modal_address = false
+      this.load_data().then(()=> this.delivery_status = true)
     }
   },
   async mounted() {
@@ -133,6 +172,16 @@ export default {
 .cont-list-products li{
   display: flex;
   justify-content: space-evenly;
+}
+.modal-address{
+  width: 80vw;
+  /* display: none; */
+  max-width: 300px;
+  position: absolute;
+  z-index: 1;
+  background-color: grey;
+  padding: 0.5rem;
+  border-radius: 7px;
 }
 </style>
   

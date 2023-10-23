@@ -83,8 +83,7 @@ export default {
           id: 1,
           name: "Abacate",
           stock: 7,
-          price: 8.00,
-          type: "P",
+          price: 8.15,
         },
         {
           id: 2,
@@ -156,19 +155,15 @@ export default {
     },
     async load_data(){
       await apiProductService.getAllProducts().then((response)=>{
-      this.products = response.data
-    })
-    await apiProductService.ProductsInOrderAccountView().then((response)=>{
-      this.cestaToBuy = response.data
-      console.log(response)
-      console.log(this.cestaToBuy)
-    })
+        this.products = response.data
+      })
+      await apiProductService.ProductsInOrderAccountView().then((response)=>{
+        this.cestaToBuy = response.data
+      })
     }
   },
   async mounted() {
     this.load_data()
-    console.log(this.cestaToBuy)
-
    }
 };
 </script>

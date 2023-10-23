@@ -43,7 +43,9 @@ import apiAccountService from "../../services/clients/clientService"
 
 
 export default {
-    
+    components: { 
+        contProduct, 
+    },
     data() {
         const authStore = useAuthStore();
 
@@ -84,9 +86,7 @@ export default {
         this.load_data()
     },
     computed() {},
-    components: { 
-        contProduct, 
-    }
+    
 };
 </script>
 

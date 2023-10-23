@@ -14,8 +14,17 @@ export default {
       });
   },
   
-  async getListAddress(id) {
+  async getListAddress() {
     return await api.get('/account/address/', {})
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  },
+  async getAddress(id) {
+    return await api.get(`/account/address/${id}/`, {})
       .then(response => {
         return response;
       })
