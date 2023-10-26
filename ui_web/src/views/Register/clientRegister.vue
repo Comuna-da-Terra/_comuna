@@ -36,8 +36,8 @@
       </div>
 
       
-      <span class="link_register">
-        <RouterLink to="login"> Já tenho cadastro  </RouterLink>
+      <span class="link_register" @click="goLoginPage">
+        Já tenho cadastro  
       </span>
     </form>
   </main>
@@ -57,10 +57,7 @@ export default {
     },
     methods: {
       handleSubmit() {
-        // event.preventDefault();
-        console.log(this.formData)
         apiAccount.registerAccount(this.formData).then((response)=>{
-          console.log(response)
           this.$notify({ type: "success", text: "Pronto, estou te enviando para o acesso!", duration: 2000});
           setTimeout(()=>{
             this.router.push({name: 'login'});
@@ -69,6 +66,9 @@ export default {
           this.$notify({ type: "warn", text: "Hum.. tem algo de errado com os dados!", duration: 2000});
 
         })
+      },
+      goLoginPage(){
+        this.$emit('change-page', 'login')
       } 
       
     },
@@ -80,12 +80,29 @@ export default {
 
 <style>
   .form {
-        /* height: 100%; */
+        height: 100vh;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
         padding: 1rem;
+        justify-content: center;
 
+    }
+    .form input{
+      background-color: grey;
+      opacity: 0.5;
+      border-radius: 8px;
+      border: none;
+    }
+    ::placeholder {
+      color: white;
+      opacity: 1;
+    }
+    .form label{
+      font-size: 1.1rem;
+      color: rgb(16, 16, 16);
+      font-weight: bold;
+      text-decoration: none;
     }
     .cont_input_form{
       display: flex;
@@ -107,10 +124,12 @@ export default {
       cursor: pointer;
       height: 2.5rem;
       width: 100%;
-      background-color: green;
+      background-color: rgb(69, 167, 69);
       border: none;
       border-radius: 3px;
-      opacity: 0.4;
+      font-weight: bold;
+      font-size: 1.2rem;
+      opacity: 0.8;
     }
     .cont_btn_register button:hover{
       opacity: 1;
@@ -119,6 +138,7 @@ export default {
     .link_register {
         text-align: center;
         font-size: 1.3rem;
+        color: rgb(95, 11, 11);
     }
 
 </style>

@@ -5,22 +5,23 @@ import { useRoute, useRouter } from 'vue-router';
 
 const routes = [
   {path: "/",
+    name: 'home',
     component: () => HomeView
   },
-  {path: "/client/login",
-    name: 'login',
-    component: () => import('../views/Login/clienteLogin.vue'),
-    meta: {
-      auth: true
-    }
-  },
-    {path: "/client/register",
-    name: 'register',
-    component: () => import('../views/Register/clientRegister.vue'),
-    meta: {
-      auth: true
-    }
-  },
+  // {path: "/client/login",
+  //   name: 'login',
+  //   component: () => import('../views/Login/clienteLogin.vue'),
+  //   meta: {
+  //     auth: true
+  //   }
+  // },
+  //   {path: "/client/register",
+  //   name: 'register',
+  //   component: () => import('../views/Register/clientRegister.vue'),
+  //   meta: {
+  //     auth: true
+  //   }
+  // },
   {path: "/dashboard",
     name: 'dashboard',  
     component: () => import('../views/Dashboard/dashboard.vue'),
@@ -49,7 +50,7 @@ router.beforeEach(async (to, from, next)=>{
     const isAuthenticated = await auth.verifyAccessToken();
     
     if (isAuthenticated) {
-      if(to.name == 'login'){
+      if(to.name == 'home'){
         next({name: 'dashboard'})
 
       } else if(to.name == 'register'){
@@ -58,14 +59,9 @@ router.beforeEach(async (to, from, next)=>{
       }
       next();
     } else {
-      if(to.name == 'login'){
+      if(to.name == 'home'){
         next()
-      } else if (to.name == 'register'){
-        next()
-
-      } else {
-        next({ name: 'login' });
-      }
+      } 
     }
   } else {
     next();

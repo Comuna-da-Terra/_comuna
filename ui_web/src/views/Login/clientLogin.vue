@@ -19,8 +19,8 @@
       </div>
 
       
-      <span class="link_login">
-        <RouterLink to="register"> Quero participar!  </RouterLink>
+      <span @click="goRegisterPage" class="link_login">
+         Quero participar! 
       </span>
     </form>
   </main>
@@ -52,6 +52,9 @@ export default {
         }).catch((err)=>{
           this.$notify({ type: "warn", text: "Hum... algo errado com seu E-mail ou senha !", duration: 3000});
         })
+      },
+      goRegisterPage(){
+        this.$emit('change-page', 'register')
       }
       
     },
@@ -71,6 +74,22 @@ export default {
         flex-direction: column;
         gap: 0.5rem;
         justify-content: center;
+    }
+    .form input{
+      background-color: grey;
+      opacity: 0.5;
+      border-radius: 8px;
+      border: none;
+    }
+    ::placeholder {
+      color: white;
+      opacity: 1;
+    }
+    .form label{
+      font-size: 1.1rem;
+      color: rgb(16, 16, 16);
+      font-weight: bold;
+      text-decoration: none;
     }
     .cont_input_form{
       display: flex;
@@ -92,17 +111,21 @@ export default {
       cursor: pointer;
       height: 2.5rem;
       width: 100%;
-      background-color: green;
+      background-color: rgb(69, 167, 69);
       border: none;
       border-radius: 3px;
-      opacity: 0.4;
+      font-weight: bold;
+      font-size: 1.2rem;
+      
+      opacity: 0.8;
     }
     .cont_btn_login button:hover{
-      opacity: 0.8;
+      opacity: 1;
 
     }
     .link_login {
-        text-align: center;
-        font-size: 1.3rem;
+      text-align: center;
+      font-size: 1.3rem;
+      color: rgb(95, 11, 11);
     }
 </style>

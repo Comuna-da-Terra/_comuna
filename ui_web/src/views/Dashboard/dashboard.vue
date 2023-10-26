@@ -68,17 +68,17 @@ export default {
                 
                 this.$notify({ type: "success", text: "Obrigado, volte sempre!", duration: 2000});
                 return setTimeout(()=>{
-                    this.router.push({name: 'login'});
+                    this.router.push({name: 'home'});
                 }, 2000);
             } else {
                 this.$notify({ type: "warn", text: "Hum... parece que você ja não esta conosco !", duration: 2000});
-                this.router.push({name: 'login'});
+                this.router.push({name: 'home'});
 
             }
         },
         async load_data(){
             await apiAccountService.getAccount(this.user_id).then((response)=>{
-                this.user = response.data
+                this.user = response.data[0]
             })
         }
     },
