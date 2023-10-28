@@ -14,21 +14,6 @@
             </div>
         </div>
         
-
-
-        <div class="cont_body">
-            <div class="cont_input_search">
-                <input type="search" placeholder="O que você está procurando?">
-                <button>Search</button>
-            </div>
-            <ul class="list-cateogry">
-                <li>Frutas</li>
-                <li>Verduras</li>
-                <li>Legumes</li>
-                <li>Sucos/Pol.</li>
-                <li>Outros...</li>
-            </ul>
-        </div>
         <contProduct></contProduct>
     </main>
 </template>
@@ -39,8 +24,6 @@ import contProduct from '../Products/cont_product.vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
 import apiAccountService from "../../services/clients/clientService"
-
-
 
 export default {
     components: { 
@@ -53,7 +36,7 @@ export default {
             router: useRouter(),
             user_id: authStore.user_id,
             user: {},
-            list: {}
+            list: {},
         };
     },
 
@@ -93,11 +76,9 @@ export default {
 <style scoped>
 
 .cont_header {
-    /* height: 10vh; */
     width: 100%;
     display: flex;
     justify-content: space-between;
-    /* top: 0; */
 }
 
 .welcome_text {
@@ -122,47 +103,12 @@ export default {
     list-style: none;
     margin-right: 1rem;
 }
-.cont_body{
-    width: 100%;
-}
-.cont_input_search {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.cont_input_search input {
-    height: 3rem;
-    width: 80%;
-    font-size: 1rem;
-    border-radius: 7px;
-    padding: 1rem;
-}
 
 .table_products {
     width: 100%;
     height: 100%;
 }
 
-.list-cateogry {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    list-style: none;
-    padding: 0;
-}
-
-.list-cateogry li {
-    cursor: pointer;
-}
 
 
-.cont_product {
-    width: 100%;
-    display: flex;
-}
-
-.cont_product li {
-    list-style: none;
-}
 </style>

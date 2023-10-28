@@ -6,7 +6,10 @@ import { useRoute, useRouter } from 'vue-router';
 const routes = [
   {path: "/",
     name: 'home',
-    component: () => HomeView
+    component: () => HomeView,
+    meta: {
+      auth: true
+    }
   },
   // {path: "/client/login",
   //   name: 'login',
@@ -53,15 +56,14 @@ router.beforeEach(async (to, from, next)=>{
       if(to.name == 'home'){
         next({name: 'dashboard'})
 
-      } else if(to.name == 'register'){
-        next({name: 'dashboard'})
-
+      } else { 
+        next();
       }
-      next();
     } else {
       if(to.name == 'home'){
         next()
-      } 
+      }
+      next({name: 'home'})
     }
   } else {
     next();

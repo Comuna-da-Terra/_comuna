@@ -1,8 +1,18 @@
 <template>
     <div class="cont_all">
+      <div class="cont_body">
+            <div class="cont_input_search">
+                <input type="search" placeholder="O que você está procurando?">
+                <button>Search</button>
+            </div>
+            <ul class="list-cateogry">
+                <li v-for="(category, index) in categories" :key="index" @click="filterProducts(category.id)" >{{category.name}}</li>
+                <li @click="productsShow = products">Todos..</li>
+            </ul>
+        </div>
       <ul class="cont_product">
         <h2 style="display: flex; text-align: center; justify-content: center;">Lista de Produtos</h2>
-        <li v-for="(product, index) in products" :key="index">
+        <li v-for="(product, index) in productsShow" :key="index">
           <picture>
             <img src="https://encurtador.com.br/pDR78" alt="img_cesta">
             <!-- <img src="../../mock/img/mock_to_product.png" alt="img_mock"> -->
@@ -68,6 +78,7 @@
   // ____________SCRIPT____________
 <script>
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
+import apiCategoryService from "../../services/category/apiCategoryService"
 import apiProductService from "../../services/products/apiProductService"
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
@@ -78,50 +89,21 @@ export default {
 
     return {
       router: useRouter(),
-      products: [
-        {
-          id: 1,
-          name: "Abacate",
-          stock: 7,
-          price: 8.15,
-        },
-        {
-          id: 2,
-          name: "Banana",
-          
-          stock: 7,
-          price: 7.00,
-          type: "M",
-        },
-        {
-          id: 3,
-          name: "Alface",
-          stock: 7,
-          price: 6.00,
-        },
-        {
-          id: 4,
-          name: "Berinjela",
-          stock: 7,
-          price: 4.00,
-          type: "P",
-        },
-        {
-          id: 5,
-          name: "Colve",
-          stock: 7,
-          price: 7.00,
-        }
-      ],
+      products: [],
+      productsShow: [],
       productSizes: [],
       orderAmount: [],
       cestaToBuy: [],
       viewListBasket: false,
       id_user: authStore.user_id,
+      categories: []
     };
   },
   props: {},
   methods: {
+    filterProducts(idCategory){
+      this.productsShow = this.products.filter((product)=> product.category === idCategory)
+    },
     increaseAmountProduct(id, index) {
       this.orderAmount[index] = (this.orderAmount[index] || 0) + 1;
     },
@@ -140,7 +122,8 @@ export default {
         await apiOrderProductService.createOrderProduct(data).then((resp)=>{
           this.cestaToBuy = resp.data
         })
-        this.load_data()
+        await apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
+      
       } else {
         this.$notify({ type: "warn", text: "Por favor, selecione uma quatidade válida !", duration: 3000});
       }
@@ -156,9 +139,13 @@ export default {
     async load_data(){
       await apiProductService.getAllProducts().then((response)=>{
         this.products = response.data
+        this.productsShow = this.products
       })
       await apiProductService.ProductsInOrderAccountView().then((response)=>{
         this.cestaToBuy = response.data
+      })
+      await apiCategoryService.getListCategory().then((response)=>{
+          this.categories = response.data
       })
     }
   },
@@ -171,12 +158,38 @@ export default {
 <style scoped>
 .cont_all{
   height: 100%;
+  width: 100%;
+}
+.cont_body{
+    width: 100%;
+}
+.cont_input_search {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.cont_input_search input {
+    height: 3rem;
+    width: 80%;
+    font-size: 1rem;
+    border-radius: 7px;
+    padding: 1rem;
+}
+.list-cateogry {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+}
+
+.list-cateogry li {
+    cursor: pointer;
 }
 .cont_product {
   width: 100%;
   display: flex;
   flex-direction: column;
-  /* gap: 0.3rem; */
 }
 
 .cont_product li picture {
@@ -220,7 +233,6 @@ export default {
   align-items: center;
 }
 
-
 .quantity-controls {
   display: flex;
   align-items: center;
@@ -230,7 +242,6 @@ export default {
 }
 
 .quantity-controls button {
-  /* background: none; */
   width: 100%;
   height: 100%;
   border: none;
