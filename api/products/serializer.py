@@ -1,4 +1,4 @@
-from .models import Product
+from .models import Product, Category
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -34,3 +34,8 @@ class ProductsInOrderAccountSerializer(serializers.Serializer):
     order = OrderSerializer()
     order_products = ProductOrderSerializer(many=True)
     products = ProductSerializer(many=True)
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"

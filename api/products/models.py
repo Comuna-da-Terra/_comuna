@@ -8,7 +8,7 @@ class Category(models.Model):
         editable=False,
     )
     name= models.CharField(max_length=30, unique=True)
-    description= models.CharField(max_length=100, null=True, blank=True)
+    description= models.CharField(max_length=700, null=True, blank=True)
 
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at= models.DateTimeField(auto_now=True)
@@ -25,8 +25,9 @@ class Product(models.Model):
         editable=False,
     )
 
-    name= models.CharField(max_length=30, unique=True)
+    name= models.CharField(max_length=60, unique=True)
     stock= models.IntegerField(default=1)
+    unit= models.CharField(max_length=30)
     price= models.DecimalField(max_digits=10, decimal_places=2)
     TYPE_CHOICES = [
         ("Comum", ("Padrão")),

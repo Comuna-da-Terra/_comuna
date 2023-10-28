@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
 
 from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
-from .serializer import ProductSerializer, ProductsInOrderAccountSerializer
+from .serializer import ProductSerializer, ProductsInOrderAccountSerializer, CategorySerializer
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -39,7 +39,6 @@ class ProductsInOrderAccountView(APIView):
         response = {}
 
         user_orders = Order.objects.filter(user=user).exclude(status=3)
-        print(user_orders.exists())
         if not user_orders.exists():
             return Response({'detail': 'Nenhum pedido encontrado para este usuário.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -52,3 +51,11 @@ class ProductsInOrderAccountView(APIView):
         serializer = ProductsInOrderAccountSerializer(data)
         return Response(serializer.data)
 
+class CategoryView(APIView):
+    
+    def get(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        print(categories)
+
+        return Response(serializer.data)
