@@ -2,8 +2,8 @@
     <div class="cont_all">
       <div class="cont_body">
             <div class="cont_input_search">
-                <input type="search" placeholder="O que você está procurando?">
-                <button>Search</button>
+                <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
+                <button @click="searchProduct()">Search</button>
             </div>
             <ul class="list-cateogry">
                 <li v-for="(category, index) in categories" :key="index" @click="filterProducts(category.id)" >{{category.name}}</li>
@@ -96,13 +96,33 @@ export default {
       cestaToBuy: [],
       viewListBasket: false,
       id_user: authStore.user_id,
-      categories: []
+      categories: [],
+      searchValue: ''
     };
   },
   props: {},
   methods: {
     filterProducts(idCategory){
       this.productsShow = this.products.filter((product)=> product.category === idCategory)
+    },
+    searchProduct(){
+      for (let index = 0; index < this.categories.length; index++) {
+        if(this.searchValue == ''){
+          return this.$notify({ type: "error", text: "Hum... informe o que deseja procurar!", duration: 2000});
+        } else if (this.normalizeStrings(this.categories[index].name).includes(this.normalizeStrings(this.searchValue))){
+          return this.productsShow = this.products.filter((product) => product.category === this.categories[index].id )
+        }
+      }
+
+      for (let index = 0; index < this.products.length; index++) {
+        if(this.normalizeStrings(this.products[index].name).includes(this.normalizeStrings(this.searchValue))){
+          return this.productsShow = this.products.filter((product) => this.normalizeStrings(product.name).includes(this.normalizeStrings(this.searchValue))) 
+        } 
+      }
+      return this.$notify({ type: "error", text: "Hum... Não temos nada sobre isso!", duration: 2000});
+    },
+    normalizeStrings(string){
+      return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
     },
     increaseAmountProduct(id, index) {
       this.orderAmount[index] = (this.orderAmount[index] || 0) + 1;
@@ -123,7 +143,8 @@ export default {
           this.cestaToBuy = resp.data
         })
         await apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
-      
+        this.orderAmount[index] = 0
+        return this.$notify({ type: "success", text: "Produto adicionado !", duration: 3000});
       } else {
         this.$notify({ type: "warn", text: "Por favor, selecione uma quatidade válida !", duration: 3000});
       }
@@ -251,11 +272,15 @@ export default {
 }
 
 .quantity-controls input {
+  background-color: gray;
   border: none;
   padding: 0.2rem 0.4rem;
   font-size: 1rem;
   text-align: center;
   width: 2rem;
+}
+.quantity-controls input::placeholder {
+  color: black;
 }
 .cont-type-product{
   bottom: 0;

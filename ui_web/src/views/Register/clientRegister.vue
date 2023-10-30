@@ -60,7 +60,7 @@ export default {
         apiAccount.registerAccount(this.formData).then((response)=>{
           this.$notify({ type: "success", text: "Pronto, estou te enviando para o acesso!", duration: 2000});
           setTimeout(()=>{
-            this.router.push({name: 'login'});
+            this.$emit('change-page', 'login')
           }, 2000);
         }).catch(()=>{
           this.$notify({ type: "warn", text: "Hum.. tem algo de errado com os dados!", duration: 2000});

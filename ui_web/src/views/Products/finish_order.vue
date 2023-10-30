@@ -130,13 +130,22 @@ export default {
         const IdAdress = response.data.delivery_address
         apiAddressService.getAddress(IdAdress).then((response)=>{
           let currentAdress = response.data
-
-          this.$notify({ type: "success", text: `Pedido executado! Aguardamos você na ${currentAdress.street} - ${currentAdress.neighborhood}`, duration: 2000});
-          setTimeout(()=>{
+          
+          if(this.delivery_status){
+            this.$notify({ type: "success", text: `Pedido executado! Entregaremos em ${currentAdress.street} - ${currentAdress.neighborhood}`, duration: 2000});
+            setTimeout(()=>{
               this.router.push({name: 'dashboard'});
             }, 3000);
-          })
+
+          } else {
+
+            this.$notify({ type: "success", text: `Pedido executado! Aguardamos você na ${currentAdress.street} - ${currentAdress.neighborhood}`, duration: 2000});
+            setTimeout(()=>{
+              this.router.push({name: 'dashboard'});
+            }, 3000);
+          }
         })
+      })
     },
     closeModal(){
       this.modal_address = false
