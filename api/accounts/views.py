@@ -28,9 +28,6 @@ class ListUserView(generics.ListAPIView):
     serializer_class = UserSerializer
         
     def get_queryset(self):
-        if(self.request.user.is_superuser): 
-            return User.objects.all()
-        else:
             return User.objects.filter(id=self.request.user.id)
     
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):

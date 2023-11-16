@@ -15,13 +15,15 @@ class UserSerializer(ModelSerializer):
         model               = User
         fields              = [
             "id",
+            "birth_date",
             "first_name",
             "last_name",
-            "email",
-            "password",
-            "birth_date",
-            "password",
             "cellphone",
+            "password",
+            "email",
+            "coop_number",
+            "is_superuser",
+            "is_staff"
             ] 
         read_only_fields    = ["created_at", "updated_at"]
         extra_kwargs        = {
