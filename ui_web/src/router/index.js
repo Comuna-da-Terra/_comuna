@@ -6,28 +6,42 @@ import { useRoute, useRouter } from 'vue-router';
 const routes = [
   {path: "/",
     name: 'home',
-    component: () => HomeView,
+    component: () => import('../views/HomeView.vue'),
     meta: {
       auth: true
     }
   },
-  // {path: "/client/login",
-  //   name: 'login',
-  //   component: () => import('../views/Login/clienteLogin.vue'),
-  //   meta: {
-  //     auth: true
-  //   }
-  // },
-  //   {path: "/client/register",
-  //   name: 'register',
-  //   component: () => import('../views/Register/clientRegister.vue'),
-  //   meta: {
-  //     auth: true
-  //   }
-  // },
   {path: "/dashboard",
     name: 'dashboard',  
     component: () => import('../views/Dashboard/dashboard.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/perfil",
+    name: 'Perfil',  
+    component: () => import('../views/Perfil/perfil.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/pedido",
+    name: 'Pedido',  
+    component: () => import('../views/Pedido/pedido.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/ordersOpen",
+    name: 'Pedidos Abertos',  
+    component: () => import('../views/Pedido/ordersOpen.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/historico",
+    name: 'Historico',  
+    component: () => import('../views/Historico/historico.vue'),
     meta: {
       auth: true
     }
@@ -61,7 +75,7 @@ router.beforeEach(async (to, from, next)=>{
       }
     } else {
       if(to.name == 'home'){
-        next()
+        return next()
       }
       next({name: 'home'})
     }

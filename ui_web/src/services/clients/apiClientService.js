@@ -1,11 +1,12 @@
+import axios from 'axios';
 import api from '@/services/api'
 
 export default {
-  async registerAddress(formData) {
-    console.log(formData)
-    return await api.post('/account/address/', formData)
+  async registerAccount(formData) {
+
+    return await api.post('/account/register/', formData)
       .then(response => {
-        console.log(response)
+
         return response.data;
       })
       .catch(error => {
@@ -14,17 +15,20 @@ export default {
       });
   },
   
-  async getListAddress() {
-    return await api.get('/account/address/', {})
+  async editAccount(formData) {
+
+    return await api.patch(`account/${formData.id}/`, formData)
       .then(response => {
-        return response;
+        return response.data;
       })
       .catch(error => {
+        console.log(error)
         throw error;
       });
   },
-  async getAddress(id) {
-    return await api.get(`/account/address/${id}/`, {})
+  
+  async getAccount(id) {
+    return await api.get('/account/', {})
       .then(response => {
         return response;
       })

@@ -6,7 +6,16 @@ export default {
     console.log(data)
     return await api.post('/order/product/', data)
       .then(response => {
-        console.log(response)
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  },
+  async updateOrderProduct(data) {
+    console.log(data.id)
+    return await api.patch(`/order/product/update/${data.id}/`, data)
+      .then(response => {
         return response;
       })
       .catch(error => {
@@ -17,7 +26,6 @@ export default {
  
     return await api.get('/order/product/')
       .then(response => {
-        console.log(response)
         return response;
       })
       .catch(error => {
@@ -28,7 +36,6 @@ export default {
  
     return await api.delete(`/order/product/delete/${id}`)
       .then(response => {
-        console.log(response)
         return response;
       })
       .catch(error => {
