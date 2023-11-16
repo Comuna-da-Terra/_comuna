@@ -7,6 +7,7 @@ from accounts.models import User
 
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
+from decimal import Decimal
 # import ipdb
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -16,8 +17,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def delete(self, instance):
         order                                   = instance
-        orders_products = ProductOrder.objects.filter(id_order = order.id)
-        print(orders_products)
+        orders_products = ProductOrder.objects.filter(order = order.id)
         for op in orders_products:
             op.delete()
 
@@ -26,8 +26,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class ProductOrderSerializer(serializers.ModelSerializer):
-    id_order    = OrderSerializer(read_only=True)
-    id_product  = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    order    = OrderSerializer(read_only=True)
+    product  = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
 
     class Meta:
         model   = ProductOrder
@@ -40,29 +40,28 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         account                                 = get_object_or_404(User, pk=validated_data['user'])
-        product                                 = get_object_or_404(Product, pk=validated_data['id_product'])
+        product                                 = get_object_or_404(Product, pk=validated_data['product'])
 
         order, created                          = Order.objects.get_or_create(user=account, active=True,)
-        verify_product_order                    = ProductOrder.objects.filter(id_order=order, id_product=product).first()
+        verify_product_order                    = ProductOrder.objects.filter(order=order, product=product).first()
 
         if verify_product_order:
-            verify_product_order.quantity       = verify_product_order.quantity + validated_data['quantity']
+            verify_product_order.quantity       = validated_data['quantity']
             verify_product_order.total_price    = product.price * verify_product_order.quantity
             verify_product_order.save()
 
-            order.subtotal  = ProductOrder.objects.filter(id_order=order).aggregate(Sum('total_price'))['total_price__sum']
+            order.subtotal  = ProductOrder.objects.filter(order=order).aggregate(Sum('total_price'))['total_price__sum']
             order.save()
 
             return verify_product_order
-
-        total_price                             = product.price * validated_data['quantity']
+        total_price                             = product.price * Decimal(validated_data['quantity'])
         order.subtotal                          = order.subtotal + total_price
 
         order.save()
 
         product_order                           = ProductOrder.objects.create(
-            id_order=order,
-            id_product=product,
+            order=order,
+            product=product,
             user= account,
             quantity=validated_data['quantity'],
             total_price=total_price
@@ -70,15 +69,25 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         )
 
         return product_order
+    
+    def update(self, instance, validated_data):
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.total_price = instance.product.price * instance.quantity
+        instance.save()
+
+        order = instance.order
+        order.subtotal = ProductOrder.objects.filter(order=order).aggregate(Sum('total_price'))['total_price__sum']
+        order.save()
+
+        return instance
 
     def delete(self, instance):
-        order                                   = instance.id_order
+        order                                   = instance.order
         order.subtotal                         -= instance.total_price
         order.save()
 
         instance.delete()
-        order_products = ProductOrder.objects.filter(id_order = order.id)
+        order_products = ProductOrder.objects.filter(order = order.id)
         
-        print(order_products.exists())
         if order_products.exists() == False:
             order.delete()

@@ -43,8 +43,8 @@ class ProductsInOrderAccountView(APIView):
             return Response({'detail': 'Nenhum pedido encontrado para este usuário.'}, status=status.HTTP_404_NOT_FOUND)
 
         response['order'] = user_orders[0]
-        response['order_products'] = ProductOrder.objects.filter(id_order=user_orders[0].id)
-        response['products'] = Product.objects.filter(id__in=[op.id_product.id for op in response['order_products']])
+        response['order_products'] = ProductOrder.objects.filter(order=user_orders[0].id)
+        response['products'] = Product.objects.filter(id__in=[op.product.id for op in response['order_products']])
 
         data = {'order': response['order'], 'order_products': response['order_products'], 'products': response['products']}
 
@@ -56,6 +56,5 @@ class CategoryView(APIView):
     def get(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
-        print(categories)
 
         return Response(serializer.data)

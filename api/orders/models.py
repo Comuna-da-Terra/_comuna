@@ -16,8 +16,10 @@ class Order(models.Model):
 
     STATUS_CHOICES      = [
         (1, ("In process")),
-        (2, ("Waiting confirmation")),
-        (3, ("Completed")),]
+        (2, ("Completed")),
+        (3, ("Finished")),
+        (4, ("Delivered")),
+        ]
     status              = models.IntegerField(choices=STATUS_CHOICES, default=1)
     subtotal            = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     delivery_home       = models.BooleanField(default=False)
@@ -40,9 +42,9 @@ class ProductOrder(models.Model):
     )
 
     user               = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    id_order            = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="id_order")
-    id_product          = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="id_product")
+    order            = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product          = models.ForeignKey(Product, on_delete=models.CASCADE)
+    
     quantity            = models.PositiveIntegerField(default=1)
     total_price         = models.DecimalField(max_digits=10, decimal_places=2)
 
