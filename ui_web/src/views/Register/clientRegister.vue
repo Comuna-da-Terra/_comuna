@@ -3,12 +3,7 @@
     <form class="form" action="" @submit.prevent="handleSubmit">
        <div class="cont_input_form">
         <label for="first_name">Nome: </label>
-      <input v-model="formData.first_name" type="text" id="first_name" name="first_name" placeholder="Nome">
-      </div>
-      
-       <div class="cont_input_form">
-        <label for="last_name">Sobrenome:</label>
-        <input v-model="formData.last_name" type="text" id="last_name" name="last_name" placeholder="Sobrenome">
+      <input v-model="formData.first_name" type="text" id="name" name="name" placeholder="Nome">
       </div>
       
        <div class="cont_input_form">
@@ -18,12 +13,12 @@
 
        <div class="cont_input_form">
         <label for="birth_date">Data de Nascimento:</label>
-        <input v-model="formData.birth_date" type="text" id="birth_date" name="birth_date" placeholder="Data de Nascimento">
+        <input v-model="birthDate" @input="maskBirthDate" type="text" id="birth_date" name="birth_date" placeholder="Data de Nascimento">
       </div>
       
        <div class="cont_input_form">
-        <label for="cellphone">Telefone Celular:</label>
-        <input v-model="formData.cellphone" type="text" id="cellphone" name="cellphone" placeholder="WhatsApp">
+        <label for="cellphone">Telefone Celular(WhatsApp):</label>
+        <input v-model="phoneNumber" @input="maskPhoneNumber" type="text" id="cellphone" name="cellphone" placeholder="(XX) XXXXX-XXXX">
       </div>
 
        <div class="cont_input_form">
@@ -45,18 +40,23 @@
 
 // ____________SCRIPT____________
 <script>
-import apiAccount from '@/services/clients/clientService'; // Certifique-se de ajustar o caminho correto
+import apiAccount from '@/services/clients/apiClientService'; // Certifique-se de ajustar o caminho correto
 import { useRoute, useRouter } from 'vue-router';
 
 export default {
     data() {
         return {
           router: useRouter(),
-          formData: {}
+          formData: {},
+          phoneNumber : '',
+          birthDate: ''
         }
     },
     methods: {
       handleSubmit() {
+        this.formData.cellphone = this.phoneNumber
+        this.formData.birth_date = this.birthDate.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, '$3-$2-$1');
+
         apiAccount.registerAccount(this.formData).then((response)=>{
           this.$notify({ type: "success", text: "Pronto, estou te enviando para o acesso!", duration: 2000});
           setTimeout(()=>{
@@ -69,7 +69,19 @@ export default {
       },
       goLoginPage(){
         this.$emit('change-page', 'login')
-      } 
+      },
+      maskPhoneNumber(){
+        this.phoneNumber = this.phoneNumber.replace(/[\D]/g, '')
+          .replace(/(\d{2})(\d)/, '($1) $2')
+          .replace(this.phoneNumber[5] != 9 ? /(\d{4})(\d)/ : /(\d{5})(\d)/, '$1-$2')
+          .replace(/(-\d{4})(\d+?)/, '$1');
+      },
+      maskBirthDate(){
+        this.birthDate = this.birthDate.replace(/\D/g, '')
+        .replace(/(\d{2})(\d{1})/, '$1/$2')
+        .replace(/(\d{2})(\d{1})/, '$1/$2')
+        .replace(/(\d{2}\/\d{2}\/\d{4}).*/, '$1')
+      }
       
     },
     mounted() {

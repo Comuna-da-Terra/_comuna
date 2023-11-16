@@ -28,7 +28,7 @@
 
 // ____________SCRIPT____________
 <script>
-import serviceAuth from '@/services/clients/authService';
+import serviceAuth from '@/services/clients/apiAuthService';
 import { useRoute, useRouter } from 'vue-router';
 
 export default {
