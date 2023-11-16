@@ -6,14 +6,15 @@
             </div>
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">
-                    <li>Perfil</li>
-                    <li>Pedido</li>
-                    <li>Histórico</li>
+                    <li v-if="!user.is_superuser" @click="changePage('Perfil')">Perfil</li>
+                    <li v-if="!user.is_superuser" @click="changePage('Pedido')">Pedido</li>
+                    <li v-if="user.is_superuser" @click="changePage('Pedidos Abertos')">Pedidos em aberto</li>
+                    <li @click="changePage('Historico')">Histórico</li>
                     <li @click="logout">Sair</li>
                 </ul>
             </div>
         </div>
-        
+
         <contProduct></contProduct>
     </main>
 </template>
@@ -21,9 +22,11 @@
 // ____________SCRIPT____________
 <script>
 import contProduct from '../Products/cont_product.vue';
+import perfilUser from '../perfil/perfil.vue'
 import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
-import apiAccountService from "../../services/clients/clientService"
+import apiAccountService from "../../services/clients/apiClientService"
+import apiOrderService from "../../services/order/apiOrderService"
 
 export default {
     components: { 
@@ -59,11 +62,15 @@ export default {
 
             }
         },
+        changePage(page){
+            this.router.push({name: `${page}`});
+        },
         async load_data(){
             await apiAccountService.getAccount(this.user_id).then((response)=>{
                 this.user = response.data[0]
             })
-        }
+        },
+        
     },
     mounted() {
         this.load_data()

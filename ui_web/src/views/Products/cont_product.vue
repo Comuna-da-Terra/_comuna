@@ -10,35 +10,28 @@
                 <li @click="productsShow = products">Todos..</li>
             </ul>
         </div>
-      <ul class="cont_product">
-        <h2 style="display: flex; text-align: center; justify-content: center;">Lista de Produtos</h2>
+      <h2 style="display: flex; text-align: center; justify-content: center;">Lista de Produtos</h2>
+      <ul class="cont-list-product">
         <li v-for="(product, index) in productsShow" :key="index">
-          <picture>
-            <img src="https://encurtador.com.br/pDR78" alt="img_cesta">
-            <!-- <img src="../../mock/img/mock_to_product.png" alt="img_mock"> -->
-          </picture>
-          <div class="cont-body-product">
-            <div class="cont-data-product">
-              <label>{{ product.name }} - R$ {{ product.price }}</label>
-              <div v-if="product.type != 'Comum'" class="cont-type-product">
-                <label>
-                  <input type="radio" checked v-model="productSizes[index]" value="P" /> P
-                </label>
-                <label>
-                  <input type="radio"  v-model="productSizes[index]" value="M" /> M
-                </label>
-                <label>
-                  <input type="radio" v-model="productSizes[index]" value="G" /> G
-                </label>
+          <div class="cont-item-product">
+            <picture style="display: flex;">
+              <img src="https://encurtador.com.br/pDR78" alt="img_cesta">
+              <!-- <img src="../../mock/img/mock_to_product.png" alt="img_mock"> -->
+            </picture>
+            
+              <div class="cont-data-product">
+                <span>{{ product.name }}</span>
+                <span>R$ {{ product.price }}</span>
               </div>
-            </div>
-            <div class="quantity-controls">
-              <button @click="increaseAmountProduct(product.id, index)">+</button>
-              <input type="text" v-model="orderAmount[index]" placeholder="0"/>
-              <button @click="decreaseAmountProduct(product.id, index)">-</button>
-            </div>
-            <button @click="createOrderProduct(product, index )" >Quero!</button>
+              <div class="cont-quantity-controls">
+                <!-- <button @click="increaseAmountProduct(product.id, index)">+</button> -->
+                <input type="text" v-model="orderAmount[index]" placeholder="0"/>
+                <!-- <button @click="decreaseAmountProduct(product.id, index)">-</button> -->
+                <button @click="createOrderProduct(product, index )" >
+                  <i class="pi pi-cart-plus" style="color: whitesmoke; font-size: 1.5rem" ></i>
+                </button>
 
+            </div>
           </div>
         </li>
       </ul>
@@ -50,7 +43,7 @@
         <button v-if="viewListBasket" @click="viewListBasket = false"> Ver menos</button>
       </div>
       <div style="display: flex; justify-content: space-around; margin: 0.5rem;">
-        <p> Unidades: {{ cestaToBuy?.order_products.reduce((acc, item) => acc + item.quantity, 0) }}</p>
+        <p> Unidades: {{ cestaToBuy.order_products?.reduce((acc, item) => acc + item.quantity, 0) }}</p>
         <p> Valor Total: {{ cestaToBuy?.order.subtotal }}</p>
         <button @click="finishOrder"> Finalizar Pedido</button>
        
@@ -83,6 +76,7 @@ import apiProductService from "../../services/products/apiProductService"
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 
+
 export default {
   data() {
     const authStore = useAuthStore();
@@ -95,7 +89,7 @@ export default {
       orderAmount: [],
       cestaToBuy: [],
       viewListBasket: false,
-      id_user: authStore.user_id,
+      user_id: authStore.user_id,
       categories: [],
       searchValue: ''
     };
@@ -134,17 +128,17 @@ export default {
     },
     async createOrderProduct(product, index) {
       const data = {
-        id_product: product.id,
+        product: product.id,
         quantity: this.orderAmount[index],
-        user: this.id_user
+        user: this.user_id
       }
       if (this.orderAmount[index] > 0 && this.orderAmount[index] !== undefined) {
         await apiOrderProductService.createOrderProduct(data).then((resp)=>{
-          this.cestaToBuy = resp.data
+          apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
+            this.orderAmount[index] = 0
+            return this.$notify({ type: "success", text: "Produto adicionado !", duration: 3000});
         })
-        await apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
-        this.orderAmount[index] = 0
-        return this.$notify({ type: "success", text: "Produto adicionado !", duration: 3000});
+        
       } else {
         this.$notify({ type: "warn", text: "Por favor, selecione uma quatidade válida !", duration: 3000});
       }
@@ -207,32 +201,30 @@ export default {
 .list-cateogry li {
     cursor: pointer;
 }
-.cont_product {
+.cont-list-product {
   width: 100%;
   display: flex;
-  flex-direction: column;
-}
-
-.cont_product li picture {
-  width: 70%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.cont_product li img {
-  width: 100%;
-}
-
-.cont_product li {
-  display: flex;
-  margin: 1rem;
-}
-
-.cont-body-product {
-  width: 100%;
-  display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
+  
+}
+.cont-list-product li {
+  display: flex;
+  margin: 0.3em;
+  flex-direction: row;
+  height: fit-content;
+}
+.cont-item-product{
+  width: 100%;
+  max-width: 480px;
+  min-width: 376px;
+  height: 6rem;
+  display: flex;
+  justify-content: space-between;
+}
+.cont-item-product img {
+  width: 7em;
+  border-radius: 7px;
 }
 
 .cont-data-product {
@@ -240,6 +232,12 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+}
+.cont-data-product span {
+  font-weight: bolder;
+  font-size: 0.7rem;
+  width: 100%;
+  text-align: center;
 }
 
 .cont-type-product {
@@ -254,33 +252,34 @@ export default {
   align-items: center;
 }
 
-.quantity-controls {
+.cont-quantity-controls {
   display: flex;
+  width: 5em;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   flex-direction: column;
 
 }
 
-.quantity-controls button {
-  width: 100%;
-  height: 100%;
+.cont-quantity-controls button {
+  background-color: rgb(28, 115, 28);
+  width: 5em;
+  height: 2.5em;
   border: none;
   cursor: pointer;
+  border-radius: 10px;
   font-size: 1rem;
   padding: 0.2rem 0.4rem;
 }
 
-.quantity-controls input {
-  background-color: gray;
+.cont-quantity-controls input {
+  width: 100%;
   border: none;
-  padding: 0.2rem 0.4rem;
-  font-size: 1rem;
+  font-size: 2rem;
   text-align: center;
-  width: 2rem;
 }
-.quantity-controls input::placeholder {
-  color: black;
+.cont-quantity-controls input::placeholder {
+  color: grey;
 }
 .cont-type-product{
   bottom: 0;

@@ -67,12 +67,12 @@
 <script>
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
 import apiProductService from "../../services/products/apiProductService"
-import apiAddressService from "../../services/addresses/apiAddresses"
+import apiAddressService from "../../services/addresses/apiAddressService"
+import apiOrderService from '../../services/order/apiOrderService';
 import formAddress from "../Address/register_address.vue"
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 import { ref } from 'vue';
-import apiOrder from '../../services/Order/apiOrder';
 
 export default {
 
@@ -104,7 +104,7 @@ export default {
           this.router.push({name: 'dashboard'});
         }
       })
-      await apiOrder.getOrder().then((response)=>{
+      await apiOrderService.getOrder().then((response)=>{
         this.orderCurrent = response.data
         this.order_status = this.orderCurrent[0].status
         this.delivery_status =  this.orderCurrent[0].delivery_home,
@@ -126,7 +126,7 @@ export default {
         delivery_home: this.delivery_status,
         status: 2
       }
-      await apiOrder.updateOrder(data).then((response)=>{
+      await apiOrderService.updateOrder(data).then((response)=>{
         const IdAdress = response.data.delivery_address
         apiAddressService.getAddress(IdAdress).then((response)=>{
           let currentAdress = response.data

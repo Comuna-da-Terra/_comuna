@@ -55,7 +55,7 @@
 
 <script>
 import axios from 'axios';
-import apiAddresses from '../../services/addresses/apiAddresses';
+import apiAddresses from '../../services/addresses/apiAddressService';
 export default {
   data() {
     return {
