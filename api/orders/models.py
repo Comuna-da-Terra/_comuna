@@ -12,7 +12,7 @@ class Order(models.Model):
     )
 
     user               = models.ForeignKey(User, on_delete=models.CASCADE)
-    delivery_address    = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
+    delivery_address    = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
 
     STATUS_CHOICES      = [
         (1, ("In process")),

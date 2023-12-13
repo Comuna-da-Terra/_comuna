@@ -22,7 +22,7 @@ class Address(models.Model):
 
     user = models.ForeignKey(
         "accounts.User",
-        on_delete       = models.DO_NOTHING,
+        on_delete       = models.CASCADE,
         related_name    ='addresses'
     ) 
 

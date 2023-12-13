@@ -2,7 +2,7 @@
     <main class="cont_all">
         <div class="cont_header">
             <div>
-                <h1 class="welcome_text">Bem vindo, {{ user.first_name }} {{ user.last_name}} !</h1>
+                <h1 class="welcome_text">Bem vindo, {{ user.name ? user.name.split(' ')[0] : user}}!</h1>
             </div>
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">

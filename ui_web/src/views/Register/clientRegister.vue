@@ -2,8 +2,8 @@
   <main class="cont_all">
     <form class="form" action="" @submit.prevent="handleSubmit">
        <div class="cont_input_form">
-        <label for="first_name">Nome: </label>
-      <input v-model="formData.first_name" type="text" id="name" name="name" placeholder="Nome">
+        <label for="name">Nome: </label>
+      <input v-model="formData.name" type="text" id="name" name="name" placeholder="Nome">
       </div>
       
        <div class="cont_input_form">

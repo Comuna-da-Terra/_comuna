@@ -53,6 +53,7 @@
             <p>
               R$  {{ order_product?.total_price }}
             </p>
+            <button @click="editOrderProduct(order_product.id, order_product.quantity)">Editar</button>
             <button @click.prevent="removeFromBasket(order_product.id, index)">Remover</button>
           </li>
         </ul>

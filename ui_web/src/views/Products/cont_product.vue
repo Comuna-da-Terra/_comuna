@@ -22,6 +22,7 @@
               <div class="cont-data-product">
                 <span>{{ product.name }}</span>
                 <span>R$ {{ product.price }}</span>
+                <span>{{ product.stock }}</span>
               </div>
               <div class="cont-quantity-controls">
                 <!-- <button @click="increaseAmountProduct(product.id, index)">+</button> -->
@@ -57,11 +58,12 @@
             {{ cestaToBuy.products[index].type }}
           </p>
           <p>
-            {{ order_product.quantity }} 
+            <input type="number" v-model="order_product.quantity" min="1">
           </p>
           <p>
             R$  {{ order_product.total_price }}
           </p>
+          <button @click="editOrderProduct(order_product.id, order_product.quantity)">Editar</button>
           <button @click="removeFromBasket(order_product.id, index)">Remover</button>
         </li>
       </ul>
@@ -147,6 +149,21 @@ export default {
     async removeFromBasket(id, index) {
       await apiOrderProductService.deleteOrderProduct(id)
       this.load_data()
+    },
+    async editOrderProduct(id_orderProduct, quantity) {
+      console.log(quantity)
+      if(quantity < 1){
+        return this.removeFromBasket(id_orderProduct)
+      }
+      const data = {
+        id: id_orderProduct,
+        quantity: quantity,
+      }
+      await apiOrderProductService.updateOrderProduct(data).then((resp)=>{
+        const test = apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
+        console.log(test)
+        return this.$notify({ type: "success", text: "Pedido alterado com sucesso!", duration: 3000});
+      })
     },
     async finishOrder(){
       this.router.push({name: 'order'});
