@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from products.models import Product
 from accounts.models import User
-
+from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from decimal import Decimal
@@ -14,6 +14,30 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model   = Order
         fields  = "__all__"
+
+    def update(self, instance, validated_data):
+        status = self.context['request'].data.get('status')
+        orders_products = ProductOrder.objects.filter(order=instance.id)
+
+        if status == 2:
+            for order in orders_products:
+                product = order.product
+                quantity = order.quantity
+                if product.stock >= quantity:
+                    product.stock -= quantity
+                    product.save()
+                elif product.stock < order.quantity:
+                    raise serializers.ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]})
+        elif status == 1:
+            for order in orders_products:
+                product = order.product
+                quantity = order.quantity
+                product.stock += quantity
+                product.save()
+
+        instance = super().update(instance, validated_data)
+        return instance
+
 
     def delete(self, instance):
         order                                   = instance
@@ -41,6 +65,9 @@ class ProductOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         account                                 = get_object_or_404(User, pk=validated_data['user'])
         product                                 = get_object_or_404(Product, pk=validated_data['product'])
+        quantity = int(validated_data['quantity'])
+        if product.stock < quantity:
+            raise ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]})
 
         order, created                          = Order.objects.get_or_create(user=account, active=True,)
         verify_product_order                    = ProductOrder.objects.filter(order=order, product=product).first()
@@ -54,6 +81,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
             order.save()
 
             return verify_product_order
+        
         total_price                             = product.price * Decimal(validated_data['quantity'])
         order.subtotal                          = order.subtotal + total_price
 
@@ -71,8 +99,12 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         return product_order
     
     def update(self, instance, validated_data):
-        instance.quantity = validated_data.get('quantity', instance.quantity)
-        instance.total_price = instance.product.price * instance.quantity
+        quantity = validated_data["quantity"]
+        product = instance.product
+        if product.stock < quantity:
+            raise ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]})
+        instance.quantity = int(validated_data.get('quantity', instance.quantity))
+        instance.total_price = Decimal(instance.product.price * instance.quantity)
         instance.save()
 
         order = instance.order

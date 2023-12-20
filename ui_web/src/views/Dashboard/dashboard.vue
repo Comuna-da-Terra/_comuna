@@ -7,7 +7,9 @@
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">
                     <li v-if="!user.is_superuser" @click="changePage('Perfil')">Perfil</li>
-                    <li v-if="!user.is_superuser" @click="changePage('Pedido')">Pedido</li>
+                    <li v-if="!user.is_superuser && orderOpen[0]?.status > 1" @click="changePage('Pedido')">
+                        <p class="p-pedido-aberto">Pedido Aberto</p>
+                    </li>
                     <li v-if="user.is_superuser" @click="changePage('Pedidos Abertos')">Pedidos em aberto</li>
                     <li @click="changePage('Historico')">Histórico</li>
                     <li @click="logout">Sair</li>
@@ -21,7 +23,7 @@
 
 // ____________SCRIPT____________
 <script>
-import contProduct from '../Products/cont_product.vue';
+import contProduct from '../products/cont_product.vue';
 import perfilUser from '../perfil/perfil.vue'
 import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
@@ -40,6 +42,7 @@ export default {
             user_id: authStore.user_id,
             user: {},
             list: {},
+            orderOpen: [],
         };
     },
 
@@ -68,6 +71,11 @@ export default {
         async load_data(){
             await apiAccountService.getAccount(this.user_id).then((response)=>{
                 this.user = response.data[0]
+            })
+            await apiOrderService.getOrder().then((response)=>{
+                this.orderOpen = response.data
+            }).catch((err)=>{
+                console.log(err)
             })
         },
         
@@ -110,7 +118,13 @@ export default {
     list-style: none;
     margin-right: 1rem;
 }
-
+.p-pedido-aberto{
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 5px;
+}
 .table_products {
     width: 100%;
     height: 100%;

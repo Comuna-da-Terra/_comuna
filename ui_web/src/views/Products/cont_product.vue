@@ -26,18 +26,25 @@
               </div>
               <div class="cont-quantity-controls">
                 <!-- <button @click="increaseAmountProduct(product.id, index)">+</button> -->
-                <input type="text" v-model="orderAmount[index]" placeholder="0"/>
-                <!-- <button @click="decreaseAmountProduct(product.id, index)">-</button> -->
-                <button @click="createOrderProduct(product, index )" >
-                  <i class="pi pi-cart-plus" style="color: whitesmoke; font-size: 1.5rem" ></i>
+                <button v-if="cestaToBuy?.order?.status >= 2" @click="router.push({name: `Pedido`})" >
+                  Pedido aberto 
+                  <i class="pi pi-shopping-bag" style="color: whitesmoke; font-size: 1.5rem" >
+                  </i>
                 </button>
+                <div v-else>
+                  <input type="text" v-model="orderAmount[index]" placeholder="0"/>
+                  <!-- <button @click="decreaseAmountProduct(product.id, index)">-</button> -->
+                  <button @click="createOrderProduct(product, index )" >
+                    <i class="pi pi-cart-plus" style="color: whitesmoke; font-size: 1.5rem" ></i>
+                  </button>
+                </div>
 
             </div>
           </div>
         </li>
       </ul>
     </div>
-    <div v-if="cestaToBuy?.order" class="cont_basket" >
+    <div v-if="cestaToBuy?.order?.status == 1" class="cont_basket" >
       <h2 style="text-align: center;">Cesta</h2>
       <div style="display: flex; position: fixed; margin-left: 1.5rem; margin-top: -1rem;">
         <button v-if="!viewListBasket" @click="viewListBasket = true"> Ver mais</button>
@@ -139,6 +146,8 @@ export default {
           apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
             this.orderAmount[index] = 0
             return this.$notify({ type: "success", text: "Produto adicionado !", duration: 3000});
+        }).catch((err)=> {
+          return this.$notify({ type: "warn", text: err.response.data.detail[0], duration: 3000});
         })
         
       } else {
@@ -151,7 +160,6 @@ export default {
       this.load_data()
     },
     async editOrderProduct(id_orderProduct, quantity) {
-      console.log(quantity)
       if(quantity < 1){
         return this.removeFromBasket(id_orderProduct)
       }
@@ -160,9 +168,10 @@ export default {
         quantity: quantity,
       }
       await apiOrderProductService.updateOrderProduct(data).then((resp)=>{
-        const test = apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
-        console.log(test)
+        apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
         return this.$notify({ type: "success", text: "Pedido alterado com sucesso!", duration: 3000});
+      }).catch((err)=>{
+        return this.$notify({ type: "warn", text: err.response.data.detail[0], duration: 3000});
       })
     },
     async finishOrder(){
@@ -280,8 +289,9 @@ export default {
 
 .cont-quantity-controls button {
   background-color: rgb(28, 115, 28);
+  color: white;
   width: 5em;
-  height: 2.5em;
+  height: fit-content;
   border: none;
   cursor: pointer;
   border-radius: 10px;

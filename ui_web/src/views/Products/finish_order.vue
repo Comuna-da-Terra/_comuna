@@ -17,7 +17,6 @@
           <div>
             <label for="delivery">Entregar em casa </label>
             <input type="checkbox" name="delivery" v-model="delivery_status" :checked="delivery_status">
-            <p>{{ delivery_status }}</p>
           </div>
           <div v-if="!delivery_status || (delivery_status && address_user.length != 0)">
             <label for="address">Endereço: </label>
@@ -48,7 +47,7 @@
               {{ order_data?.products[index].type }}
             </p>
             <p>
-              {{ order_product?.quantity }} 
+              <input type="number" v-model="order_product.quantity" min="1"> 
             </p>
             <p>
               R$  {{ order_product?.total_price }}
@@ -118,6 +117,23 @@ export default {
     },
     async removeFromBasket(id, index) {
       await apiOrderProductService.deleteOrderProduct(id)
+      this.load_data()
+    },
+    async editOrderProduct(id_orderProduct, quantity) {
+      if(quantity < 1){
+        return this.removeFromBasket(id_orderProduct)
+      }
+      const data = {
+        id: id_orderProduct,
+        quantity: quantity,
+      }
+      await apiOrderProductService.updateOrderProduct(data).then((resp)=>{
+        apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
+
+        return this.$notify({ type: "success", text: "Pedido alterado com sucesso!", duration: 3000});
+      }).catch((err)=>{
+        return this.$notify({ type: "warn", text: err.response.data.detail[0], duration: 3000});
+      })
       this.load_data()
     },
     async handleSubmit(){  

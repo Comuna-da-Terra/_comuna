@@ -41,9 +41,9 @@ class ProductOrder(models.Model):
         editable=False,
     )
 
-    user               = models.ForeignKey(User, on_delete=models.CASCADE)
-    order            = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product          = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user                = models.ForeignKey(User, on_delete=models.CASCADE)
+    order               = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product             = models.ForeignKey(Product, on_delete=models.CASCADE)
     
     quantity            = models.PositiveIntegerField(default=1)
     total_price         = models.DecimalField(max_digits=10, decimal_places=2)

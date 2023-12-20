@@ -4,6 +4,7 @@ from adresses.models import Address
 
 from rest_framework.views import APIView, Response, status
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 
@@ -35,8 +36,6 @@ class ProductOrderView(generics.ListCreateAPIView):
             user    = self.request.data.get('user'),
             product = self.request.data.get('product'),
             quantity = self.request.data.get('quantity'),
-            # user = self.request.data.user
-            # type = self.request.data.get('type')
         )   
 
 
@@ -72,6 +71,10 @@ class OrderPartialUpdateView(generics.UpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        return instance
+
 class OrderView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwnerOrSuperuser]
@@ -98,11 +101,10 @@ class OrderDeleteView(APIView):
     
 class DetailsOrderView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsSuperuser]
+    permission_classes = [IsAuthenticated, IsAccountOwnerOrSuperuser]
 
     def get(self, request):
         active_orders = Order.objects.filter(status=2).values()
-
         if active_orders.exists():
             data = []
             for index, order in enumerate(active_orders):
@@ -114,6 +116,8 @@ class DetailsOrderView(APIView):
                     "client": client_user.name,
                     "delivery": order["delivery_home"],
                     "address": f"{address.street}, {address.number} - {address.neighborhood}",
+                    "status": order["status"],
+                    "subtotal": order["subtotal"]
                 }
                 order_data["order_product"] = []
                 for orderProd in orderProducts:
