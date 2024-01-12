@@ -7,6 +7,8 @@ urlpatterns = [
     path("account/register/", view=views.CreateUserView.as_view()),
     path("account/<uuid:pk>/", view=views.UserDetailView.as_view()),
 
+    path('account/change-password/', view=views.PasswordChangeAPIView.as_view(), name='password_change_api'),
+
     path("auth/", jwt_views.TokenObtainPairView.as_view()),
     path("auth/refresh/", jwt_views.TokenRefreshView.as_view()),
     path("auth/verify/", views.TokenVerifyView.as_view()),

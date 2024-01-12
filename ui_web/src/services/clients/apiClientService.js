@@ -36,4 +36,14 @@ export default {
         throw error;
       });
   },
+  
+  async changePassword(formData){
+    return await api.patch('/account/change-password/', formData)
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  }
 };

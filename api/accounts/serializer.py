@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
+from rest_framework import serializers
 from .models import User
 
 from django.contrib.auth.hashers import make_password
@@ -61,3 +62,10 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
         user.save(update_fields=["last_login"])
         
         return token
+
+class PasswordChangeSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+

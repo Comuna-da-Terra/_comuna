@@ -11,7 +11,7 @@ from rest_framework import status
 
 from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
 from .serializer import CustomJWTSerializer
-from .serializer import UserSerializer
+from .serializer import UserSerializer, PasswordChangeSerializer
 from accounts.utils.random_username import random_username
 
 class CreateUserView(generics.CreateAPIView):
@@ -40,6 +40,33 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
 
+class PasswordChangeAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsAccountOwnerOrSuperuser]
+    serializer_class = PasswordChangeSerializer 
+    
+    def patch(self, request, format=None):
+        serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            current_password = serializer.validated_data['current_password']
+            new_password = serializer.validated_data['new_password']
+            confirm_password = serializer.validated_data['confirm_password']
+
+            if not request.user.check_password(current_password):
+                return Response({'error': 'Senha atual incorreta.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if new_password != confirm_password:
+                return Response({'error': 'As senhas não estão semelhantes.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = request.user
+            user.set_password(new_password)
+            user.save()
+
+            return Response({'success': 'Senha alterada com sucesso.'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
 
 # _________________________________________AUTH_VIEW
 class LoginJWTView(TokenObtainPairView):
