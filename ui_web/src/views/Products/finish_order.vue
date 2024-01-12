@@ -201,7 +201,6 @@ export default {
 }
 .modal-address{
   width: 80vw;
-  /* display: none; */
   max-width: 300px;
   position: absolute;
   z-index: 1;
