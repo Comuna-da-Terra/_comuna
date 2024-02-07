@@ -45,5 +45,14 @@ export default {
       .catch(error => {
         throw error;
       });
+  },
+  async resetPassword(formData){
+    return await api.patch('/account/reset_password/', formData)
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
   }
 };

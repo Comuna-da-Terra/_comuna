@@ -10,6 +10,9 @@
        <div class="cont_input_form">
         <label for="senha">Senha:</label>
         <input v-model="formData.password" type="password" name="senha" placeholder="Senha" autocomplete="current-password">
+        <span class="sp-forgot-passowrd">
+          <a href="http://127.0.0.1:8000/api/account/reset_password/"> Esqueci minha senha </a>
+        </span>
       </div>
 
       <div class="cont_btn_login">
@@ -127,5 +130,13 @@ export default {
       text-align: center;
       font-size: 1.3rem;
       color: rgb(95, 11, 11);
+    }
+    .sp-forgot-passowrd{
+      font-size: 0.8rem;
+      cursor: pointer;
+      width: fit-content;
+    }
+    .sp-forgot-passowrd:hover{
+      text-decoration: underline;
     }
 </style>

@@ -103,23 +103,31 @@ DATABASES = {
     }
 }
 
+# Configurações de envio do e-mail
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    # },
 ]
 
 
@@ -155,30 +163,6 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN': True,
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
-# REST_FRAMEWORK = {
-#     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-#     "PAGE_SIZE": 5,
-# }
-
-# SIMPLE_JWT = {
-#     #Um objeto datetime.timedelta que especifica por quanto tempo os tokens de acesso são válidos.
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-#     #Um objeto datetime.timedelta que especifica por quanto tempo os tokens de atualização são válidos.
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-
-#     #O algoritmo da biblioteca PyJWT que será usado para realizar operações de assinatura/verificação em tokens.
-#     'ALGORITHM': 'HS256',
-#     #A chave de assinatura que é usada para assinar o conteúdo dos tokens gerados.
-#     'SIGNING_KEY': SECRET_KEY,
-
-#     #Os tipos de cabeçalho de autorização que serão aceitos para visualizações que exigem autenticação.
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     #O nome do cabeçalho de autorização a ser usado para autenticação.
-#     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-
-#     #Uma tupla contendo as classes que especificam os tipos de token que têm permissão para provar a autenticação.
-#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',)
-# }
 
 CSRF_TRUSTED_ORIGINS = []
 

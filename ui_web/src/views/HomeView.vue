@@ -10,7 +10,6 @@
 
 // ____________SCRIPT____________
 <script>
-// import { useRoute, useRouter } from 'vue-router';
 import loginPage from './Login/clientLogin.vue' ;
 import registerPage from './Register/clientRegister.vue' ;
 
@@ -21,7 +20,6 @@ export default {
   },
   data() {
     return {
-      // router: useRouter(),
       showLogo: true,
       page: "login"
     };
@@ -44,7 +42,7 @@ export default {
 
 
 
-<style scoped>
+<style>
 main{
   height: 100%;
   width: 100%;
@@ -79,5 +77,20 @@ main{
 @media screen {
   
 }
+
+.c-loader {
+    animation: is-rotating 1s infinite;
+    border: 7px solid #e5e5e5;
+    border-radius: 50%;
+    border-top-color: #0c981a;
+    height: 70px;
+    width: 70px;
+    position: fixed;
+  }
+  @keyframes is-rotating {
+    to {
+      transform: rotate(1turn);
+    }
+  }
 
 </style>
