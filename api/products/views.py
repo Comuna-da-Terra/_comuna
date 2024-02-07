@@ -7,6 +7,7 @@ from rest_framework import generics, status
 
 from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
 from .serializer import ProductSerializer, ProductsInOrderAccountSerializer, CategorySerializer
+from .pagination import PaginationProducts
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,8 +16,9 @@ class ProductView(generics.ListCreateAPIView):
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsSuperuser]
-    
-    queryset = Product.objects.all()
+    pagination_class = PaginationProducts
+        
+    queryset = Product.objects.filter(stock__gt=0).order_by('name')
         
     serializer_class = ProductSerializer
 
@@ -38,7 +40,7 @@ class ProductsInOrderAccountView(APIView):
         user = self.request.user.id
         response = {}
 
-        user_orders = Order.objects.filter(user=user).exclude(status=3)
+        user_orders = Order.objects.filter(user=user).exclude(status=4)
         if not user_orders.exists():
             return Response({'detail': 'Nenhum pedido encontrado para este usuário.'}, status=status.HTTP_404_NOT_FOUND)
 

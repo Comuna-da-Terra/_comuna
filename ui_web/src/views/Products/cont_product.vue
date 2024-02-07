@@ -1,24 +1,29 @@
 <template>
-    <div class="cont_all">
-      <div class="cont_body">
-            <div class="cont_input_search">
-                <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
-                <button @click="searchProduct()">Search</button>
-            </div>
-            <ul class="list-cateogry">
-                <li v-for="(category, index) in categories" :key="index" @click="filterProducts(category.id)" >{{category.name}}</li>
-                <li @click="productsShow = products">Todos..</li>
-            </ul>
+    <div class="cont-all">
+      <div class="cont-search-products">
+        <div class="cont_input_search">
+          <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
+          <button @click="searchProduct()">Search</button>
         </div>
-      <h2 style="display: flex; text-align: center; justify-content: center;">Lista de Produtos</h2>
-      <ul class="cont-list-product">
-        <li v-for="(product, index) in productsShow" :key="index">
-          <div class="cont-item-product">
-            <picture style="display: flex;">
-              <img src="https://encurtador.com.br/pDR78" alt="img_cesta">
-              <!-- <img src="../../mock/img/mock_to_product.png" alt="img_mock"> -->
-            </picture>
-            
+        <ul class="list-cateogry">
+          <li v-for="(category, index) in categories" :key="index" @click="filterProducts(category.id)" >{{category.name}}</li>
+          <li @click="productsShow = products">Todos..</li>
+        </ul>
+      </div>
+      <div class="cont-body">
+        <div style="display: flex; justify-content: space-around; margin-top: 5px;">
+          <i @click="previousPage()" class="pi pi-chevron-circle-left" style="color: black; font-size: 1.5rem" ></i>
+          <h2 style="display: flex; text-align: center; justify-content: center;">Lista de Produtos</h2>
+          <i @click="nextPage()" class="pi pi-chevron-circle-right" style="color: black; font-size: 1.5rem" ></i>
+        </div>
+        <ul class="cont-list-product">
+          <li v-for="(product, index) in productsShow" :key="index">
+            <div class="cont-item-product">
+              <picture style="display: flex;">
+                <img src="https://encurtador.com.br/pDR78" alt="img_cesta">
+                <!-- <img src="../../mock/img/mock_to_product.png" alt="img_mock"> -->
+              </picture>
+              
               <div class="cont-data-product">
                 <span>{{ product.name }}</span>
                 <span>R$ {{ product.price }}</span>
@@ -28,8 +33,7 @@
                 <!-- <button @click="increaseAmountProduct(product.id, index)">+</button> -->
                 <button v-if="cestaToBuy?.order?.status >= 2" @click="router.push({name: `Pedido`})" >
                   Pedido aberto 
-                  <i class="pi pi-shopping-bag" style="color: whitesmoke; font-size: 1.5rem" >
-                  </i>
+                  <i class="pi pi-shopping-bag" style="color: whitesmoke; font-size: 1.5rem" ></i>
                 </button>
                 <div v-else>
                   <input type="text" v-model="orderAmount[index]" placeholder="0"/>
@@ -38,42 +42,48 @@
                     <i class="pi pi-cart-plus" style="color: whitesmoke; font-size: 1.5rem" ></i>
                   </button>
                 </div>
-
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div v-if="cestaToBuy?.order?.status == 1" class="cont_basket" >
-      <h2 style="text-align: center;">Cesta</h2>
-      <div style="display: flex; position: fixed; margin-left: 1.5rem; margin-top: -1rem;">
-        <button v-if="!viewListBasket" @click="viewListBasket = true"> Ver mais</button>
-        <button v-if="viewListBasket" @click="viewListBasket = false"> Ver menos</button>
+          </li>
+        </ul>
+        <div style="display: flex; justify-content: space-around; padding-bottom: 15px;">
+          <i @click="previousPage()" class="pi pi-chevron-circle-left" style="color: black; font-size: 1.5rem" ></i>
+          <h2 style="display: flex; text-align: center; justify-content: center;">Previous</h2>
+          <h2 style="display: flex; text-align: center; justify-content: center;">Next</h2>
+          <i @click="nextPage()" class="pi pi-chevron-circle-right" style="color: black; font-size: 1.5rem" ></i>
+        </div>
       </div>
-      <div style="display: flex; justify-content: space-around; margin: 0.5rem;">
-        <p> Unidades: {{ cestaToBuy.order_products?.reduce((acc, item) => acc + item.quantity, 0) }}</p>
-        <p> Valor Total: {{ cestaToBuy?.order.subtotal }}</p>
-        <button @click="finishOrder"> Finalizar Pedido</button>
-       
+      <div v-if="cestaToBuy?.order?.status == 1" class="cont_basket" >
+        <h2 style="text-align: center;">Cesta</h2>
+        <div style="display: flex; position: fixed; margin-left: 1.5rem; margin-top: -1rem;">
+          <button v-if="!viewListBasket" @click="viewListBasket = true"> Ver mais</button>
+          <button v-if="viewListBasket" @click="viewListBasket = false"> Ver menos</button>
+        </div>
+        <div style="display: flex; justify-content: space-around; margin: 0.5rem;">
+          <p> Unidades: {{ cestaToBuy.order_products?.reduce((acc, item) => acc + item.quantity, 0) }}</p>
+          <p> Valor Total: {{ cestaToBuy?.order.subtotal }}</p>
+          <button @click="finishOrder"> Finalizar Pedido</button>
+        
+        </div>
+        <ul class="cont-list-basket" v-if="viewListBasket">
+          <li v-for="(order_product, index) in cestaToBuy.order_products" :key="index">
+            <p>
+              {{ cestaToBuy.products[index].name }}
+            </p>
+            <p>
+              {{ cestaToBuy.products[index].type }}
+            </p>
+            <p>
+              <input type="number" v-model="order_product.quantity" min="1">
+            </p>
+            <p>
+              R$  {{ order_product.total_price }}
+            </p>
+            <button @click="editOrderProduct(order_product.id, order_product.quantity)">Editar</button>
+            <button @click="removeFromBasket(order_product.id, index)">Remover</button>
+          </li>
+        </ul>
       </div>
-      <ul class="cont-list-basket" v-if="viewListBasket">
-        <li v-for="(order_product, index) in cestaToBuy.order_products" :key="index">
-          <p>
-            {{ cestaToBuy.products[index].name }}
-          </p>
-          <p>
-            {{ cestaToBuy.products[index].type }}
-          </p>
-          <p>
-            <input type="number" v-model="order_product.quantity" min="1">
-          </p>
-          <p>
-            R$  {{ order_product.total_price }}
-          </p>
-          <button @click="editOrderProduct(order_product.id, order_product.quantity)">Editar</button>
-          <button @click="removeFromBasket(order_product.id, index)">Remover</button>
-        </li>
-      </ul>
     </div>
 </template>
   
@@ -100,7 +110,9 @@ export default {
       viewListBasket: false,
       user_id: authStore.user_id,
       categories: [],
-      searchValue: ''
+      searchValue: '',
+      page: 1,
+      maxPage: 0
     };
   },
   props: {},
@@ -127,6 +139,24 @@ export default {
     normalizeStrings(string){
       return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
     },
+    async nextPage(){
+      if(this.page < this.maxPage){
+        this.page += 1
+        await apiProductService.getAllProducts(this.page).then((response)=>{
+          this.products = response.data.results
+          this.productsShow = this.products
+        })
+      }
+    },
+    async previousPage(){
+      if(this.page >= 2){
+        this.page -= 1
+        await apiProductService.getAllProducts(this.page).then((response)=>{
+          this.products = response.data.results
+          this.productsShow = this.products
+        })
+      }
+    },
     increaseAmountProduct(id, index) {
       this.orderAmount[index] = (this.orderAmount[index] || 0) + 1;
     },
@@ -147,7 +177,7 @@ export default {
             this.orderAmount[index] = 0
             return this.$notify({ type: "success", text: "Produto adicionado !", duration: 3000});
         }).catch((err)=> {
-          return this.$notify({ type: "warn", text: err.response.data.detail[0], duration: 3000});
+          return this.$notify({ type: "warn", text: err.response.data.results, duration: 3000});
         })
         
       } else {
@@ -179,8 +209,9 @@ export default {
     },
     async load_data(){
       await apiProductService.getAllProducts().then((response)=>{
-        this.products = response.data
-        this.productsShow = this.products
+        this.maxPage = Math.ceil((response.data.count) / 20)
+        this.products = response.data.results.sort()
+        this.productsShow = this.products.sort()
       })
       await apiProductService.ProductsInOrderAccountView().then((response)=>{
         this.cestaToBuy = response.data
@@ -197,12 +228,22 @@ export default {
 </script>
   
 <style scoped>
-.cont_all{
+.cont-all{
   height: 100%;
-  width: 100%;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
 }
-.cont_body{
-    width: 100%;
+.cont-search-products{
+  padding-top: 38px;
+  background-color: green;
+  width: 100%;
+  position: fixed;
+}
+.cont-body{
+  margin-top: 130px;
+  width: 100%;
+
 }
 .cont_input_search {
     width: 100%;
@@ -313,11 +354,17 @@ export default {
 }
 .cont_basket{
   position: fixed;
-  bottom: 0;
+  bottom: -65px;
   background-color: green;
   width: 95%;
   border-top-right-radius: 15px;
   border-top-left-radius: 15px;
+
+  /* transform: translateX(-50%); */
+  transition: bottom 0.5s ease;
+}
+.cont_basket:hover{
+  bottom: 0;
 }
 .cont-list-basket li {
   flex: 1;
@@ -328,6 +375,9 @@ export default {
 .cont-list-basket li p{
   text-align: center;
   flex-grow: 1;
+}
+.pi{
+  cursor: pointer;
 }
 </style>
   

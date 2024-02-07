@@ -91,9 +91,15 @@ export default {
 <style scoped>
 
 .cont_header {
+    top: 0;
+    position: fixed;
+    z-index: 1;
+    background-color: green;
+    color: white;
     width: 100%;
     display: flex;
     justify-content: space-between;
+    min-height: 38px;
 }
 
 .welcome_text {

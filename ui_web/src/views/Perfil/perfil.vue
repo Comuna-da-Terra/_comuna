@@ -29,7 +29,7 @@
 
         <div class="cont-input-form">
           <label for="email">CPF:</label>
-          <input v-model="user.cpf" type="text" id="cpf" name="cpf" placeholder="___.___.___-__" disabled>
+          <input v-model="user.cpf" type="text" id="cpf" name="cpf" placeholder="___.___.___-__">
         </div>
 
         <div class="cont-input-form">
@@ -56,37 +56,24 @@
         <h2>
           Endereços cadastrados
         </h2>
-        <ul>
-          <li>
-            <p v-if="address_user[0]">
-              {{ address_user[0].street }}, {{ address_user[0].number }} - {{ address_user[0].city }}/{{ address_user[0].uf }}
+        <ul style="width: 100%;">
+          <li v-for="address in address_user">
+            <p >
+              {{ address.street }}, {{ address.number }} - {{ address.city }}/{{ address.uf }}
             </p>
-            <button>
-              <i v-if="address_user[0]" class="pi pi-pencil"></i>
-              <i v-else class="pi pi-plus"></i>
-            </button>
+            
+            <div style="display: flex;">
+              <!-- <i class="pi pi-pencil"></i> -->
+              <i class="pi pi-trash" @click="deleteAddres(address.id)"></i>
+            </div>
           </li>
-          <li >
-            <p v-if="address_user[1]">
-              {{ address_user[1].street }}, {{ address_user[1].number }} - {{ address_user[1].city }}/{{ address_user[1].uf }}
-            </p>
-            <button>
-              <i v-if="address_user[1]" class="pi pi-pencil"></i>
-              <i v-else class="pi pi-plus"></i>
-            </button>
-          </li>
-          <li >
-            <p v-if="address_user[2]">
-             {{ address_user[2].street }}, {{ address_user[2].number }} - {{ address_user[2].city }}/{{ address_user[2].uf }}
-            </p>
-            <button>
-              <i v-if="address_user[2]" class="pi pi-pencil"></i>
-              <i v-else class="pi pi-plus"></i>
-            </button>
-          </li>
-
         </ul>
+        <button v-if="address_user.length < 3" @click="this.modal_address = true"> Cadastrar </button>
       </div>
+    </div>
+
+    <div v-if="modal_address" class="modal-address">
+      <formAddress @close-modal="closeModal"></formAddress> 
     </div>
   </template>
 
@@ -97,10 +84,12 @@
   import apiAddressService from "../../services/addresses/apiAddressService"
   import changePasswordModal from "../Perfil/changePassword.vue"
   import { ref } from 'vue';
+  import formAddress from "../address/register_address.vue"
 
   export default {
       components: {
-        changePasswordModal
+        changePasswordModal,
+        formAddress
       },
       data() {
           return {
@@ -111,6 +100,7 @@
             user: {},
             address_user: [],
             modal_changePassword: ref(false),
+            modal_address: ref(false)
           }
       },
       methods: {
@@ -118,8 +108,6 @@
             this.user.cellphone = this.phoneNumber
             this.user.birth_date = this.birthDate.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, '$3-$2-$1');
             this.user.id = this.user.id
-            console.log(this.user)
-            console.log(this.formData)
             apiAccountService.editAccount(this.user).then((response)=>{
                 this.$notify({ type: "success", text: "Pronto, Perfil Editado!", duration: 2000});
             }).catch(()=>{
@@ -139,20 +127,27 @@
           .replace(/(\d{2})(\d{1})/, '$1/$2')
           .replace(/(\d{2}\/\d{2}\/\d{4}).*/, '$1')
         },
-        closeModal(){
-          this.modal_changePassword = false
-        },
         async load_data(){
             await apiAccountService.getAccount().then((response)=>{
                 this.user = response.data[0]
-                this.birthDate = this.user.birth_date
+                this.birthDate = this.user.birth_date.replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1');
                 this.phoneNumber = this.user.cellphone
             }),
             await apiAddressService.getListAddress().then((response)=>{
               this.address_user = response.data.filter(address => address.user == this.user.id )
             })
+        },
+        async deleteAddres(id){
+          await apiAddressService.deleteAddress(id).then((response)=>{
+            console.log(response)
+          })
+          this.load_data()
+        },
+        closeModal(){
+          this.modal_address = false
+          this.modal_changePassword = false
+          this.load_data().then(()=> this.delivery_status = true)
         }
-
       },
       mounted() {
         this.load_data()
@@ -289,5 +284,52 @@
     color: white;
     border: none;
     border-radius: 7px;
+  }
+  .btn-add-address{
+    width: auto;
+    height: auto;
+    padding: 0.5rem;
+    opacity: 0.3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-add-address:hover{
+    opacity: 1;
+    
+  }
+  .modal-address{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 90vh;
+    max-width: 300px;
+    position: fixed;
+    z-index: 1;
+  }
+  .pi{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: solid; */
+    border-radius: 7px;
+    padding: 4px;
+  }
+  .pi-trash{
+    background-color: red;
+    opacity: 0.2;
+  }    
+  .pi-trash:hover{
+    opacity: 1;
+  }
+  .pi-pencil{
+    background-color: orange;  
+    opacity: 0.2;
+  }
+  .pi-pencil:hover{
+    opacity: 1;
+
   }
 </style>

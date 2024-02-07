@@ -29,4 +29,13 @@ export default {
         throw error;
       });
   },
+  async deleteAddress(id) {
+    return await api.delete(`/account/address/${id}/`, {})
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  },
 };

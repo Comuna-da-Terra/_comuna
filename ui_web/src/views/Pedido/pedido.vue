@@ -1,25 +1,26 @@
 <template>
-    <main class="cont_all">
+    <div class="cont_all">
       <div class="cont-header">
         <h1 v-if="orderOpen[0]?.status == 2">
-          Pedido Aberto
+          Pedido Enviado
         </h1>
-        <h1 v-else>
+        <h1 v-else-if="orderOpen[0]?.status == 3">
           Pedido Fechado
         </h1>
       </div>
+      <button class="button-trash" @click="editOrder()" v-if="orderOpen[0]?.status == 2">
+          <i class="pi pi-trash">Cancelar Pedido</i>
+      </button>
       <div class="cont-info-address">
-        <span class="span span-entrega"  v-if="orderOpen[0]?.delivery === true">ENTREGAR</span>
-        <span class="span span-retirada" v-else="orderOpen[0]?.delivery === false">RETIRADA</span>
-        <p>
+        <span class="span span-entrega"  v-if="orderOpen[0]?.delivery_home === true">ENTREGAR</span>
+        <span class="span span-retirada" v-else="orderOpen[0]?.delivery_home === false">RETIRADA</span>
+        <span class="span span-address" @click="showAddres = true"> ENDEREÇO </span>
+        <p v-if="showAddres" @click="showAddres = false" class="written-address">
           {{ address.street }}, {{ address.number }} - {{ address.neighborhood }} - {{ address.city }}/{{ address.uf }}
         </p>
         <p>
           R$ {{ orderOpen[0]?.subtotal }}
         </p>
-        <button class="button-pencil" @click="editOrder()">
-          <i class="pi pi-pencil"></i>
-        </button>
       </div>
       <div class="cont-products">
         <h2>
@@ -50,7 +51,7 @@
         <button @click="this.router.push({name: 'dashboard'});">Voltar</button>
         <!-- <p>{{orderOpen[0]}}</p>     -->
 
-    </main>
+    </div>
   </template>
   
   // ____________SCRIPT____________
@@ -71,7 +72,8 @@
             orderOpen: [],
             orderProducts: [],
             products: [],
-            address: {}
+            address: {},
+            showAddres: false
         }
       },
       methods: {
@@ -88,11 +90,13 @@
                 this.orderOpen = response.data
             })
             await apiProductService.ProductsInOrderAccountView().then((response)=>{
+              console.log(response)
               this.orderProducts = response.data.order_products
               this.products = response.data.products
             })
             await apiAddressService.getAddress(this.orderOpen[0]?.delivery_address).then((response)=>{
               this.address = response.data
+              console.log(this.orderOpen)
             })
         }
       },
@@ -103,7 +107,18 @@
   </script>
   
   <style>
+    .cont_all{
+      display: flex;
+      height: 100%;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      
+    }
     .cont-header{
+      top: 0;
+      height: 100%;
+      width: 100%;
       background-color: green;
       justify-content: center;
       display: flex;
@@ -112,7 +127,7 @@
       align-items: center;
       font-size: x-large;
       color: white;
-      margin: 1rem;
+      margin: 3vh;
       border-radius: 7px;
     }
     .cont-info-address{
@@ -120,11 +135,13 @@
       justify-content: space-around; 
       align-items: center;
       width: 100%;
+      padding: 3%;
     }
     .span{
       padding: 0.5rem;
       border-radius: 7px;
       color: white;
+      cursor: pointer;
     }
     .span-entrega{
       background-color: orange;
@@ -132,21 +149,40 @@
     .span-retirada{
       background-color: green;
     }
-    .button-pencil{
-      background-color: grey;
+    .span-address{
+      background-color: black;
+      color: white;
+      
+    }
+    .written-address{
+      position: fixed;
+      width: 70%;
+      text-align: center;
+      padding: 0.3rem;
+      font-size: 0.8rem;
+      background-color: white;
+      border: 1px solid;
       border-radius: 7px;
+      cursor: pointer;
+    }
+    .button-trash{
+      border-radius: 7px;
+      width: 80%;
       border: none;
       padding: 5px;
       cursor: pointer;
+      background-color: transparent;
     }
-    .button-pencil:hover{
+    .pi-trash{
+      color: white;
+      z-index: 1;
+    }
+    .pi-trash:hover{
       box-shadow: 1px 1px 3px black;
     }
-    .button-pencil:active{
+    .pi-trash:active{
       box-shadow: none;
-    }
-    .pi-pencil{
-      color: white;
+
     }
     .ul-products{
       display: flex;

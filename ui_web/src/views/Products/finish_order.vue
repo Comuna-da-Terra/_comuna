@@ -4,13 +4,10 @@
         <button @click="this.router.push({name: 'dashboard'});">back</button>
       </div>
       <div class="cont_logo">
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="100" />
+        <img alt="Vue logo" src="@/assets/logo.svg" width="80" />
       </div>
-      <div v-if="order_status == 1">
-        <h1 style="margin: 2rem 0 2rem 1rem ;">Finalizando Pedido</h1>
-      </div>
-      <div v-if="order_status == 2">
-        <h1 style="margin: 2rem 0 2rem 1rem ;">Pedido já efetuado!</h1>
+      <div>
+        <h1 style="margin: 2rem 0 2rem 1rem ;">Pedido Aberto</h1>
       </div>
       <div>
         <form style="display: flex; justify-content: space-around;"  @submit.prevent="handleSubmit" action="">
@@ -69,7 +66,7 @@ import apiOrderProductService from '../../services/orderProduct/apiOrderProductS
 import apiProductService from "../../services/products/apiProductService"
 import apiAddressService from "../../services/addresses/apiAddressService"
 import apiOrderService from '../../services/order/apiOrderService';
-import formAddress from "../Address/register_address.vue"
+import formAddress from "../address/register_address.vue"
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 import { ref } from 'vue';
@@ -181,6 +178,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 .cont_logo{
   position: fixed;
