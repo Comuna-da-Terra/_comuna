@@ -10,6 +10,11 @@
         <label for="email">E-mail:</label>
         <input v-model="formData.email" type="text" id="email" name="email" placeholder="E-mail">
       </div>
+      
+      <div class="cont_input_form">
+        <label for="email">CPF:</label>
+        <input v-model="cpf" @input="maskCpf" type="text" id="cpf" name="cpf" placeholder="000.000.000-00">
+      </div>
 
        <div class="cont_input_form">
         <label for="birth_date">Data de Nascimento:</label>
@@ -49,13 +54,15 @@ export default {
           router: useRouter(),
           formData: {},
           phoneNumber : '',
-          birthDate: ''
+          birthDate: '',
+          cpf: ''
         }
     },
     methods: {
       handleSubmit() {
-        this.formData.cellphone = this.phoneNumber
+        this.formData.cellphone = this.phoneNumber.replace(/\D/g, '')
         this.formData.birth_date = this.birthDate.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, '$3-$2-$1');
+        this.formData.cpf = this.cpf.replace(/\D/g, '')
 
         apiAccount.registerAccount(this.formData).then((response)=>{
           this.$notify({ type: "success", text: "Pronto, estou te enviando para o acesso!", duration: 2000});
@@ -81,6 +88,13 @@ export default {
         .replace(/(\d{2})(\d{1})/, '$1/$2')
         .replace(/(\d{2})(\d{1})/, '$1/$2')
         .replace(/(\d{2}\/\d{2}\/\d{4}).*/, '$1')
+      },
+      maskCpf(){
+        this.cpf = this.cpf.replace(/\D/g, '')
+        .replace(/(\d{3})(\d{1,3})/, '$1.$2')
+        .replace(/(\d{3})(\d{1,3})/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+        .replace(/(\d{3}\.\d{3}\.\d{3}-\d{2}).*/, '$1');
       }
       
     },

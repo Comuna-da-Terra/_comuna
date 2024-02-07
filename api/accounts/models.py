@@ -14,7 +14,7 @@ class User(AbstractUser):
     username            = models.CharField(max_length=150, unique=False, blank=True)
     password            = models.CharField(max_length=256)
     name                = models.CharField(max_length=100)
-    # cpf               = models.CharField(max_length=14)
+    cpf                 = models.CharField(max_length=11, unique=False)
     birth_date          = models.DateField(default=timezone.now)
     cellphone           = models.CharField(max_length=15, null=False)
     is_active           = models.BooleanField(default=True)

@@ -18,6 +18,7 @@ class UserSerializer(ModelSerializer):
             "id",
             "birth_date",
             "name",
+            "cpf",
             "cellphone",
             "password",
             "email",
