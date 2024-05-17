@@ -10,5 +10,13 @@ export default {
         throw error;
       });
   },
-
+  async createCategory(data){
+    return await api.post('/product/category/', data)
+      .then(response=> {
+        return response
+      })
+      .catch(error =>{
+        throw error;
+      })
+  }
 };

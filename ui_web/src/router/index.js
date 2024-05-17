@@ -11,6 +11,13 @@ const routes = [
       auth: true
     }
   },
+  {path: "/admin",
+    name: 'admin',  
+    component: () => import('../views/Admin/managementPage.vue'),
+    meta: {
+      auth: true
+    }
+  },
   {path: "/dashboard",
     name: 'dashboard',  
     component: () => import('../views/Dashboard/dashboard.vue'),
@@ -20,7 +27,7 @@ const routes = [
   },
   {path: "/perfil",
     name: 'Perfil',  
-    component: () => import('../views/Perfil/perfil.vue'),
+    component: () => import('../views/perfil/perfil.vue'),
     meta: {
       auth: true
     }
@@ -35,6 +42,20 @@ const routes = [
   {path: "/ordersOpen",
     name: 'Pedidos Abertos',  
     component: () => import('../views/Pedido/ordersOpen.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/avaliableProducts",
+    name: 'Produtos disponíveis',  
+    component: () => import('../views/Products/list_available_products.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/receivedProducts",
+    name: 'Produtos recebidos',  
+    component: () => import('../views/Products/list_received_products.vue'),
     meta: {
       auth: true
     }

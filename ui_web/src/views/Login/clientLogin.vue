@@ -33,22 +33,30 @@
 <script>
 import serviceAuth from '@/services/clients/apiAuthService';
 import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
 
 export default {
     data() {
+      // const authStore = useAuthStore();
         return {
           router: useRouter(),
           formData: {
-              email: '',
-              password: ''
-            }
+            email: '',
+            password: ''
+          },
+          is_superuser: null
         }
     },
     methods: {
       async handleSubmit() {
         await serviceAuth.login(this.formData).then(resp=>{
+          const authStore = useAuthStore()
           this.$notify({ type: "success", text: "Wow, Seja bem vindo !", duration: 2000});
           setTimeout(()=>{
+            this.is_superuser = authStore.user.is_superuser
+            this.is_superuser ? 
+            this.router.push({name: 'admin'})
+            :
             this.router.push({name: 'dashboard'});
           }, 2000);
           
@@ -61,9 +69,7 @@ export default {
       }
       
     },
-    mounted() {
-      
-    },
+    mounted() {},
 };
 </script>
 

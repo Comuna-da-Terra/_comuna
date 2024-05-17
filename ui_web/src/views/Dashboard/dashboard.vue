@@ -23,7 +23,7 @@
 
 // ____________SCRIPT____________
 <script>
-import contProduct from '../products/cont_product.vue';
+import contProduct from '../Products/cont_product.vue';
 import perfilUser from '../perfil/perfil.vue'
 import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
@@ -39,8 +39,8 @@ export default {
 
         return {
             router: useRouter(),
-            user_id: authStore.user_id,
-            user: {},
+            // user_id: authStore.user_id, // Refatorar authStore para receber usuario diretamente
+            user: authStore.user,
             list: {},
             orderOpen: [],
         };
@@ -69,9 +69,9 @@ export default {
             this.router.push({name: `${page}`});
         },
         async load_data(){
-            await apiAccountService.getAccount(this.user_id).then((response)=>{
-                this.user = response.data[0]
-            })
+            // await apiAccountService.getAccount(this.user_id).then((response)=>{
+            //     this.user = response.data[0]
+            // })
             await apiOrderService.getOrder().then((response)=>{
                 this.orderOpen = response.data
             }).catch((err)=>{
