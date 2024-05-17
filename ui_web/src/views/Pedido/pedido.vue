@@ -164,6 +164,7 @@
       border: 1px solid;
       border-radius: 7px;
       cursor: pointer;
+      z-index: 1;
     }
     .button-trash{
       border-radius: 7px;

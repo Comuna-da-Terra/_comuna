@@ -26,8 +26,12 @@ class Product(models.Model):
     )
 
     name= models.CharField(max_length=60, unique=True)
-    stock= models.IntegerField(default=1)
-    unit= models.CharField(max_length=30)
+    
+    likely_stock= models.IntegerField(default=1)
+    garanteed_stock = models.IntegerField(default=1)
+    # stock= models.IntegerField(default=1)
+    
+    unit= models.CharField(max_length=30, null=True, blank=True)
     price= models.DecimalField(max_digits=10, decimal_places=2)
     TYPE_CHOICES = [
         ("Comum", ("Padrão")),

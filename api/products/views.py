@@ -18,7 +18,17 @@ class ProductView(generics.ListCreateAPIView):
     permission_classes = [IsSuperuser]
     pagination_class = PaginationProducts
         
-    queryset = Product.objects.filter(stock__gt=0).order_by('name')
+    queryset = Product.objects.filter(likely_stock__gt=0).order_by('name')
+        
+
+    serializer_class = ProductSerializer
+
+class ProductsListView(generics.ListCreateAPIView):
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsSuperuser]
+        
+    queryset = Product.objects.filter(likely_stock__gt=0).order_by('name')
         
     serializer_class = ProductSerializer
 
@@ -54,9 +64,20 @@ class ProductsInOrderAccountView(APIView):
         return Response(serializer.data)
 
 class CategoryView(APIView):
-    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsSuperuser]
+
+    serializer_class = CategorySerializer
+
     def get(self, request):
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
 
         return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = CategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

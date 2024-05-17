@@ -27,7 +27,8 @@
               <div class="cont-data-product">
                 <span>{{ product.name }}</span>
                 <span>R$ {{ product.price }}</span>
-                <span>{{ product.stock }}</span>
+                <span> INF {{ product.likely_stock }}</span>
+                <span>GRT {{ product.garanteed_stock }}</span>
               </div>
               <div class="cont-quantity-controls">
                 <!-- <button @click="increaseAmountProduct(product.id, index)">+</button> -->
@@ -108,7 +109,7 @@ export default {
       orderAmount: [],
       cestaToBuy: [],
       viewListBasket: false,
-      user_id: authStore.user_id,
+      user: authStore.user,
       categories: [],
       searchValue: '',
       page: 1,
@@ -142,7 +143,7 @@ export default {
     async nextPage(){
       if(this.page < this.maxPage){
         this.page += 1
-        await apiProductService.getAllProducts(this.page).then((response)=>{
+        await apiProductService.getPageProducts(this.page).then((response)=>{
           this.products = response.data.results
           this.productsShow = this.products
         })
@@ -151,7 +152,7 @@ export default {
     async previousPage(){
       if(this.page >= 2){
         this.page -= 1
-        await apiProductService.getAllProducts(this.page).then((response)=>{
+        await apiProductService.getPageProducts(this.page).then((response)=>{
           this.products = response.data.results
           this.productsShow = this.products
         })
@@ -169,7 +170,7 @@ export default {
       const data = {
         product: product.id,
         quantity: this.orderAmount[index],
-        user: this.user_id
+        user: this.user.id
       }
       if (this.orderAmount[index] > 0 && this.orderAmount[index] !== undefined) {
         await apiOrderProductService.createOrderProduct(data).then((resp)=>{
@@ -208,10 +209,11 @@ export default {
       this.router.push({name: 'order'});
     },
     async load_data(){
-      await apiProductService.getAllProducts().then((response)=>{
+      await apiProductService.getPageProducts().then((response)=>{
         this.maxPage = Math.ceil((response.data.count) / 20)
-        this.products = response.data.results.sort()
-        this.productsShow = this.products.sort()
+        console.log(response)
+        this.products = response.data.results
+        this.productsShow = this.products
       })
       await apiProductService.ProductsInOrderAccountView().then((response)=>{
         this.cestaToBuy = response.data
@@ -229,13 +231,13 @@ export default {
   
 <style scoped>
 .cont-all{
-  height: 100%;
+  /* height: 100%; */
   width: 100vw;
   display: flex;
   justify-content: center;
 }
 .cont-search-products{
-  padding-top: 38px;
+  padding-top: 68px;
   background-color: green;
   width: 100%;
   position: fixed;

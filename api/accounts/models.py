@@ -10,7 +10,7 @@ class User(AbstractUser):
         editable=False,
     )
 
-    email               = models.EmailField(max_length=256, unique=True)
+    email               = models.EmailField(max_length=256, unique=True, null=False, blank=False)
     username            = models.CharField(max_length=150, unique=False, blank=True)
     password            = models.CharField(max_length=256)
     name                = models.CharField(max_length=100)
@@ -29,4 +29,5 @@ class User(AbstractUser):
     REQUIRED_FIELDS     = ["username"]
 
     def __str__(self) -> str:
-        return self.name + " " " > > " + self.email
+        name = self.name.split()[0] + " " + self.name.split()[-1]
+        return  name + " > > " + self.email

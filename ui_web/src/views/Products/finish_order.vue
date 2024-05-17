@@ -80,7 +80,7 @@ export default {
     const authStore = useAuthStore();
 
     return {
-      user_id: authStore.user_id,
+      user: authStore.user,
       router: useRouter(),
       order_data: {},
       delivery_status: null,
@@ -109,7 +109,7 @@ export default {
       })
       await apiAddressService.getListAddress().then((response)=>{
         this.address_options = response.data.filter(address => address.is_default == true ) 
-        this.address_user = response.data.filter(address => address.user == this.user_id ) 
+        this.address_user = response.data.filter(address => address.user == this.user.id ) 
       })
     },
     async removeFromBasket(id, index) {

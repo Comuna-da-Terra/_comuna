@@ -15,7 +15,9 @@ class Command(BaseCommand):
             product = Product(
                 id=uuid.uuid4(),
                 name=f'Produto {i}',
-                stock=randint(1, 100),
+                likely_stock=randint(1, 20),
+                garanteed_stock=randint(1, 20),
+                stock=randint(1, 20),
                 price=Decimal(randint(1, 100)),
                 type=choice(['Comum', 'P', 'M', 'G']),
                 category=category

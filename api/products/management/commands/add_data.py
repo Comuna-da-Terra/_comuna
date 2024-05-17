@@ -1,3 +1,4 @@
+from random import randint
 import pandas as pd
 
 from django.core.management.base import BaseCommand
@@ -20,7 +21,7 @@ class Command(BaseCommand):
             existing_product = Product.objects.filter(name=name).first()
 
             if existing_product is None:
-                new_product = Product(name=name, price=row['PRICE'], unit=row['UNIT'])
+                new_product = Product(name=name, price=row['PRICE'], unit=row['UNIT'], likely_stock=randint(1, 20), garanteed_stock=randint(1, 20))
                 new_product.save()
                 self.stdout.write(self.style.SUCCESS(f"Produto adicionado: {name}"))
             else:

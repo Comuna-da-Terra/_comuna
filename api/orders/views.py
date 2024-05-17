@@ -113,6 +113,7 @@ class DetailsOrderView(APIView):
                 orderProducts = ProductOrder.objects.filter(order = order["id"])
 
                 order_data = {
+                    "id": order["id"],
                     "client": client_user.name,
                     "delivery": order["delivery_home"],
                     "address": f"{address.street}, {address.number} - {address.neighborhood}",
