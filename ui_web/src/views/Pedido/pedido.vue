@@ -9,7 +9,7 @@
         </h1>
       </div>
       <button class="button-trash" @click="editOrder()" v-if="orderOpen[0]?.status == 2">
-          <i class="pi pi-trash">Cancelar Pedido</i>
+          <i class="pi pi-trash bg-trash">Cancelar Pedido</i>
       </button>
       <div class="cont-info-address">
         <span class="span span-entrega"  v-if="orderOpen[0]?.delivery_home === true">ENTREGAR</span>
@@ -42,9 +42,6 @@
             <p>
               R$ {{order_product.total_price}}
             </p>
-            <button>
-              Alterar
-            </button>
           </li>
         </ul>
       </div>
@@ -166,23 +163,24 @@
       cursor: pointer;
       z-index: 1;
     }
-    .button-trash{
+    .button-trash, bg-trash{
       border-radius: 7px;
-      width: 80%;
+      width: 30%;
       border: none;
       padding: 5px;
       cursor: pointer;
-      background-color: transparent;
-    }
-    .pi-trash{
+      opacity: 0.4;
+      background-color: rgba(197, 9, 9, 0.844);
       color: white;
-      z-index: 1;
     }
-    .pi-trash:hover{
+    .button-trash:hover{
       box-shadow: 1px 1px 3px black;
+      opacity: 1;
     }
-    .pi-trash:active{
-      box-shadow: none;
+    .button-trash:active{
+      box-shadow: -1px 1px 1px black inset;
+      /* box-shadow: none; */
+      /* opacity: 0.3; */
 
     }
     .ul-products{
@@ -196,11 +194,15 @@
       align-items: center; 
       border-radius: 7px;
       margin-top: 1rem;
-      display: flex; 
+      display: grid;
+      grid-template-columns: 40% 20% 10% 20%; 
       width: 100%; 
     }
     .li-product img{
       border-radius: 10px;
+    }
+    .li-product input{
+      max-width: 2rem;
     }
     .cont-products{
       width: 100%
