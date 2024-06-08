@@ -1,7 +1,6 @@
 <template>
     <div class="cont_all">
 
-        <!-- <div style="display: flex; flex-direction: column; justify-content: space-between;"> -->
             <header>
                 <h1 style="color: green;" v-if="ordersOpen.length == 0">Sem pedidos em aberto!</h1>
                 <div v-else style="display: flex; justify-content: space-evenly; ">
@@ -9,8 +8,7 @@
                 </div>
                 <div class="cont-utils">
                     <input class="inp-search" type="search" placeholder="Procurar...">
-                    <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true" > </button>
-                    <button class="btn-stock" style="color: green;" v-if="stockUnavailable == null" > </button>
+                    <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true" @click="filterOrdersAnavailable"> </button>
                     <button class="btn-stock desactive" v-if="stockUnavailable == false" @click="filterOrdersAnavailable"> </button>
                     <button v-if="user.is_superuser" @click="requestCSV">Gerar Planilha</button>
                 </div>
@@ -23,7 +21,6 @@
                         <p v-if="showAddres" @click="showAddres = false" class="written-address">
                         {{ order["address"] }}
                         </p>
-                        <!-- <p>{{ order["address"] }}</p> -->
                         <span style="color: green;" v-if="order['delivery'] === true">ENTREGAR</span>
                         <span style="color: orange;" v-else="order['delivery'] === false">RETIRADA</span>
                         <p><button @click="toggleSeeProducts(order, index)">PRODUTOS</button></p>
@@ -42,19 +39,16 @@
                     </div>
                 </li>
             </ul>
-        <!-- </div> -->
         <button @click="this.router.push({ name: 'admin' });">Voltar</button>
-
-
     </div>
 </template>
 
   // ____________SCRIPT____________
 <script>
-import apiAccountService from '@/services/clients/apiClientService';
-import apiOrderService from '@/services/order/apiOrderService';
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
 import apiProductService from "../../services/products/apiProductService"
+import apiAccountService from '@/services/clients/apiClientService';
+import apiOrderService from '@/services/order/apiOrderService';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 
@@ -62,52 +56,51 @@ export default {
     data() {
         const authStore = useAuthStore();
         return {
-            router: useRouter(),
-            ordersOpen: [],
+            user_id: authStore.user_id,
+            listProductUnavailable: [],
+            listProductsInOrder: [],
+            stockUnavailable: true,
             ordersUnavailable: [],
+            router: useRouter(),
+            showAddres: false,
+            ordersOpen: [],
             ordersShow: [],
             products: [],
-            listProductsInOrder: [],
-            listProductUnavailable: [],
             user: {},
-            user_id: authStore.user_id,
-            showAddres: false,
-            stockUnavailable: true
         }
     },
     methods: {
         handleSubmit() { },
         async load_data() {
             await apiAccountService.getAccount(this.user_id).then((response) => {
-                this.user = response.data[0]
-            })
+                this.user = response.data[0]})
             await apiOrderService.getOpenOrders().then((response) => {
                 this.ordersOpen = response.data
-                this.ordersShow = this.ordersOpen
-            })
+                this.ordersShow = this.ordersOpen})
             await apiProductService.getAllProducts().then((response)=>{
-                this.products = response.data
-            })
-            this.verifyAmountProductAvailable()
-            this.checkUnavailableItem()
-
+                this.products = response.data})
+            await this.verifyAmountProductAvailable()
         },
         checkUnavailableItem(order){
-            const productsInOrder = order.order_product
+            const itemProducts = order.order_product
             let check = false
-            productsInOrder.forEach((order_product, index)=>{
-                const verifyUnavailableOrder = this.listProductUnavailable.some((prod)=>{return prod.id == order_product.id_product})
-                if (verifyUnavailableOrder){
+            let verifyUnavailableOrder = null
+            itemProducts.forEach((item, index)=>{
+                verifyUnavailableOrder != true ? 
+                    verifyUnavailableOrder = this.listProductUnavailable.some((prod)=>{
+                        return prod.id == item.id_product})
+                    : verifyUnavailableOrder = true })
+                if(verifyUnavailableOrder){
                     check = true
-                    this.ordersUnavailable = this.ordersOpen.filter((item)=>{
-                    return item.id == order.id
-                    })
-                }
-            })
+                    !this.ordersUnavailable.some(item => item.id === order.id) ? 
+                        this.ordersUnavailable.push(order) : "_" }
             return check
         },
         filterOrdersAnavailable(){
-            this.ordersShow =  this.ordersUnavailable
+            this.ordersShow != this.ordersUnavailable ? 
+                this.ordersShow = this.ordersUnavailable 
+                : this.ordersShow = this.ordersOpen
+
         },
         toggleSeeProducts(order, index) {
             order.see_products = !order.see_products;
@@ -120,57 +113,47 @@ export default {
                 myDiv.classList.add("change-border-close");
             }
         },
-        async editOrder(order_product, quantity){
-
-            const data = {
-                id: order_product.id,
-                quantity: quantity,
-            }
-            
+        async editOrder(item, quantity){
+            const data = { id: item.id, quantity: quantity }
             await apiOrderProductService.updateOrderProduct(data).then((resp)=>{
-                const test = apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
-                return this.$notify({ type: "success", text: "Order alterado com sucesso!", duration: 3000});
-        })
-        this.load_data()
+                return this.$notify({ type: "success", text: "Order alterado com sucesso!", duration: 3000})})
+            this.load_data()
         },
 
         async listAmountProductInAllOrders(){
+            this.listProductsInOrder = []
             this.ordersOpen.map(order => {
                 const order_product = order.order_product
                 order_product.forEach(product => {
-                    const existingProductIndex = this.listProductsInOrder.findIndex(item => item.name === product.name);
-
-                    if (existingProductIndex === -1) {
-                        this.listProductsInOrder.push({ name: product.name, quantity: product.quantity });
-                    } else {
-                        this.listProductsInOrder[existingProductIndex].quantity += product.quantity;
-                    }
+                    const existingProductIndex = this.listProductsInOrder.findIndex(item=>item.name === product.name);
+                    existingProductIndex === -1 ?
+                        this.listProductsInOrder.push({ name: product.name, quantity: product.quantity })
+                        : this.listProductsInOrder[existingProductIndex].quantity += product.quantity
                 });
             });
         },
         async verifyAmountProductAvailable(){
             await this.listAmountProductInAllOrders()
+            this.listProductUnavailable = []
             this.products.forEach(product => {
                 this.listProductsInOrder.forEach((item, index) => {
-                    if (item.name == product.name && item.quantity > product.likely_stock){
+                    if (item.name == product.name && item.quantity > product.garanteed_stock){
                         item.id = product.id
-                        item.available = product.likely_stock
-                        item.variation = item.quantity - product.likely_stock
+                        item.available = product.garanteed_stock
+                        item.variation = item.quantity - product.garanteed_stock
                         this.listProductUnavailable.push(item)
-                        if(!this.listProductUnavailable.some(item => { item.variation >= 0})){
-                            this.stockUnavailable = false
-                        }
                     }
+                    this.listProductUnavailable.length == 0 ?
+                        this.stockUnavailable = true 
+                        : this.stockUnavailable = false 
                 } )
             })
         },
         async requestCSV(){
-            await apiOrderService.getOrdersCSV()
-        }
+            await apiOrderService.getOrdersCSV()}
     },
     async mounted() {
-        await this.load_data()
-    },
+        await this.load_data()},
 };
 </script>
 
@@ -242,10 +225,6 @@ export default {
 }
 .written-address{
     position: fixed;
-    /* width: 100%; */
-    /* top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); */
     text-align: center;
     padding: 1rem;
     font-size: 0.8rem;

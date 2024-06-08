@@ -1,8 +1,5 @@
 <template>
     <div class="cont_all">
-
-        
-        <!-- <div style="display: flex; flex-direction: column; justify-content: space-between;"> -->
             <header class="cont-header">
                 <div class="cont-title">
                     <h1 style="color: green;" v-if="likelyProducts.length == 0">Sem produtos cadastrados!</h1>
@@ -23,7 +20,6 @@
                     <p>Quant.</p>
                     <button style="background-color: green;" @click="this.modalCreateProduct = true">
                         <i class="pi pi-plus">
-                            <!-- Adicionar produto -->
                         </i>
                     </button>
                 </li>
@@ -39,22 +35,16 @@
                     </div>
                     <input class="imp-name-prod" type="text" v-model=product.name>   
                     <input type="text" v-model=product.price>   
-                    <input type="number" v-model=product.likely_stock>
+                    <input type="number" v-model=product.garanteed_stock>
                     <button @click="editProd(product)" > <i class="pi pi-pencil"></i></button>
                 </li>
             </ul>
-        <!-- </div> -->
         <div class="cont-buttons-footer">
             <button @click="this.router.push({ name: 'admin' });">
-                <i class="pi pi-arrow-left">
-                    <!-- Sair da lista de Produtos Disponíveis -->
-
-                </i>
+                <i class="pi pi-arrow-left"></i>
             </button>
             <button style="background-color: green;" @click="this.modalCreateProduct = true">
-                <i class="pi pi-plus">
-                    <!-- Adicionar produto -->
-                </i>
+                <i class="pi pi-plus"></i>
             </button>
         </div>
         <div v-if="modalCreateProduct" class="modal-create">
@@ -68,13 +58,13 @@
   
   // ____________SCRIPT____________
 <script>
-import apiAccountService from '@/services/clients/apiClientService';
-import apiProductService from "../../services/products/apiProductService"
 import apiCategoryService from '../../services/category/apiCategoryService';
+import apiProductService from "../../services/products/apiProductService"
+import apiAccountService from '@/services/clients/apiClientService';
+import formCreateCategory from '../Category/create_category.vue'
+import formCreateProduct from './create_product.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
-import formCreateProduct from './create_product.vue';
-import formCreateCategory from '../Category/create_category.vue'
 
 export default {
     components: {
@@ -84,64 +74,52 @@ export default {
     data() {
         const authStore = useAuthStore();
         return {
-            router: useRouter(),
-            user: {},
             user_id: authStore.user_id,
-            likelyProducts: [],
-            likelyProductsShow: [],
-            searchValue: '',
-            modalCreateProduct: false,
             modalCreateCategory: false,
-            categories: []
+            modalCreateProduct: false,
+            likelyProductsShow: [],
+            router: useRouter(),
+            likelyProducts: [],
+            searchValue: '',
+            categories: [],
+            user: {},
         }
     },
     methods: {
         async load_data() {
             await apiAccountService.getAccount(this.user_id).then((response) => {
-                this.user = response.data[0]
-            })
-            
+                this.user = response.data[0]})
             await apiProductService.getAllProducts().then((response)=>{
-                this.likelyProducts = response.data.results 
-                this.likelyProductsShow = this.likelyProducts
-            })
+                this.likelyProducts = response.data 
+                this.likelyProductsShow = this.likelyProducts})
              await apiCategoryService.getListCategory().then((response)=>{
-                this.categories = response.data
-                console.log(this.categories)
-             })
-            
-            
+                this.categories = response.data})
         },
         async searchProduct(){                        
-                        for (let index = 0; index < this.likelyProducts.length; index++) {
-                            if(this.normalizeStrings(this.likelyProducts[index].name).includes(this.normalizeStrings(this.searchValue))){
-                                return this.likelyProductsShow = this.likelyProducts.filter((product) => this.normalizeStrings(product.name).includes(this.normalizeStrings(this.searchValue))) 
-                            } 
-                        }
-                        return this.$notify({ type: "error", text: "Hum... Não temos nada sobre isso!", duration: 2000});
+            for (let index = 0; index < this.likelyProducts.length; index++) {
+                if(this.normalizeStrings(this.likelyProducts[index].name).includes(this.normalizeStrings(this.searchValue))){
+                    return this.likelyProductsShow = this.likelyProducts.filter((product) => 
+                        this.normalizeStrings(product.name).includes(this.normalizeStrings(this.searchValue))) 
+                } 
+            }
+            return this.$notify({ type: "error", text: "Hum... Não temos nada sobre isso!", duration: 2000});
         },
         async editProd(data){
-            console.log(data)
             await apiProductService.editProduct(data)
-            this.load_data()
-        },
+            this.load_data()},
         async closeModal(){
             this.modalCreateProduct = false
             this.modalCreateCategory = false
-            await this.load_data()
-        },
+            await this.load_data()},
         normalizeStrings(string){
-            return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-        },
-        async requestCSV(){},
+            return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()},
     },
     async mounted() {
-        await this.load_data()
-    },
+        await this.load_data()},
 };
 </script>
   
-  <style >
+<style >
 .cont_all{
     height: 100%;
     width: 100%;
