@@ -7,7 +7,8 @@
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">
                     <li v-if="!user.is_superuser" @click="changePage('Perfil')">Perfil</li>
-                    <li v-if="!user.is_superuser && orderOpen[0]?.status > 1" @click="changePage('Pedido')">
+                    <li v-if="!user.is_superuser && [2,3].includes(orderOpen[0]?.status)" @click="changePage('Pedido')">
+                    <!-- <li v-if="!user.is_superuser && [2,3].includes(status_order)" @click="changePage('Pedido')"> -->
                         <p class="p-pedido-aberto">Pedido Aberto</p>
                     </li>
                     <li v-if="user.is_superuser" @click="changePage('Pedidos Abertos')">Pedidos em aberto</li>
@@ -24,7 +25,7 @@
 // ____________SCRIPT____________
 <script>
 import contProduct from '../Products/cont_product.vue';
-import perfilUser from '../perfil/perfil.vue'
+// import perfilUser from '../perfil/perfil.vue'
 import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
 import apiAccountService from "../../services/clients/apiClientService"
@@ -40,6 +41,7 @@ export default {
         return {
             router: useRouter(),
             // user_id: authStore.user_id, // Refatorar authStore para receber usuario diretamente
+            status_order: 0,
             user: authStore.user,
             list: {},
             orderOpen: [],
@@ -69,11 +71,8 @@ export default {
             this.router.push({name: `${page}`});
         },
         async load_data(){
-            // await apiAccountService.getAccount(this.user_id).then((response)=>{
-            //     this.user = response.data[0]
-            // })
             await apiOrderService.getOrder().then((response)=>{
-                this.orderOpen = response.data
+                this.orderOpen = response.data.filter(order => order.status != 4)
             }).catch((err)=>{
                 console.log(err)
             })

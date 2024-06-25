@@ -62,7 +62,7 @@ import apiCategoryService from '../../services/category/apiCategoryService';
 import apiProductService from "../../services/products/apiProductService"
 import apiAccountService from '@/services/clients/apiClientService';
 import formCreateCategory from '../Category/create_category.vue'
-import formCreateProduct from './create_product.vue';
+import formCreateProduct from '../Products/create_product.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 

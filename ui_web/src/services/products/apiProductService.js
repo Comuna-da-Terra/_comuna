@@ -33,8 +33,9 @@ export default {
     return await api.get('/products/order/')
       .then(response => {
         return response;
-      })
+        })
       .catch(error => {
+        console.log(error.response.data.detail)
         return error.response.data.detail;
       });
   },

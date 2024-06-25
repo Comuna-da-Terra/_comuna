@@ -20,6 +20,15 @@ export default {
         throw error;
       });
   },
+  async getHistoryOrders() {
+    return await api.get('order/history/', {})
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  },
   async updateOrder(data) {
     console.log(data)
     return await api.patch(`order/updated/${data.id}/`, data )

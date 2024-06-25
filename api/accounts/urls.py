@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     path("account/", view=views.ListUserView.as_view()),
+    path("accounts/admin/", view=views.ListAllUserView.as_view()),
     path("account/register/", view=views.CreateUserView.as_view()),
     path("account/<uuid:pk>/", view=views.UserDetailView.as_view()),
 

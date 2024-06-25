@@ -24,11 +24,23 @@ class CreateUserView(generics.CreateAPIView):
 
 class ListUserView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAccountOwnerOrSuperuser]
+    # permission_classes = [IsAccountOwnerOrSuperuser]
+    permission_classes = [IsAuthenticated, IsAccountOwnerOrSuperuser]
     serializer_class = UserSerializer
         
     def get_queryset(self):
             return User.objects.filter(id=self.request.user.id)
+
+class ListAllUserView(generics.ListAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsSuperuser]
+    serializer_class = UserSerializer
+        
+    def get_queryset(self):
+        print("_______________________________________________________________________________")
+        print(self.request.user.is_superuser)
+        if(self.request.user.is_superuser):
+            return User.objects.all()
     
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 

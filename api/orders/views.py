@@ -23,10 +23,19 @@ class ProductOrderView(generics.ListCreateAPIView):
     serializer_class = ProductOrderSerializer
 
     def get_queryset(self):
+        if status:
+            status = self.request.data.get('status')
+            queryset = queryset.filter(status=status)
+
         if self.request.user.is_superuser:
-            return ProductOrder.objects.all()
+            # return ProductOrder.objects.all()
+            return queryset
+            
         
-        order = Order.objects.filter(active = True)
+        order = queryset.filter(active = True)
+
+
+        return queryset
  
         return ProductOrder.objects.filter(order=order[0].id)
 
@@ -125,6 +134,44 @@ class DetailsOrderView(APIView):
                     order_data["order_product"].append({
                         "id": orderProd.id,
                         "id_product": orderProd.product.id,
+                        "name": orderProd.product.name,
+                        "quantity": orderProd.quantity
+                    }
+                    )
+                data.append(order_data)
+
+            return Response(data)
+        else:
+            return Response({'message': 'Sem Pedidos em aberto!'}, status=status.HTTP_404_NOT_FOUND)
+
+class HistoryOrderView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsAccountOwnerOrSuperuser]
+
+    def get(self, request):
+        active_orders = Order.objects.filter(user_id=self.request.user.id).order_by('-created_at').values()
+        if active_orders.exists():
+            data = []
+            for index, order in enumerate(active_orders):
+                client_user = User.objects.get( id = order["user_id"])
+                address = Address.objects.get(id = order["delivery_address_id"])
+                orderProducts = ProductOrder.objects.filter(order = order["id"])
+
+                order_data = {
+                    # "id": order["id"],
+                    "client": client_user.name,
+                    "delivery": order["delivery_home"],
+                    "address": f"{address.street}, {address.number} - {address.neighborhood}",
+                    # "address": address.zip_code,
+                    "status": order["status"],
+                    "subtotal": order["subtotal"],
+                    "date": order["created_at"] 
+                }
+                order_data["order_product"] = []
+                for orderProd in orderProducts:
+                    order_data["order_product"].append({
+                        # "id": orderProd.id,
+                        # "id_product": orderProd.product.id,
                         "name": orderProd.product.name,
                         "quantity": orderProd.quantity
                     }

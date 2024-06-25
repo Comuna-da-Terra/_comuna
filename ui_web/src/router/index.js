@@ -33,7 +33,8 @@ const routes = [
     }
   },
   {path: "/pedido",
-    name: 'Pedido',  
+    name: 'Pedido',
+      
     component: () => import('../views/Pedido/pedido.vue'),
     meta: {
       auth: true
@@ -41,21 +42,21 @@ const routes = [
   },
   {path: "/ordersOpen",
     name: 'Pedidos Abertos',  
-    component: () => import('../views/Pedido/ordersOpen.vue'),
+    component: () => import('../views/Admin/ordersOpen.vue'),
     meta: {
       auth: true
     }
   },
   {path: "/avaliableProducts",
     name: 'Produtos disponíveis',  
-    component: () => import('../views/Products/list_available_products.vue'),
+    component: () => import('../views/Admin/list_available_products.vue'),
     meta: {
       auth: true
     }
   },
   {path: "/receivedProducts",
     name: 'Produtos recebidos',  
-    component: () => import('../views/Products/list_received_products.vue'),
+    component: () => import('../views/Admin/list_received_products.vue'),
     meta: {
       auth: true
     }
@@ -69,7 +70,21 @@ const routes = [
   },
   {path: "/dashboard/order/",
     name: 'order',  
-    component: () => import('../views/Products/finish_order.vue'),
+    component: () => import('../views/Pedido/finish_order.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/listClients",
+    name: 'Clientes Registrados',  
+    component: () => import('../views/Admin/list_clients.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {path: "/orders/history",
+    name: 'Histórico de Ordens',  
+    component: () => import('../views/Admin/history_orders.vue'),
     meta: {
       auth: true
     }

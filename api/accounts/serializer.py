@@ -24,7 +24,8 @@ class UserSerializer(ModelSerializer):
             "email",
             "coop_number",
             "is_superuser",
-            "is_staff"
+            "is_staff",
+            "is_active"
             ] 
         read_only_fields    = ["created_at", "updated_at"]
         extra_kwargs        = {

@@ -37,7 +37,7 @@
               {{products.filter((e)=>e.id === order_product.product)[0].name}}
             </p>
             <p>
-              <input type="number" v-model="order_product.quantity" min="1">
+              <input disabled type="number" v-model="order_product.quantity" min="1">
             </p>
             <p>
               R$ {{order_product.total_price}}
@@ -63,6 +63,7 @@
   export default {
       data() {
           return {
+            active: "",
             router: useRouter(),
             formData: {},
             user: {},
@@ -77,17 +78,20 @@
         async editOrder(){
           await apiOrderService.updateOrder({id: this.orderOpen[0].id, status:1}).then((response)=>{
             this.router.push({name: 'order'});
-          })
-        },
-        async load_data(){
-            await apiAccountService.getAccount(this.user_id).then((response)=>{
+            })
+            },
+            async load_data(){
+              await apiAccountService.getAccount(this.user_id).then((response)=>{
                 this.user = response.data[0]
-            })
-            await apiOrderService.getOrder().then((response) => {
-                this.orderOpen = response.data
-            })
-            await apiProductService.ProductsInOrderAccountView().then((response)=>{
-              console.log(response)
+                })
+                await apiOrderService.getOrder().then((response) => {
+                  this.orderOpen = response.data.filter(order => order.status != 4)
+                  })
+                  await apiProductService.ProductsInOrderAccountView().then((response)=>{
+                    if (response == "Nenhum pedido encontrado para este usuário."){
+                      console.log("___________________________________________")
+                      this.router.push({name: 'dashboard'});
+                } 
               this.orderProducts = response.data.order_products
               this.products = response.data.products
             })

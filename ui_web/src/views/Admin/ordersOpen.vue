@@ -8,7 +8,7 @@
                 </div>
                 <div class="cont-utils">
                     <input class="inp-search" type="search" placeholder="Procurar...">
-                    <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true" @click="filterOrdersAnavailable"> </button>
+                    <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true"> </button>
                     <button class="btn-stock desactive" v-if="stockUnavailable == false" @click="filterOrdersAnavailable"> </button>
                     <button v-if="user.is_superuser" @click="requestCSV">Gerar Planilha</button>
                 </div>
@@ -17,9 +17,9 @@
                 <li :id="`li-order(${index})`" :class="[ 'li-order', { 'unavailable': checkUnavailableItem(order) }]" v-for="(order, index) in ordersShow" :key="index">
                     <div :id="`cont-details-order(${index})`" class="cont-details-order change-border-close">
                         <p>{{ order["client"] }}</p>
-                        <span class="span span-address" @click="showAddres = true"> ENDEREÇO </span>
-                        <p v-if="showAddres" @click="showAddres = false" class="written-address">
-                        {{ order["address"] }}
+                        <span class="span span-address" @click="toggleSeeAddress(order, index)"> ENDEREÇO </span>
+                        <p v-if="order.see_address" class="written-address" @click="toggleSeeAddress(order, index)" >
+                            {{ order["address"] }}
                         </p>
                         <span style="color: green;" v-if="order['delivery'] === true">ENTREGAR</span>
                         <span style="color: orange;" v-else="order['delivery'] === false">RETIRADA</span>
@@ -102,6 +102,8 @@ export default {
                 : this.ordersShow = this.ordersOpen
 
         },
+        toggleSeeAddress(order, index) {
+            order.see_address = !order.see_address },
         toggleSeeProducts(order, index) {
             order.see_products = !order.see_products;
             const myDiv = document.getElementById(`cont-details-order(${index})`)

@@ -9,6 +9,7 @@ urlpatterns = [
     path("order/updated/<uuid:pk>/", view  = views.OrderPartialUpdateView.as_view(),   name=''),
     path("order/active/", view  = views.OrderView.as_view(),   name=''),
     path("order/opens/", view  = views.DetailsOrderView.as_view(),   name=''),
+    path("order/history/", view  = views.HistoryOrderView.as_view(),   name=''),
     path("orders/csv/", view  = views.ExportCSVOrders.as_view(),   name=''),
     
 ]

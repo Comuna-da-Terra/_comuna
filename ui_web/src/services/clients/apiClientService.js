@@ -36,6 +36,15 @@ export default {
         throw error;
       });
   },
+  async getAccounts(id) {
+    return await api.get('/accounts/admin/', {})
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  },
   
   async changePassword(formData){
     return await api.patch('/account/change-password/', formData)

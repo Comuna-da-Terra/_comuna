@@ -4,3 +4,5 @@ venv
 .env
 db.sqlite3
 mock_data.txt
+
+*/management*

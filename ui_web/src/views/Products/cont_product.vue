@@ -11,7 +11,7 @@
         </ul>
       </div>
       <div class="cont-body">
-        <div style="display: flex; justify-content: space-around; margin-top: 5px;">
+        <div style="display: flex; justify-content: space-around; margin-top: 1rem;">
           <i @click="previousPage()" class="pi pi-chevron-circle-left" style="color: black; font-size: 1.5rem" ></i>
           <h2 style="display: flex; text-align: center; justify-content: center;">Lista de Produtos</h2>
           <i @click="nextPage()" class="pi pi-chevron-circle-right" style="color: black; font-size: 1.5rem" ></i>
@@ -231,7 +231,7 @@ export default {
   
 <style scoped>
 .cont-all{
-  /* height: 100%; */
+  height: 100%;
   width: 100vw;
   display: flex;
   justify-content: center;

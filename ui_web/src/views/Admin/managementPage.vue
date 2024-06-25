@@ -6,7 +6,7 @@
             </div>
             <div class="cont-menu">
                 <ul class="menu-list">
-                    <li @click="changePage('#____#____#')">Histórico</li>
+                    <li @click="changePage('Histórico de Ordens')">Histórico</li>
                     <li @click="logout">Sair</li>
                 </ul>
             </div>
@@ -32,7 +32,7 @@
                     <h2> Pedidos em Aberto </h2>
                     <i class="pi pi-shopping-bag"></i>
                 </li>
-                <li>
+                <li @click="changePage('Clientes Registrados')">
                     <h2> Cliente Cadastrados </h2> 
                     <i class="pi pi-user"></i>
                 </li>

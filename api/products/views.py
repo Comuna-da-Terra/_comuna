@@ -49,7 +49,6 @@ class ProductsInOrderAccountView(APIView):
     def get(self, request):
         user = self.request.user.id
         response = {}
-
         user_orders = Order.objects.filter(user=user).exclude(status=4)
         if not user_orders.exists():
             return Response({'detail': 'Nenhum pedido encontrado para este usuário.'}, status=status.HTTP_404_NOT_FOUND)

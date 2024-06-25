@@ -7,7 +7,7 @@
         <img alt="Vue logo" src="@/assets/logo.svg" width="80" />
       </div>
       <div>
-        <h1 style="margin: 2rem 0 2rem 1rem ;">Pedido Aberto</h1>
+        <h1 style="margin: 2rem 0 2rem 1rem ;">Pedido</h1>
       </div>
       <div>
         <form style="display: flex; justify-content: space-around;"  @submit.prevent="handleSubmit" action="">
@@ -102,7 +102,7 @@ export default {
         }
       })
       await apiOrderService.getOrder().then((response)=>{
-        this.orderCurrent = response.data
+        this.orderCurrent = response.data.filter(order => order.status == 1)
         this.order_status = this.orderCurrent[0].status
         this.delivery_status =  this.orderCurrent[0].delivery_home,
         this.delivery_address = this.orderCurrent[0].delivery_address
