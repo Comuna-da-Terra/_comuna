@@ -11,6 +11,7 @@
                     <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true"> </button>
                     <button class="btn-stock desactive" v-if="stockUnavailable == false" @click="filterOrdersAnavailable"> </button>
                     <button v-if="user.is_superuser" @click="requestCSV">Gerar Planilha</button>
+                    <button v-if="user.is_superuser" @click="createEtiquette">Etiquetas</button>
                 </div>
             </header>
             <ul class="list-orders" style="width: 100%;">
@@ -49,6 +50,7 @@ import apiOrderProductService from '../../services/orderProduct/apiOrderProductS
 import apiProductService from "../../services/products/apiProductService"
 import apiAccountService from '@/services/clients/apiClientService';
 import apiOrderService from '@/services/order/apiOrderService';
+import apiEtiquetteService from '@/services/etiquette/apiEtiquetteService'
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 
@@ -152,8 +154,13 @@ export default {
             })
         },
         async requestCSV(){
-            await apiOrderService.getOrdersCSV()}
-    },
+            await apiOrderService.getOrdersCSV()
+        },
+        async createEtiquette(){
+            await apiEtiquetteService.emitEtiquette(this.ordersOpen)
+
+        },
+        },
     async mounted() {
         await this.load_data()},
 };
@@ -169,7 +176,7 @@ export default {
 .cont-utils{
     margin: 0px 0.1rem;
     display: grid;
-    grid-template-columns: 70% 10% 20%;
+    grid-template-columns: 60% 10% 15% 15%;
     justify-content: space-around;
     justify-items: center;
     align-items: center;

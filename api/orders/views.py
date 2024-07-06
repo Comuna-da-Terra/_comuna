@@ -47,7 +47,6 @@ class ProductOrderView(generics.ListCreateAPIView):
             quantity = self.request.data.get('quantity'),
         )   
 
-
 class ProductOrderDeleteView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwnerOrSuperuser]
@@ -123,6 +122,7 @@ class DetailsOrderView(APIView):
 
                 order_data = {
                     "id": order["id"],
+                    "id_client": client_user.id,
                     "client": client_user.name,
                     "delivery": order["delivery_home"],
                     "address": f"{address.street}, {address.number} - {address.neighborhood}",
@@ -135,7 +135,8 @@ class DetailsOrderView(APIView):
                         "id": orderProd.id,
                         "id_product": orderProd.product.id,
                         "name": orderProd.product.name,
-                        "quantity": orderProd.quantity
+                        "quantity": orderProd.quantity,
+                        "total_price": orderProd.total_price
                     }
                     )
                 data.append(order_data)

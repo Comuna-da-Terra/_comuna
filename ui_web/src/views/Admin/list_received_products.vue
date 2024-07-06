@@ -119,7 +119,7 @@ export default {
 };
 </script>
   
-<style >
+<style sco] >
 .cont_all{
     height: 100%;
     width: 100%;

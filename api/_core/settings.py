@@ -52,6 +52,7 @@ PROJECT_APPS = [
     "products",
     "orders",
     "adresses",
+    "etiquette"
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -67,11 +68,17 @@ MIDDLEWARE = [
 ]
 ROOT_URLCONF = "_core.urls"
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:8000"
+    ]
+
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
+        # "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

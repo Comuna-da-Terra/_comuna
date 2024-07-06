@@ -64,7 +64,7 @@
   };
   </script>
   
-  <style >
+  <style scoped>
   .in-development{
     width: 100%;
     height: 2rem;
