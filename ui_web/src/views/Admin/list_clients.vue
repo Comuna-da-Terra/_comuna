@@ -1,5 +1,4 @@
 <template>
-    <!-- <div class="in-development">Em desenvolvimento...</div> -->
     <main class="cont_all">
         <div class="cont-header">
             <button type="button" class="btn-submit">
@@ -18,6 +17,7 @@
                 <li class="li-client li-head">
                     <p>Atividade</p>
                     <p>Nome</p>
+                    <p>Carteira</p>
                     <p>Telefone</p>
                     <p>E-mail</p>
                     <p>Data de Nascimento</p>
@@ -26,6 +26,9 @@
                     <div v-if="client.is_active" style="background-color: green;" class="is-active"></div>
                     <div v-else style="background-color: red;" class="is-active"></div>
                     <p>{{ client.name.split(' ')[0] }} {{ client.name.split(" ").length > 1 ? client.name.split(' ').pop() : ""}}</p>
+                    <p> {{ wallets.filter(wallet => wallet.user === client.id).length > 0 
+                        ? wallets.filter(wallet => wallet.user === client.id)[0].valuation 
+                        : "Contate o Desenvolvedor"}}  </p>
                     <p>{{ client.cellphone }}</p>
                     <p>{{ client.email }}</p>
                     <p>{{ dateString( new Date(client.birth_date)) }}</p>
@@ -39,6 +42,7 @@
   // ____________SCRIPT____________
   <script>
   import apiAccountService from '@/services/clients/apiClientService';
+  import apiWalletService from '@/services/wallets/apiWalletService'
   import { useRoute, useRouter } from 'vue-router';
   
   export default {
@@ -46,6 +50,7 @@
           return {
             router: useRouter(),
             clients: [],
+            wallets: [],
           }
       },
       methods: {
@@ -53,7 +58,10 @@
         async load_data(){
             await apiAccountService.getAccounts().then((response) => {
                 this.clients = response.data
-            console.log(this.clients)})
+            })
+            await apiWalletService.getAllWallets().then(response => {
+                this.wallets = response.data
+            })
         },
         dateString(date){
             return date.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: '2-digit'})},
@@ -107,7 +115,7 @@
         display: grid;
         align-items: center;
         justify-content: space-between;
-        grid-template-columns: 10% 20% 20% 20% 20%;
+        grid-template-columns: 10% 20% 10% 20% 20% 20%;
         border: solid 1px;
         border-radius: 5px;
         margin: 0.5rem 0;

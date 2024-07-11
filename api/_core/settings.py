@@ -49,6 +49,7 @@ THIRD_PARTY_APPS = [
 ]
 PROJECT_APPS = [
     "accounts",
+    "wallets",
     "products",
     "orders",
     "adresses",

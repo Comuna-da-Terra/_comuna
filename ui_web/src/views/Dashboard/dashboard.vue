@@ -4,6 +4,9 @@
             <div>
                 <h1 class="welcome_text">Bem vindo, {{ user.name ? user.name.split(' ')[0] : user}}!</h1>
             </div>
+            <div>
+                <h2>{{ wallet.valuation }}</h2>
+            </div>
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">
                     <li v-if="!user.is_superuser" @click="changePage('Perfil')">Perfil</li>
@@ -30,6 +33,7 @@ import { useAuthStore } from '@/stores/auth.js';
 import { useRoute, useRouter } from 'vue-router';
 import apiAccountService from "../../services/clients/apiClientService"
 import apiOrderService from "../../services/order/apiOrderService"
+import apiWalletService from "../../services/wallets/apiWalletService"
 
 export default {
     components: { 
@@ -45,6 +49,7 @@ export default {
             user: authStore.user,
             list: {},
             orderOpen: [],
+            wallet: 0,
         };
     },
 
@@ -70,6 +75,11 @@ export default {
         changePage(page){
             this.router.push({name: `${page}`});
         },
+        async getWallet(){
+            await apiWalletService.getWallet().then(response=>{
+                this.wallet = response.data
+            })
+        },
         async load_data(){
             await apiOrderService.getOrder().then((response)=>{
                 this.orderOpen = response.data.filter(order => order.status != 4)
@@ -81,6 +91,7 @@ export default {
     },
     mounted() {
         this.load_data()
+        this.getWallet()
     },
     computed() {},
     
@@ -134,7 +145,4 @@ export default {
     width: 100%;
     height: 100%;
 }
-
-
-
 </style>
