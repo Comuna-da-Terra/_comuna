@@ -84,7 +84,7 @@
   import apiAddressService from "../../services/addresses/apiAddressService"
   import changePasswordModal from "../Perfil/changePassword.vue"
   import { ref } from 'vue';
-  import formAddress from "../address/register_address.vue"
+  import formAddress from "../Address/register_address.vue"
 
   export default {
       components: {
@@ -139,7 +139,6 @@
         },
         async deleteAddres(id){
           await apiAddressService.deleteAddress(id).then((response)=>{
-            console.log(response)
           })
           this.load_data()
         },

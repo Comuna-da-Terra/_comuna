@@ -4,7 +4,7 @@ export default {
 
   async getOrder() {
     return await api.get('order/active/', {})
-      .then(response => {
+       .then(response => {
         return response;
       })
       .catch(error => {
@@ -30,7 +30,6 @@ export default {
       });
   },
   async updateOrder(data) {
-    console.log(data)
     return await api.patch(`order/updated/${data.id}/`, data )
       .then(response => {
         return response;

@@ -26,9 +26,15 @@
                     <div v-if="client.is_active" style="background-color: green;" class="is-active"></div>
                     <div v-else style="background-color: red;" class="is-active"></div>
                     <p>{{ client.name.split(' ')[0] }} {{ client.name.split(" ").length > 1 ? client.name.split(' ').pop() : ""}}</p>
-                    <p> {{ wallets.filter(wallet => wallet.user === client.id).length > 0 
-                        ? wallets.filter(wallet => wallet.user === client.id)[0].valuation 
-                        : "Contate o Desenvolvedor"}}  </p>
+                    <template v-if="filteredWallet(client).length > 0">
+                        <span @click="open_modal(client)" class="value-wallet wallet-debt" v-if="filteredWallet(client)[0].valuation > 0">
+                            {{filteredWallet(client)[0].valuation}}
+                        </span>
+                        <span class="value-wallet" v-else style="background-color: green;" > Credor </span>
+                    </template>
+                    <span v-else class="value-wallet wallet-err">
+                        Contate o Desenvolvedor
+                    </span>
                     <p>{{ client.cellphone }}</p>
                     <p>{{ client.email }}</p>
                     <p>{{ dateString( new Date(client.birth_date)) }}</p>
@@ -36,6 +42,7 @@
             </ul>
         </div>
         
+        <modalPayment @close-modal="closeModal" v-if=modal_payment :client="client_payment"> </modalPayment>
     </main>
   </template>
   
@@ -44,13 +51,19 @@
   import apiAccountService from '@/services/clients/apiClientService';
   import apiWalletService from '@/services/wallets/apiWalletService'
   import { useRoute, useRouter } from 'vue-router';
+  import modalPayment from '../Admin/confirm_payment.vue'
   
   export default {
+    components:{
+        modalPayment
+    },
       data() {
           return {
             router: useRouter(),
             clients: [],
             wallets: [],
+            modal_payment: false,
+            client_payment: ""
           }
       },
       methods: {
@@ -65,7 +78,19 @@
         },
         dateString(date){
             return date.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: '2-digit'})},
-      },
+
+        filteredWallet(client) {
+            return this.wallets.filter(wallet => wallet.user === client.id)},
+
+        open_modal(client){
+            this.modal_payment = true
+            this.client_payment = client
+        },
+        closeModal(){
+            this.modal_payment = false
+            this.load_data()
+        }
+        },
       async mounted() {
         this.load_data()
       },
@@ -128,8 +153,32 @@
     .li-client > *:last-child {
         justify-self: center;
     }
+    .li-client > *:nth-child(3)  {
+        justify-self: center;
+    }
     .li-client p{
         text-align: start;
+    }
+    .value-wallet{
+        background-color: orange;
+        color: white;
+        padding: 3px;
+        border-radius: 5px;
+        text-align: center;
+        width: min-content;
+        font-weight: bold;
+    }
+    .wallet-debt{
+        box-shadow: 0px 0px 5px 0px orange;
+        cursor: pointer;
+    }
+    .wallet-debt:hover{
+        box-shadow: 0px 0px 10px 0px orange;
+    }
+    .wallet-err{
+        background-color: red;
+        opacity: 0.3;
+        font-size: small;
     }
     .is-active{
         background-color: pink;
