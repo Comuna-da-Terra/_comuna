@@ -1,9 +1,8 @@
-from .models import User, Client, Member
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+from .models import User
 
 from django.contrib.auth.hashers import make_password
 from .utils.random_username import random_username
@@ -15,7 +14,19 @@ import ipdb
 class UserSerializer(ModelSerializer):
     class Meta:
         model               = User
-        fields              = "__all__" 
+        fields              = [
+            "id",
+            "birth_date",
+            "name",
+            "cpf",
+            "cellphone",
+            "password",
+            "email",
+            "coop_number",
+            "is_superuser",
+            "is_staff",
+            "is_active"
+            ] 
         read_only_fields    = ["created_at", "updated_at"]
         extra_kwargs        = {
             "password": {"write_only": True},
@@ -24,14 +35,14 @@ class UserSerializer(ModelSerializer):
             },
         }
 
-    def create(self, validated_data) -> Client or Member:
+    def create(self, validated_data) -> User:
         member              = 'coop_number' in validated_data
     
         if member:
-            member          = Member.objects.create(**validated_data)
+            member          = User.objects.create(**validated_data)
             return member
         else:
-            client          = Client.objects.create(**validated_data)
+            client          = User.objects.create(**validated_data)
             return client
              
 
@@ -50,5 +61,13 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token["is_superuser"] = user.is_superuser
-
+        user.save(update_fields=["last_login"])
+        
         return token
+
+class PasswordChangeSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+

@@ -8,7 +8,7 @@ class Category(models.Model):
         editable=False,
     )
     name= models.CharField(max_length=30, unique=True)
-    description= models.CharField(max_length=100, null=True, blank=True)
+    description= models.CharField(max_length=700, null=True, blank=True)
 
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at= models.DateTimeField(auto_now=True)
@@ -19,14 +19,19 @@ class Category(models.Model):
         verbose_name = "Categoria"
 
 class Product(models.Model):
-    id= models.UUIDField(
+    id = models.UUIDField(
         default=uuid.uuid4,
         primary_key=True,
         editable=False,
     )
 
-    name= models.CharField(max_length=30, unique=True)
-    stock= models.IntegerField(default=1)
+    name= models.CharField(max_length=60, unique=True)
+    
+    likely_stock= models.IntegerField(default=1)
+    garanteed_stock = models.IntegerField(default=1)
+    # stock= models.IntegerField(default=1)
+    
+    unit= models.CharField(max_length=30, null=True, blank=True)
     price= models.DecimalField(max_digits=10, decimal_places=2)
     TYPE_CHOICES = [
         ("Comum", ("Padrão")),
@@ -45,7 +50,7 @@ class Product(models.Model):
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at= models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
-        return self.name + " " + self.type
+    # def __str__(self) -> str:
+    #     return self.name + " " + self.type
     class Meta:
         verbose_name = "Produto"

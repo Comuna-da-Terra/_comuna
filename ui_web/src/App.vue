@@ -1,8 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+
 </script>
 
 <template>
+  <notifications style="top: 5rem;" position="center top"/>
   <RouterView />
 </template>
 

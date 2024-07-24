@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Etiquetas</title>
+    <style>
+        body {
+            font-family: sans-serif;}
+        table {
+            width: 520px;
+            border-collapse: collapse;}
+        thead th{
+            text-align: center;}
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;}
+        .coluna-produto{
+            width: 330px;}
+        .coluna-quantidade{
+            text-align: center;}
+    </style>
+</head>
+<body>
+    {% for etiqueta in etiquetas %}
+    <table>
+        <thead>
+            <tr>
+                <th colspan="3">
+                    {{ etiqueta.cliente }} - {{ etiqueta.telefone }}
+                </th>
+            </tr>
+            <tr>
+                <th colspan="3">
+                    {% if etiqueta.delivery %}
+                        ENTREGA:
+                    {% else %}
+                        RETIRADA:
+                    {% endif %}
+                    <span style="font-weight: normal;">
+                        {{ etiqueta.endereco }}
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th class="coluna-produto">Produto</th>
+                <th class="coluna-quantidade">Quantidade</th>
+                <th>Preço</th>
+            </tr>
+            {% for item in etiqueta.itens %}
+            <tr>
+                <td class="coluna-produto">{{ item.nome }}</td>
+                <td class="coluna-quantidade">{{ item.quantidade }}</td>
+                <td>R${{ item.preco|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+            <tr style="font-weight: bold;">
+                <td class="coluna-produto">TOTAL:</td>
+                <td class="coluna-quantidade"> {{etiqueta.quantidade_total}}</td>
+                <td> R${{etiqueta.subtotal|floatformat:2}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    {% endfor %}
+</body>
+</html>

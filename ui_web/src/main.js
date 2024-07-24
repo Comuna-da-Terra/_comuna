@@ -1,13 +1,17 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import App from './App.vue'
+import Notifications from '@kyvg/vue3-notification'
+import 'primeicons/primeicons.css';
+import './assets/main.css'
+
 import router from './router'
+import App from './App.vue'
+
 
 const app = createApp(App)
 
+app.use(Notifications);
 app.use(createPinia())
 app.use(router)
 
