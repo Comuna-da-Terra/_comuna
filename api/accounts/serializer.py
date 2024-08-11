@@ -7,8 +7,6 @@ from .models import User
 from django.contrib.auth.hashers import make_password
 from .utils.random_username import random_username
 from hashlib import sha256
-import ipdb
-
 
 
 class UserSerializer(ModelSerializer):
