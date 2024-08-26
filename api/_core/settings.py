@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.103', 'localhost']
+#ALLOWED_HOSTS = ["195.200.1.214", "comunadaterra.com.br"]
 
 
 # Application definition
@@ -72,8 +72,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = "_core.urls"
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:8000"
+    "http://www.comunadaterra.com.br",
+    "http://comunadaterra.com.br",
+    "195.200.1.214",
     ]
 
 
@@ -108,7 +109,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "127.0.0.1",
+        "HOST": "195.200.1.214",
         "PORT": 5432,
     }
 }

@@ -26,7 +26,7 @@
                 </div>
                 
                 <label for="imagem" class="lab-image" >    
-                    <img src="../../assets/images/icon/image-plus.svg" alt="img-plus.svg" class="icon-img-plus" v-if="!imgProduct">
+                    <img src="https://encurtador.com.br/pDR78" alt="img-plus.svg" class="icon-img-plus" v-if="!imgProduct">
                     <input type="file" accept="image/*" id="imagem" name="imagem" @change="whenIncludeImage">
                     <img class="viewImage" :src=imgProduct alt="Imagem do produto" v-if="imgProduct">
                 </label>

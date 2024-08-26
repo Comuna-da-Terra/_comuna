@@ -11,7 +11,7 @@
         <label for="senha">Senha:</label>
         <input v-model="formData.password" type="password" name="senha" placeholder="Senha" autocomplete="current-password">
         <span class="sp-forgot-passowrd">
-          <a href="http://127.0.0.1:8000/api/account/reset_password/"> Esqueci minha senha </a>
+          <a href="http://1295.200.1.214/api/account/reset_password/"> Esqueci minha senha... </a>
         </span>
       </div>
 

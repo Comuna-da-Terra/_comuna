@@ -5,4 +5,12 @@ venv
 db.sqlite3
 mock_data.txt
 
+__pycach__
+db.sqlite3
+static/
+media/
+_core/local_settings.py
+gunicorn-error-log
+
+
 */management*

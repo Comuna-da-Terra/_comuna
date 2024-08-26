@@ -66,7 +66,7 @@ import apiOrderProductService from '../../services/orderProduct/apiOrderProductS
 import apiProductService from "../../services/products/apiProductService"
 import apiAddressService from "../../services/addresses/apiAddressService"
 import apiOrderService from '../../services/order/apiOrderService';
-import formAddress from "../address/register_address.vue"
+import formAddress from "../Address/register_address.vue"
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 import { ref } from 'vue';
