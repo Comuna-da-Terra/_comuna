@@ -49,8 +49,8 @@
         </ul>
         <div style="display: flex; justify-content: space-around; padding-bottom: 15px;">
           <i @click="previousPage()" class="pi pi-chevron-circle-left" style="color: black; font-size: 1.5rem" ></i>
-          <h2 style="display: flex; text-align: center; justify-content: center;">Previous</h2>
-          <h2 style="display: flex; text-align: center; justify-content: center;">Next</h2>
+          <h2 style="display: flex; text-align: center; justify-content: center;">Anterior</h2>
+          <h2 style="display: flex; text-align: center; justify-content: center;">Próxima</h2>
           <i @click="nextPage()" class="pi pi-chevron-circle-right" style="color: black; font-size: 1.5rem" ></i>
         </div>
       </div>
