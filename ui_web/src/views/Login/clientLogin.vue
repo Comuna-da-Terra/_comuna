@@ -11,7 +11,7 @@
         <label for="senha">Senha:</label>
         <input v-model="formData.password" type="password" name="senha" placeholder="Senha" autocomplete="current-password">
         <span class="sp-forgot-passowrd">
-          <a href="http://comunadaterra.com.br/api/account/reset_password/"> Esqueci minha senha... </a>
+          <a href="http://api.comunadaterra.com.br/api/account/reset_password/"> Esqueci minha senha... </a>
         </span>
       </div>
 

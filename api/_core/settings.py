@@ -16,7 +16,6 @@ import os
 import dotenv
 dotenv.load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,12 +24,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
-#ALLOWED_HOSTS = ["195.200.1.214", "comunadaterra.com.br"]
+ALLOWED_HOSTS = [
+	#"195.200.1.214",
+	"api.comunadaterra.com.br",
+	"127.0.0.1",
+	"localhost",
+]
 
 
 # Application definition
@@ -70,11 +75,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 ROOT_URLCONF = "_core.urls"
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://www.comunadaterra.com.br",
-    "http://comunadaterra.com.br",
-    "195.200.1.214",
+   	#"http://www.comunadaterra.com.br",
+	"http://web.comunadaterra.com.br",
+	"http://api.comunadaterra.com.br"
     ]
 
 
@@ -158,7 +162,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = (
+    BASE_DIR / 'static',
+)
+STATIC_ROOT = BASE_DIR / 'static'  # collectstatic
 
+#MEDIA_URL = 'media/'
+#MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -175,6 +185,11 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
-CSRF_TRUSTED_ORIGINS = []
+#CSRF_TRUSTED_ORIGINS = []
 
 AUTH_USER_MODEL = "accounts.User"
+
+try:
+    from _core.local_settings import *
+except ImportError:
+    ...
