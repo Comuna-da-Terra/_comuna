@@ -26,9 +26,9 @@
                 </div>
                 
                 <label for="imagem" class="lab-image" >    
+                    <img class="viewImage" :src=imgProduct alt="Imagem do produto" v-if="imgProduct">
                     <img src="https://encurtador.com.br/pDR78" alt="img-plus.svg" class="icon-img-plus" v-if="!imgProduct">
                     <input type="file" accept="image/*" id="imagem" name="imagem" @change="whenIncludeImage">
-                    <img class="viewImage" :src=imgProduct alt="Imagem do produto" v-if="imgProduct">
                 </label>
             </div>
             
@@ -172,7 +172,7 @@ label input[type="file"]{
     display: none;
 }
 .icon-img-plus{
-    width: 3rem;
+    width: 100%;
 }
 .viewImage{
     width: 100%;

@@ -1,13 +1,13 @@
 <template>
     <div class="in-development">Em desenvolvimento...</div>
     <main class="cont_all">
-        <div class="cont-header">
+        <div class="cont-header-history">
             <button type="button" class="btn-submit">
             <i class="pi pi-times" @click="this.router.push({name: 'admin'});"></i>
             </button>
-            <h1>
+            <h2>
                 Histórico de Ordens
-            </h1>
+            </h2>
             <button class="btn-submit" type="submit">
             <i class="pi pi-check" type="submit" ></i>
             </button>
@@ -79,14 +79,14 @@
         display: flex;
         justify-content: flex-start;
     }
-    .cont-header{
+    .cont-header-history{
         background-color: green;
         justify-content: space-around;
         display: flex;
         width: 95%;
         height: 80px;
         align-items: center;
-        font-size: x-large;
+        /* font-size: x-large; */
         color: white;
         margin: 0rem 1rem 1rem 1rem;
         border-radius: 7px;

@@ -4,19 +4,27 @@
             <div>
                 <h1 class="welcome_text">Bem vindo, {{ user.name ? user.name.split(' ')[0] : user}}!</h1>
             </div>
-            <div>
-                <h2>{{ wallet.valuation }}</h2>
+            <div style="display: flex; align-items: center;">
             </div>
             <div class="cont_menu_list_perfil">
                 <ul class="menu_list_perfil">
-                    <li v-if="!user.is_superuser" @click="changePage('Perfil')">Perfil</li>
+                    <li> <h2>{{ wallet.valuation }}</h2> </li>
+
+                    <li v-if="!user.is_superuser && this.isMobile" class="pi pi-user"  @click="changePage('Perfil')"></li>
+                    <li v-if="!user.is_superuser && !this.isMobile"  @click="changePage('Perfil')">Perfil</li>
+
                     <li v-if="!user.is_superuser && [2,3].includes(orderOpen[0]?.status)" @click="changePage('Pedido')">
                     <!-- <li v-if="!user.is_superuser && [2,3].includes(status_order)" @click="changePage('Pedido')"> -->
-                        <p class="p-pedido-aberto">Pedido Aberto</p>
+                        <p v-if="this.isMobile" class="pi pi-shopping-bag"></p>
+                        <p v-else class="p-pedido-aberto">Pedido Aberto</p>
                     </li>
                     <li v-if="user.is_superuser" @click="changePage('Pedidos Abertos')">Pedidos em aberto</li>
-                    <li @click="changePage('Historico')">Histórico</li>
-                    <li @click="logout">Sair</li>
+                    
+                    <li class="pi pi-book" v-if="this.isMobile" @click="changePage('Historico')"></li>
+                    <li v-else @click="changePage('Historico')">Histórico</li>
+                    
+                    <li v-if="this.isMobile" class="pi pi-sign-out" @click="logout"></li>
+                    <li v-else @click="logout">Sair</li>
                 </ul>
             </div>
         </div>
@@ -50,6 +58,7 @@ export default {
             list: {},
             orderOpen: [],
             wallet: 0,
+            isMobile: false,
         };
     },
 
@@ -87,11 +96,19 @@ export default {
                 console.log(err)
             })
         },
+        checkScreenSize() {
+            this.isMobile = window.innerWidth < 480;
+        }
         
     },
     mounted() {
         this.load_data()
         this.getWallet()
+        this.checkScreenSize();
+        window.addEventListener('resize', this.checkScreenSize);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkScreenSize);
     },
     computed() {},
     
@@ -124,8 +141,9 @@ export default {
 .menu_list_perfil {
     display: flex;
     flex-direction: row;
-    margin-right: 1rem;
-    justify-content: space-around;
+    /* margin-right: 1rem; */
+    justify-content: space-between;
+    /* justify-content: space-around; */
     align-items: center;
     list-style: none;
 }
@@ -144,5 +162,8 @@ export default {
 .table_products {
     width: 100%;
     height: 100%;
+}
+.pi{
+    font-size: 1.3rem;
 }
 </style>

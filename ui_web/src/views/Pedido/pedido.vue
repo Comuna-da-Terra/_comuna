@@ -1,12 +1,12 @@
 <template>
     <div class="cont_all">
       <div class="cont-header">
-        <h1 v-if="orderOpen[0]?.status == 2">
+        <h2 v-if="orderOpen[0]?.status == 2">
           Pedido Enviado
-        </h1>
-        <h1 v-else-if="orderOpen[0]?.status == 3">
+        </h2>
+        <h2 v-else-if="orderOpen[0]?.status == 3">
           Pedido Fechado
-        </h1>
+        </h2>
       </div>
       <button class="button-trash" @click="editOrder()" v-if="orderOpen[0]?.status == 2">
           <i class="pi pi-trash bg-trash">Cancelar Pedido</i>

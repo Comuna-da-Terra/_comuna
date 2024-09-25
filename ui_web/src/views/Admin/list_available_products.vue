@@ -3,7 +3,7 @@
 
         
         <!-- <div style="display: flex; flex-direction: column; justify-content: space-between;"> -->
-            <header class="cont-header">
+            <header class="cont-header-list-available">
                 <div class="cont-title">
                     <h1 style="color: green;" v-if="likelyProducts.length == 0">Sem produtos cadastrados!</h1>
                     <h1 style="color: green;" >Produtos cadastrados</h1>
@@ -150,7 +150,7 @@ export default {
     flex-direction: column;
     /* justify-content: space-between; */
 }
-.cont-header{
+.cont-header-list-available{
     display: flex;
     flex-direction: column;
 }

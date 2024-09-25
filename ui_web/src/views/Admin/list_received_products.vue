@@ -1,9 +1,9 @@
 <template>
     <div class="cont_all">
-            <header class="cont-header">
+            <header class="cont-header-list-received">
                 <div class="cont-title">
                     <h1 style="color: green;" v-if="likelyProducts.length == 0">Sem produtos cadastrados!</h1>
-                    <h1 style="color: green;" >Produtos cadastrados</h1>
+                    <h1 style="color: green;" >Produtos Recebidos</h1>
                     <button v-if="user.is_superuser" @click="requestCSV">Planilha</button>
                 </div>
                 <div class="cont_search">
@@ -128,7 +128,7 @@ export default {
     flex-direction: column;
     /* justify-content: space-between; */
 }
-.cont-header{
+.cont-header-list-received{
     display: flex;
     flex-direction: column;
 }

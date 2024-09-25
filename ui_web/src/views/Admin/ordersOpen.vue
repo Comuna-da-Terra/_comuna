@@ -7,7 +7,7 @@
                     <h1 style="color: green;" >Pedidos em aberto</h1>
                 </div>
                 <div class="cont-utils">
-                    <input class="inp-search" type="search" placeholder="Procurar...">
+                    <!-- <input class="inp-search" type="search" placeholder="Procurar..."> -->
                     <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true"> </button>
                     <button class="btn-stock desactive" v-if="stockUnavailable == false" @click="filterOrdersAnavailable"> </button>
                     <button v-if="user.is_superuser" @click="requestCSV">Gerar Planilha</button>
@@ -176,7 +176,7 @@ export default {
 .cont-utils{
     margin: 0px 0.1rem;
     display: grid;
-    grid-template-columns: 60% 10% 15% 15%;
+    grid-template-columns: 33% 33% 33%;
     justify-content: space-around;
     justify-items: center;
     align-items: center;

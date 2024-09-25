@@ -1,7 +1,7 @@
 <template>
     <div class="cont-all">
       <form class="form" action="" @submit.prevent="handleSubmit">
-      <div class="cont-header">
+      <div class="cont-header-perfil">
         <button type="button" class="btn-submit">
           <i class="pi pi-times" @click="this.router.push({name: 'dashboard'});"></i>
         </button>
@@ -159,22 +159,22 @@
   height: 100%;
   width: 100%;
 }
-  .cont-header{
+  .cont-header-perfil{
     background-color: green;
     justify-content: space-around;
     display: flex;
     width: 95%;
     height: 80px;
     align-items: center;
-    font-size: x-large;
+    /* font-size: x-large; */
     color: white;
     margin: 1rem;
     border-radius: 7px;
   }
-  .cont-header i{
+  .cont-header-perfil i{
     color: white;
   }
-  .cont-header i:active{
+  .cont-header-perfil i:active{
     color: black;
   }
   .form {

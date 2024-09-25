@@ -5,7 +5,7 @@
             <i class="pi pi-times" @click="this.router.push({name: 'admin'});"></i>
             </button>
             <h1>
-                Clientes Registrados
+                Clientes
             </h1>
             <button class="btn-submit" type="submit">
             <i class="pi pi-check" type="submit" ></i>
@@ -15,12 +15,12 @@
         <div style="width: 100%;">
             <ul class="ul-client" style="width: 100%;">
                 <li class="li-client li-head">
-                    <p>Atividade</p>
+                    <p>Ativo</p>
                     <p>Nome</p>
                     <p>Carteira</p>
                     <p>Telefone</p>
-                    <p>E-mail</p>
-                    <p>Data de Nascimento</p>
+                    <!-- <p>E-mail</p> -->
+                    <!-- <p>Data de Nascimento</p> -->
                 </li>
                 <li class="li-client" v-for="(client, index) in clients" :key="index">
                     <div v-if="client.is_active" style="background-color: green;" class="is-active"></div>
@@ -36,8 +36,8 @@
                         Contate o Desenvolvedor
                     </span>
                     <p>{{ client.cellphone }}</p>
-                    <p>{{ client.email }}</p>
-                    <p>{{ dateString( new Date(client.birth_date)) }}</p>
+                    <!-- <p>{{ client.email }}</p> -->
+                    <!-- <p>{{ dateString( new Date(client.birth_date)) }}</p> -->
                 </li>
             </ul>
         </div>
@@ -140,7 +140,8 @@
         display: grid;
         align-items: center;
         justify-content: space-between;
-        grid-template-columns: 10% 20% 10% 20% 20% 20%;
+        /* grid-template-columns: 10% 20% 10% 20% 20% 20%; */
+        grid-template-columns: 10% 25% 25% 25%;
         border: solid 1px;
         border-radius: 5px;
         margin: 0.5rem 0;

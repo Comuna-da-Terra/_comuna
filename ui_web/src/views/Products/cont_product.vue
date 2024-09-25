@@ -3,7 +3,7 @@
       <div class="cont-search-products">
         <div class="cont_input_search">
           <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
-          <button @click="searchProduct()">Search</button>
+          <button class="btn-search" @click="searchProduct()"><h2 class="pi pi-search"></h2></button>
         </div>
         <ul class="list-cateogry">
           <li v-for="(category, index) in categories" :key="index" @click="filterProducts(category.id)" >{{category.name}}</li>
@@ -27,20 +27,20 @@
               <div class="cont-data-product">
                 <span>{{ product.name }}</span>
                 <span>R$ {{ product.price }}</span>
-                <span> INF {{ product.likely_stock }}</span>
-                <span>GRT {{ product.garanteed_stock }}</span>
+                <span>{{ product.likely_stock }} UNIDADES</span>
+                <!-- <span>GRT {{ product.garanteed_stock }}</span> -->
               </div>
               <div class="cont-quantity-controls">
                 <!-- <button @click="increaseAmountProduct(product.id, index)">+</button> -->
-                <button v-if="cestaToBuy?.order?.status >= 2" @click="router.push({name: `Pedido`})" >
-                  Pedido aberto 
-                  <i class="pi pi-shopping-bag" style="color: whitesmoke; font-size: 1.5rem" ></i>
+                <button class="btn-pedido-aberto" v-if="cestaToBuy?.order?.status >= 2" @click="router.push({name: `Pedido`})" >
+                  <!-- Pedido aberto  -->
+                  <i class="pi pi-shopping-bag" style="color: whitesmoke; font-size: 1rem" ></i>
                 </button>
                 <div v-else>
                   <input type="text" v-model="orderAmount[index]" placeholder="0"/>
                   <!-- <button @click="decreaseAmountProduct(product.id, index)">-</button> -->
                   <button @click="createOrderProduct(product, index )" >
-                    <i class="pi pi-cart-plus" style="color: whitesmoke; font-size: 1.5rem" ></i>
+                    <i class="pi pi-cart-plus" style="color: whitesmoke; font-size: 1rem" ></i>
                   </button>
                 </div>
               </div>
@@ -242,22 +242,25 @@ export default {
   width: 100%;
   position: fixed;
 }
+.btn-search{
+  border-radius:0px 7px 7px 0px ;
+}
 .cont-body{
   margin-top: 130px;
   width: 100%;
-
+  
 }
 .cont_input_search {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 .cont_input_search input {
-    height: 3rem;
-    width: 80%;
-    font-size: 1rem;
-    border-radius: 7px;
-    padding: 1rem;
+  border-radius: 7px 0px 0px 7px ;
+  height: 3rem;
+  width: 80%;
+  font-size: 1rem;
+  padding: 1rem;
 }
 .list-cateogry {
     display: flex;
@@ -282,21 +285,31 @@ export default {
   margin: 0.3em;
   flex-direction: row;
   height: fit-content;
+  /* background-color: pink; */
 }
 .cont-item-product{
-  width: 100%;
-  max-width: 480px;
-  min-width: 376px;
+  /* width: 80%; */
+  /* max-width: 480px; */
+  /* min-width: 330px; */
+  width: 290px;
   height: 6rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  
+  /* justify-content: space-between; */
+}
+picture{
+  width: 100px;
+  align-items: center;
 }
 .cont-item-product img {
-  width: 7em;
+  width: 75%;
+  height: 75%;
   border-radius: 7px;
 }
 
 .cont-data-product {
+  width: 30%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -323,29 +336,30 @@ export default {
 
 .cont-quantity-controls {
   display: flex;
-  width: 5em;
+  width: 2em;
   align-items: center;
   justify-content: space-evenly;
-  flex-direction: column;
-
+  /* flex-direction: column; */
+  
 }
 
 .cont-quantity-controls button {
   background-color: rgb(28, 115, 28);
   color: white;
-  width: 5em;
+  width: 2em;
   height: fit-content;
   border: none;
   cursor: pointer;
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 0px 0px 8px 8px;
+  font-size: 1.4rem;
   padding: 0.2rem 0.4rem;
 }
 
 .cont-quantity-controls input {
   width: 100%;
   border: none;
-  font-size: 2rem;
+  border-radius: 8px 8px 0px 0px;
+  font-size: 1.4rem;
   text-align: center;
 }
 .cont-quantity-controls input::placeholder {
