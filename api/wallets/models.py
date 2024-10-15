@@ -9,7 +9,7 @@ class Wallet(models.Model):
         editable        = False
     )
 
-    user                        = models.ForeignKey(User,on_delete=models.CASCADE,related_name='wallets')
+    user                        = models.ForeignKey(User,on_delete=models.CASCADE, related_name='wallets')
     valuation                   = models.DecimalField(max_digits=6, decimal_places=2, default= 0, )
 
     created_at                  = models.DateTimeField(auto_now_add=True)

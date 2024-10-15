@@ -89,6 +89,23 @@ const routes = [
       auth: true
     }
   },
+  {path: "/termosdeuso",
+    name: 'Termos de Uso',  
+    component: () => import('../views/Politica/termosDeUso.vue'),
+  },
+  {path: "/politicadeprivacidade",
+    name: 'Politica De Privacidade',  
+    component: () => import('../views/Politica/politicaDePrivacidade.vue'),
+  },
+  {path: "/editortexto",
+    name: 'Editor de Texto',  
+    component: () => import('../views/Politica/VueQuillEditorComponent.vue'),
+    meta: {
+      auth: true
+    }
+  },
+
+
 ]
 
 const router = createRouter({

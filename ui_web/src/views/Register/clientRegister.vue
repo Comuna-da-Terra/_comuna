@@ -1,5 +1,5 @@
 <template>
-  <main class="cont_all">
+  <main class="cont-all-register">
     <form class="form" action="" @submit.prevent="handleSubmit">
        <div class="cont_input_form">
         <label for="name">Nome: </label>
@@ -31,6 +31,18 @@
         <input v-model="formData.password" type="password" id="password" name="password" placeholder="Senha">
       </div>
 
+      <div class="cont_input_form">
+        <span>
+          <input v-model="formData.policy" type="checkbox" required>
+          <p>Concordo com os
+            <a href="termosdeuso" target="_blank"> Termos de Uso</a>
+            e
+            <a href="politicadeprivacidade" target="_blank">Polítca de privacidade </a>
+          </p>
+        </span>
+        <a href="editortexto" target="_blank"> Editor</a>
+      </div>
+
       <div class="cont_btn_register">
         <button type="submit" class="btn_register"> Cadastrar </button>
       </div>
@@ -51,11 +63,13 @@ import { useRoute, useRouter } from 'vue-router';
 export default {
     data() {
         return {
+          baseURL: import.meta.env.VITE_WEB_BASE_URL,
           router: useRouter(),
           formData: {},
           phoneNumber : '',
           birthDate: '',
-          cpf: ''
+          cpf: '',
+          policy: false,
         }
     },
     methods: {
@@ -137,16 +151,24 @@ export default {
 
     }
     .cont_input_form input{
-      height: 3rem;
+      height: 2.5rem;
       font-size: 1.0rem;
       padding: 0.5rem;
+    }
+    input[type="checkbox"]{
+      opacity: 1;
+    }
+    .cont_input_form span{
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     .cont_btn_register{
       display: flex;
       justify-content: center;
     }
     .cont_btn_register button{
-      margin-top: 1rem;
+      margin-top: 0rem;
       cursor: pointer;
       height: 2.5rem;
       width: 100%;
@@ -160,6 +182,14 @@ export default {
     .cont_btn_register button:hover{
       opacity: 1;
 
+    }
+    i{
+      color: blue;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    i:hover{
+      opacity: 1;
     }
     .link_register {
         text-align: center;

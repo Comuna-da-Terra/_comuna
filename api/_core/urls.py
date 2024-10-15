@@ -25,4 +25,5 @@ urlpatterns = [
     path("api/", include("etiquette.urls")),
     path("api/", include("wallets.urls")),
     path("api/", include("payments.urls")),
+    path("api/", include("policies.urls")),
 ]

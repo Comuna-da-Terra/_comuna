@@ -4,8 +4,14 @@
             <div>
                 <h1 class="welcome_text">Bem vindo, {{ user.name ? user.name.split(' ')[0] : user}}!</h1>
             </div>
-            <div class="cont-menu">
+            <div class="cont-menu"> 
                 <ul class="menu-list">
+                    <li>
+                        <a href="termosdeuso" target="_blank">Termos de Uso</a> 
+                    </li>
+                    <li>
+                        <a href="politicadeprivacidade" target="_blank">Política de Privacidade</a>
+                    </li>
                     <li @click="changePage('Histórico de Ordens')">Histórico</li>
                     <li @click="logout">Sair</li>
                 </ul>
@@ -176,5 +182,8 @@ export default {
 }
 .pi{
     font-size: 3rem;
+}
+i{
+    color: white;
 }
 </style>

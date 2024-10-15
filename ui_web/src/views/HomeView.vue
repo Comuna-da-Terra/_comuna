@@ -1,6 +1,6 @@
 <template>
     <div class="app-logo">
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="400" height="400"  @animationend="logoAnimationEnd"/>
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg"   @animationend="logoAnimationEnd"/>
     </div>
     <div class="cont-login" v-if="!showLogo">
       <loginPage v-if="page == 'login'"  @change-page="changePage"></loginPage>
@@ -59,6 +59,8 @@ main{
 }
 .logo {
   animation: grow 2.5s linear;
+  width: 600px;
+  height: 600px;
 }
 @keyframes grow {
   from {
@@ -66,8 +68,8 @@ main{
     height: 100px;
   }
   to {
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
   }
 }
 .cont-login{
