@@ -89,21 +89,23 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         )
         return product_order
     
-    # def update(self, instance, validated_data):
-    #     quantity                                = validated_data["quantity"]
-    #     product                                 = instance.product
+    def update(self, instance, validated_data):
+        quantity                                = validated_data["quantity"]
+        product                                 = instance.product
         
-    #     if quantity == 0: 
-    #         instance.delete()
-    #     instance.quantity                       = int(validated_data.get('quantity', instance.quantity))
-    #     instance.total_price                    = Decimal(instance.product.price * instance.quantity)
-    #     instance.save()
+        if quantity == 0:
+            instance.delete()
+            return instance
+        
+        instance.quantity                       = int(validated_data.get('quantity', instance.quantity))
+        instance.total_price                    = Decimal(instance.product.price * instance.quantity)
+        instance.save()
 
-    #     order                                   = instance.order
-    #     order.subtotal                          = ProductOrder.objects.filter(order=order).aggregate(Sum('total_price'))['total_price__sum']
-    #     order.save()
+        order                                   = instance.order
+        order.subtotal                          = ProductOrder.objects.filter(order=order).aggregate(Sum('total_price'))['total_price__sum']
+        order.save()
 
-    #     return instance
+        return instance
 
     def delete(self, instance):
         order                                   = instance.order

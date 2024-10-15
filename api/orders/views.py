@@ -112,7 +112,7 @@ class DetailsOrderView(APIView):
     permission_classes = [IsAuthenticated, IsAccountOwnerOrSuperuser]
 
     def get(self, request):
-        active_orders = Order.objects.filter(status=2).values()
+        active_orders = Order.objects.filter(status__in=[2, 3]).values()
         if active_orders.exists():
             data = []
             for index, order in enumerate(active_orders):

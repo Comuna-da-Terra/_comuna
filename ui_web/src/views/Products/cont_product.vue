@@ -121,7 +121,7 @@ export default {
     filterProducts(idCategory){
       this.productsShow = this.products.filter((product)=> product.category === idCategory)
     },
-    searchProduct(){
+    async searchProduct(){
       for (let index = 0; index < this.categories.length; index++) {
         if(this.searchValue == ''){
           return this.$notify({ type: "error", text: "Hum... informe o que deseja procurar!", duration: 2000});
@@ -129,8 +129,14 @@ export default {
           return this.productsShow = this.products.filter((product) => product.category === this.categories[index].id )
         }
       }
+      
+      await apiProductService.getAllProducts().then(response =>{
+          this.products = response.data
+          this.productsShow = this.products
+        })
 
       for (let index = 0; index < this.products.length; index++) {
+        
         if(this.normalizeStrings(this.products[index].name).includes(this.normalizeStrings(this.searchValue))){
           return this.productsShow = this.products.filter((product) => this.normalizeStrings(product.name).includes(this.normalizeStrings(this.searchValue))) 
         } 
@@ -211,7 +217,6 @@ export default {
     async load_data(){
       await apiProductService.getPageProducts().then((response)=>{
         this.maxPage = Math.ceil((response.data.count) / 20)
-        console.log(response)
         this.products = response.data.results
         this.productsShow = this.products
       })
