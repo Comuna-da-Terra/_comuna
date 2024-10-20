@@ -28,7 +28,16 @@
 
        <div class="cont_input_form">
         <label for="password">Senha:</label>
-        <input v-model="formData.password" type="password" id="password" name="password" placeholder="Senha">
+        <PasswordInput
+          v-model="formData.password"
+          placeholder="Digite sua senha"
+        />
+        <!-- <div class="input-wrapper">
+          <input v-model="formData.password" :type="passwordFieldType" id="password" name="password" placeholder="Senha">
+          <span @click="switchVisibility" class="pi" :class="passwordFieldType === 'password' ? 'pi-eye' : 'pi-eye-slash'"></span>
+        </div> -->
+        <!-- <input v-model="formData.password" :type=passwordFieldType id="password" name="password" placeholder="Senha">
+        <span @click="switchVisibility" class="pi pi-eye"> </span> -->
       </div>
 
       <div class="cont_input_form">
@@ -59,8 +68,12 @@
 <script>
 import apiAccount from '@/services/clients/apiClientService'; // Certifique-se de ajustar o caminho correto
 import { useRoute, useRouter } from 'vue-router';
+import PasswordInput from '../../components/passwordInput.vue';
 
-export default {
+export default {  
+    components: {
+      PasswordInput,
+    },    
     data() {
         return {
           baseURL: import.meta.env.VITE_WEB_BASE_URL,
@@ -70,6 +83,7 @@ export default {
           birthDate: '',
           cpf: '',
           policy: false,
+          passwordFieldType: "password"
         }
     },
     methods: {
@@ -109,8 +123,10 @@ export default {
         .replace(/(\d{3})(\d{1,3})/, '$1.$2')
         .replace(/(\d{3})(\d{1,2})/, '$1-$2')
         .replace(/(\d{3}\.\d{3}\.\d{3}-\d{2}).*/, '$1');
+      },
+      switchVisibility(){
+        this.passwordFieldType = this.passwordFieldType === "password" ? "text" : "password";
       }
-      
     },
     mounted() {
       
@@ -197,4 +213,22 @@ export default {
         color: rgb(95, 11, 11);
     }
 
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding-right: 2.5rem; /* Espaço para o ícone */
+    }
+
+    .input-wrapper span {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #666;
+    }
 </style>

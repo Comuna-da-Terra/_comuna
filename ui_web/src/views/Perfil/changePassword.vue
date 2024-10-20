@@ -8,10 +8,10 @@
         <!-- <p>Você sairá de todas as sessões, exceto desta, para proteger sua conta caso alguém esteja tentando acessá-la.</p> -->
       </div>
       <form class="cont-form" action="" @submit.prevent="handleSubmit">
-        
-          <input  class="impt-password" name="current_password" v-model="formData.current_password"  type="password" placeholder="Senha atual">
-          <input  class="impt-password" name="new_password"  v-model="formData.new_password" type="password" placeholder="Nova senha">
-          <input  class="impt-password" name="confirm_password"  v-model="formData.confirm_password" type="password" placeholder="Redigite a nova senha">
+          <PasswordInput name="current_password" v-model="formData.current_password" placeholder="Senha atual"/>
+          <PasswordInput name="new_password"  v-model="formData.new_password" placeholder="Nova senha"/>
+          <PasswordInput name="confirm_password"  v-model="formData.confirm_password" placeholder="Redigite a nova senha"/>
+          
           <a href="http://127.0.0.1:8000/api/account/reset_password/">Esqueceu a senha?</a>
           <button type="submit" class="btn-code-confirm">Alterar senha</button>
 
@@ -23,8 +23,12 @@
   // ____________SCRIPT____________
   <script>
   import apiAccountService from '@/services/clients/apiClientService';
+  import PasswordInput from '../../components/passwordInput.vue';
   
   export default {
+    components:{
+      PasswordInput
+    },
     data() {
       return {
         isLoading: false,
