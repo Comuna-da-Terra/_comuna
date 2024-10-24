@@ -8,8 +8,8 @@
                 </div>
                 <div class="cont-utils">
                     <!-- <input class="inp-search" type="search" placeholder="Procurar..."> -->
-                    <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == true"> </button>
-                    <button class="btn-stock desactive" v-if="stockUnavailable == false" @click="filterOrdersAnavailable"> </button>
+                    <button class="btn-stock active" style="color: green;" v-if="stockUnavailable == false"> </button>
+                    <button class="btn-stock desactive" v-if="stockUnavailable == true" @click="filterOrdersAnavailable"> </button>
                     <button v-if="user.is_superuser" @click="requestCSV">Gerar Planilha</button>
                     <button v-if="user.is_superuser" @click="createEtiquette">Etiquetas</button>
                 </div>
@@ -30,7 +30,8 @@
                         <ul v-if="order.see_products">
                             <li style="list-style: none;" v-for="product, index in order.order_product" :key="index">
                                 <div class="cont-prodycts-order">
-                                    <p v-if="listProductUnavailable.find(item => item.name == product.name) == null">{{ product.name }}</p>
+                                    <p v-if="notFindProduct.some(item => item.name === product.name)" style="color: red;">{{ product.name }},  NÃO DISPONÍVEL !</p>
+                                    <p v-else-if="listProductUnavailable.find(item => item.name == product.name) == null">{{ product.name }}</p>
                                     <p v-else style="color: red;">{{ product.name }}</p>
                                     <input type="number" v-model="product.quantity">
                                     <button @click="editOrder(order.order_product[index], product.quantity)" >EDITAR</button>
@@ -61,7 +62,7 @@ export default {
             user_id: authStore.user_id,
             listProductUnavailable: [],
             listProductsInOrder: [],
-            stockUnavailable: true,
+            stockUnavailable: false,
             ordersUnavailable: [],
             router: useRouter(),
             showAddres: false,
@@ -69,16 +70,21 @@ export default {
             ordersShow: [],
             products: [],
             user: {},
+            notFindProduct: [],
         }
     },
     methods: {
         handleSubmit() { },
         async load_data() {
             await apiAccountService.getAccount(this.user_id).then((response) => {
-                this.user = response.data[0]})
+                this.user = response.data[0]}
+                )
             await apiOrderService.getOpenOrders().then((response) => {
-                this.ordersOpen = response.data
-                this.ordersShow = this.ordersOpen})
+                response.data.message ? this.ordersOpen = [] : this.ordersOpen = response.data
+                this.ordersShow = this.ordersOpen}).catch((err)=>{
+                    console.log(err)
+
+                })
             await apiProductService.getAllProducts().then((response)=>{
                 this.products = response.data})
             await this.verifyAmountProductAvailable()
@@ -119,9 +125,12 @@ export default {
         },
         async editOrder(item, quantity){
             const data = { id: item.id, quantity: quantity }
-            await apiOrderProductService.updateOrderProduct(data).then((resp)=>{
-                return this.$notify({ type: "success", text: "Order alterado com sucesso!", duration: 3000})})
-            this.load_data()
+            await apiOrderProductService.updateOrderProduct(data).then((response)=>{
+                console.log(response)
+                this.load_data()
+                return this.$notify({ type: "success", text: "Order alterado com sucesso!", duration: 3000})}).catch((err)=>{
+                    console.log(err)
+                })
         },
 
         async listAmountProductInAllOrders(){
@@ -136,27 +145,77 @@ export default {
                 });
             });
         },
-        async verifyAmountProductAvailable(){
-            await this.listAmountProductInAllOrders()
-            this.listProductUnavailable = []
-            this.products.forEach(product => {
-                this.listProductsInOrder.forEach((item, index) => {
-                    if (item.name == product.name && item.quantity > product.garanteed_stock){
-                        item.id = product.id
-                        item.available = product.garanteed_stock
-                        item.variation = item.quantity - product.garanteed_stock
-                        this.listProductUnavailable.push(item)
-                    }
-                    this.listProductUnavailable.length == 0 ?
-                        this.stockUnavailable = true 
-                        : this.stockUnavailable = false 
-                } )
-            })
-        },
+        // async verifyAmountProductAvailable(){
+        //     await this.listAmountProductInAllOrders()
+        //     this.listProductUnavailable = []
+        //     this.products.forEach(product => {
+        //         this.listProductsInOrder.forEach((item, index) => {
+        //             if (item.name == product.name && item.quantity > product.garanteed_stock){
+        //                 item.id = product.id
+        //                 item.available = product.garanteed_stock
+        //                 item.variation = item.quantity - product.garanteed_stock
+        //                 this.listProductUnavailable.push(item)
+        //             }
+        //             this.listProductUnavailable.length == 0 ?
+        //                 this.stockUnavailable = true 
+        //                 : this.stockUnavailable = false 
+        //         } )
+        //     })
+        // },
+        // async verifyAmountProductAvailable() {
+        //     await this.listAmountProductInAllOrders();
+        //     this.listProductUnavailable = [];
+            
+        //     this.products.forEach(product => {
+        //         this.listProductsInOrder.forEach(item => {
+        //             if (item.name === product.name && item.quantity > product.garanteed_stock) {
+        //                 item.id = product.id;
+        //                 item.available = product.garanteed_stock;
+        //                 item.variation = item.quantity - product.garanteed_stock;
+        //                 this.listProductUnavailable.push(item);
+        //             }
+        //         });
+        //     });
+            
+        //     // Atualiza a disponibilidade de estoque após todos os produtos terem sido verificados
+        //     console.log(this.listProductUnavailable.length != 0)
+        //     this.stockUnavailable = this.listProductUnavailable.length == 0;
+        // },
+        async verifyAmountProductAvailable() {
+            await this.listAmountProductInAllOrders();
+            this.listProductUnavailable = [];
+
+            // Itera sobre cada item na lista de pedidos
+            this.listProductsInOrder.forEach(item => {
+                // Verifica se o produto correspondente existe
+                const product = this.products.find(product => product.name === item.name);
+                console.log(product)
+                // Se o produto não for encontrado, pode registrar ou executar lógica adicional
+                if (!product) {
+                    console.log(`Produto não encontrado: ${item.name}`);
+                    this.notFindProduct.push(item)
+                    console.log(this.notFindProduct)
+                    return; // Sai da iteração se o produto não existir
+                }
+
+                // Verifica a quantidade e atualiza as informações do item
+                if (item.quantity > product.garanteed_stock ) {
+                    item.id = product.id;
+                    item.available = product.garanteed_stock;
+                    item.variation = item.quantity - product.garanteed_stock;
+                    this.listProductUnavailable.push(item);
+                }
+            });
+
+    // Atualiza a disponibilidade de estoque após todos os produtos terem sido verificados
+    this.stockUnavailable = this.listProductUnavailable.length > 0;
+},
+
         async requestCSV(){
             await apiOrderService.getOrdersCSV()
         },
         async createEtiquette(){
+            console.log(this.ordersOpen)
             await apiEtiquetteService.emitEtiquette(this.ordersOpen)
 
         },

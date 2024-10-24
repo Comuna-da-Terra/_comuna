@@ -9,9 +9,17 @@
 
        <div class="cont_input_form">
         <label for="senha">Senha:</label>
-        <input v-model="formData.password" type="password" name="senha" placeholder="Senha" autocomplete="current-password">
+        <!-- <input v-model="formData.password" type="password" name="senha" placeholder="Senha" autocomplete="current-password"> -->
+         <PasswordInput 
+            v-model="formData.password"
+            type="password" 
+            name="senha" 
+            placeholder="Senha" 
+            autocomplete="current-password"
+         />
+
         <span class="sp-forgot-passowrd">
-          <a href="http://api.comunadaterra.com.br/api/account/reset_password/"> Esqueci minha senha... </a>
+          <a href="http://127.0.0.1:8000/api/account/reset_password/"> Esqueci minha senha... </a>
         </span>
       </div>
 
@@ -35,7 +43,12 @@ import serviceAuth from '@/services/clients/apiAuthService';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 
+import PasswordInput from '../../components/passwordInput.vue';
+
 export default {
+    components : {
+      PasswordInput
+    },
     data() {
       // const authStore = useAuthStore();
         return {
@@ -135,7 +148,12 @@ export default {
     .link_login {
       text-align: center;
       font-size: 1.3rem;
-      color: rgb(95, 11, 11);
+      color: #fff;
+      -webkit-text-stroke-width: 0.04em; 
+      -webkit-text-stroke-color: white; 
+      -webkit-text-fill-color: #573009;
+      font-weight: bold;
+      cursor: pointer;
     }
     .sp-forgot-passowrd{
       font-size: 0.8rem;

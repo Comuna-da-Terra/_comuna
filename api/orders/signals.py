@@ -12,6 +12,10 @@ def update_stock_pre_save(sender, instance, **kwargs):
     product                         = instance.product
     already_product                 = ProductOrder.objects.filter(product=instance.product)
 
+    if product.likely_stock < int(instance.quantity):
+            raise ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]}) 
+        
+
     if not order_product.exists():
         product.likely_stock        -= int(instance.quantity)
         product.save()
@@ -20,9 +24,6 @@ def update_stock_pre_save(sender, instance, **kwargs):
         original_order              = ProductOrder.objects.get(pk=instance.pk)
         product.likely_stock        += original_order.quantity
 
-        if product.likely_stock < int(instance.quantity):
-            raise ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]}) 
-        
         product.likely_stock        -= int(instance.quantity)
         product.save()
 

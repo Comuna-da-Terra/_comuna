@@ -58,7 +58,7 @@
 
       
       <span class="link_register" @click="goLoginPage">
-        Já tenho cadastro  
+        Já possuo cadastro  
       </span>
     </form>
   </main>
@@ -136,7 +136,7 @@ export default {
 
 <style>
   .form {
-        height: 100vh;
+        
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
@@ -167,7 +167,7 @@ export default {
 
     }
     .cont_input_form input{
-      height: 2.5rem;
+      height: 2.0rem;
       font-size: 1.0rem;
       padding: 0.5rem;
     }
@@ -208,9 +208,14 @@ export default {
       opacity: 1;
     }
     .link_register {
-        text-align: center;
-        font-size: 1.3rem;
-        color: rgb(95, 11, 11);
+      text-align: center;
+      font-size: 1.3rem;
+      color: #fff;
+      -webkit-text-stroke-width: 0.04em; 
+      -webkit-text-stroke-color: white; 
+      -webkit-text-fill-color: #573009;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .input-wrapper {

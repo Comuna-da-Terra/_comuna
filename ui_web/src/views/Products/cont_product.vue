@@ -1,8 +1,8 @@
 <template>
     <div class="cont-all">
       <div class="cont-search-products">
-        <div class="cont_input_search">
-          <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
+        <div class="cont-input-search">
+          <input v-model="searchValue" type="search" placeholder="O que você está procurando?" class="inp-search">
           <button class="btn-search" @click="searchProduct()"><h2 class="pi pi-search"></h2></button>
         </div>
         <ul class="list-cateogry">
@@ -54,36 +54,8 @@
           <i @click="nextPage()" class="pi pi-chevron-circle-right" style="color: black; font-size: 1.5rem" ></i>
         </div>
       </div>
-      <div v-if="cestaToBuy?.order?.status == 1" class="cont_basket" >
-        <h2 style="text-align: center;">Cesta</h2>
-        <div style="display: flex; position: fixed; margin-left: 1.5rem; margin-top: -1rem;">
-          <button v-if="!viewListBasket" @click="viewListBasket = true"> Ver mais</button>
-          <button v-if="viewListBasket" @click="viewListBasket = false"> Ver menos</button>
-        </div>
-        <div style="display: flex; justify-content: space-around; margin: 0.5rem;">
-          <p> Unidades: {{ cestaToBuy.order_products?.reduce((acc, item) => acc + item.quantity, 0) }}</p>
-          <p> Valor Total: {{ cestaToBuy?.order.subtotal }}</p>
-          <button @click="finishOrder"> Finalizar Pedido</button>
-        
-        </div>
-        <ul class="cont-list-basket" v-if="viewListBasket">
-          <li v-for="(order_product, index) in cestaToBuy.order_products" :key="index">
-            <p>
-              {{ cestaToBuy.products[index].name }}
-            </p>
-            <p>
-              {{ cestaToBuy.products[index].type }}
-            </p>
-            <p>
-              <input type="number" v-model="order_product.quantity" min="1">
-            </p>
-            <p>
-              R$  {{ order_product.total_price }}
-            </p>
-            <button @click="editOrderProduct(order_product.id, order_product.quantity)">Editar</button>
-            <button @click="removeFromBasket(order_product.id, index)">Remover</button>
-          </li>
-        </ul>
+      <div v-if="cestaToBuy?.order?.status == 1" class="cont-basket" @click="finishOrder" >
+        <h1 class="pi pi-shopping-bag" style="text-align: center; font-size: 2rem;"></h1>
       </div>
     </div>
 </template>
@@ -205,7 +177,9 @@ export default {
         quantity: quantity,
       }
       await apiOrderProductService.updateOrderProduct(data).then((resp)=>{
-        apiProductService.ProductsInOrderAccountView().then((response)=>{ this.cestaToBuy = response.data })
+        apiProductService.ProductsInOrderAccountView().then((response)=>{ 
+          this.cestaToBuy = response.data 
+        })
         return this.$notify({ type: "success", text: "Pedido alterado com sucesso!", duration: 3000});
       }).catch((err)=>{
         return this.$notify({ type: "warn", text: err.response.data.detail[0], duration: 3000});
@@ -243,9 +217,13 @@ export default {
 }
 .cont-search-products{
   padding-top: 68px;
-  background-color: green;
+  background-color: rgb(255, 255, 255);
   width: 100%;
   position: fixed;
+  z-index: 1;
+}
+input::placeholder {
+  color: #000;
 }
 .btn-search{
   border-radius:0px 7px 7px 0px ;
@@ -255,12 +233,12 @@ export default {
   width: 100%;
   
 }
-.cont_input_search {
+.cont-input-search {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-.cont_input_search input {
+.cont-input-search input {
   border-radius: 7px 0px 0px 7px ;
   height: 3rem;
   width: 80%;
@@ -283,6 +261,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  padding: 0px 1rem;
   
 }
 .cont-list-product li {
@@ -290,18 +269,12 @@ export default {
   margin: 0.3em;
   flex-direction: row;
   height: fit-content;
-  /* background-color: pink; */
 }
 .cont-item-product{
-  /* width: 80%; */
-  /* max-width: 480px; */
-  /* min-width: 330px; */
   width: 290px;
   height: 6rem;
   display: flex;
   justify-content: space-around;
-  
-  /* justify-content: space-between; */
 }
 picture{
   width: 100px;
@@ -373,19 +346,25 @@ picture{
 .cont-type-product{
   bottom: 0;
 }
-.cont_basket{
+.cont-basket{
+  animation: pulse 1s ease-in-out infinite;
   position: fixed;
-  bottom: -65px;
-  background-color: green;
-  width: 95%;
-  border-top-right-radius: 15px;
-  border-top-left-radius: 15px;
-
-  /* transform: translateX(-50%); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 27%;
+  z-index: 2;
+  right: 0%;
+  padding: 1rem;
+  background-color: orange;
+  opacity: 0.7;
+  border-radius: 50%;
   transition: bottom 0.5s ease;
 }
-.cont_basket:hover{
-  bottom: 0;
+.cont-basket:hover{
+  opacity: 1;
+  width: 5rem;
+  height: 5rem;
 }
 .cont-list-basket li {
   flex: 1;
@@ -399,6 +378,19 @@ picture{
 }
 .pi{
   cursor: pointer;
+   
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
   

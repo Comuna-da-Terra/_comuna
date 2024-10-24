@@ -120,7 +120,7 @@ export default {
 .cont_header {
     top: 0;
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     background-color: green;
     color: white;
     width: 100%;

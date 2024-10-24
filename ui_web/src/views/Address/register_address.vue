@@ -1,9 +1,6 @@
 <template>
   <div class="cont-form-address">
-    <div style="display: flex; justify-content: end; position: absolute; right: 2rem;">
       <i type="button" @click.prevent="closeModal" class="pi pi-times"></i>
-
-    </div>
     <div style="display: flex; align-items: center; justify-content: center;">
       <h1>Criar Endereço</h1>
     </div>
@@ -115,7 +112,7 @@ export default {
 .cont-form-address{
   width: 300px;
   display: flex;
-  background-color: whitesmoke;
+  background-color: rgb(195, 196, 195);
   padding: 1rem;
   margin: 1rem;
   border-radius: 8px;
@@ -148,6 +145,10 @@ export default {
   border-radius: 100%;
   height: 100%;
   padding: 0;
+}
+.pi-times{
+  position: fixed;
+  color: black;
 }
 .pi-map-marker{
   cursor: pointer;

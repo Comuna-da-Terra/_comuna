@@ -94,7 +94,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         product                                 = instance.product
         
         if quantity == 0:
-            instance.delete()
+            self.delete(instance)
             return instance
         
         instance.quantity                       = int(validated_data.get('quantity', instance.quantity))
@@ -113,7 +113,8 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         order.save()
 
         instance.delete()
-        order_products                          = ProductOrder.objects.filter(order = order.id)
         
+        order_products                          = ProductOrder.objects.filter(order = order.id)
         if order_products.exists() == False:
             order.delete()
+            return instance

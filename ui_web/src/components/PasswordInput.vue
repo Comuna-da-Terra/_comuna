@@ -55,7 +55,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    height: 50PX;
+    height: 2rem;
   }
   
   .input-wrapper input {

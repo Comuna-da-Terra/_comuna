@@ -36,9 +36,6 @@ class ProductOrderView(generics.ListCreateAPIView):
 
 
         return queryset
- 
-        return ProductOrder.objects.filter(order=order[0].id)
-
     def perform_create(self, serializer):
 
         serializer.save(
@@ -68,7 +65,10 @@ class ProductOrderUpdateView(APIView):
 
         if serializer.is_valid():
             serializer.save(instance=product_order)
-            return Response({'message': 'Quantidade do produto atualizada com sucesso.'}, status=status.HTTP_200_OK)
+            return Response({
+                'message': 'Quantidade do produto atualizada com sucesso.',
+                'data': serializer.data  # Dados atualizados da instância
+            }, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -144,6 +144,7 @@ class DetailsOrderView(APIView):
             return Response(data)
         else:
             return Response({'message': 'Sem Pedidos em aberto!'}, status=status.HTTP_404_NOT_FOUND)
+            # return Response({'message': 'Nenhum pedido em aberto!'}, status=status.HTTP_200_OK)
 
 class HistoryOrderView(APIView):
     authentication_classes = [JWTAuthentication]
