@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
@@ -9,7 +10,10 @@ from django.db import transaction
 from django.contrib.auth.hashers import make_password
 from .utils.random_username import random_username
 from hashlib import sha256
+from .utils.generate_confirmation_token import generate_confirmation_token
+from django.urls import reverse
 
+from django.core.mail import send_mail
 
 class UserSerializer(ModelSerializer):
     policy = serializers.BooleanField(write_only=True, required=True)
@@ -58,8 +62,17 @@ class UserSerializer(ModelSerializer):
         # else:
             
             if policy_accepted is True:
-                user_policy_termos = UserPolicy.objects.create(user=client, policy=termos[0], approval=True)
-                user_policy_privacidade = UserPolicy.objects.create(user=client, policy=privacidade[0], approval=True)
+                UserPolicy.objects.create(user=client, policy=termos[0], approval=True)
+                UserPolicy.objects.create(user=client, policy=privacidade[0], approval=True)
+
+                token = generate_confirmation_token(client.email)
+                confirm_url = f"{settings.BASE_URL}{reverse('confirm_email', args=[token])}"
+                email_subject = "Confirmação de E-mail"
+                email_body = f"Por favor, clique no link para confirmar seu e-mail: {confirm_url}"
+
+                send_mail(email_subject, email_body, settings.DEFAULT_FROM_EMAIL, [client.email])
+    
+
             else:
                  raise ValueError("As políticas necessárias não foram aceitas!")
             
@@ -79,6 +92,11 @@ class UserSerializer(ModelSerializer):
 class CustomJWTSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
+
+        if not user.is_active:
+            raise serializers.ValidationError("Conta não ativada. Verifique seu e-mail.")
+        
+
         token = super().get_token(user)
         token["is_superuser"] = user.is_superuser
         user.save(update_fields=["last_login"])
@@ -91,3 +109,22 @@ class PasswordChangeSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
 
 
+class ResendTokenConfirm(serializers.Serializer):
+     email = serializers.EmailField()
+
+     def validate_email(self, value):
+        
+        try:
+            user = User.objects.get(email=value, is_active=False)
+            if user:
+                token = generate_confirmation_token(user.email)
+                confirm_url = f"{settings.BASE_URL}{reverse('confirm_email', args=[token])}"
+                email_subject = "Nova confirmação de E-mail"
+                email_body = f"Por favor, clique no link para confirmar seu e-mail: {confirm_url}"
+
+                send_mail(email_subject, email_body, settings.DEFAULT_FROM_EMAIL, [user.email])
+    
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Este e-mail não está associado a um usuário inativo.")
+        
+        return value

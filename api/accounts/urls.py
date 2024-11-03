@@ -15,7 +15,7 @@ urlpatterns = [
     path("auth/refresh/", jwt_views.TokenRefreshView.as_view()),
     path("auth/verify/", views.TokenVerifyView.as_view()),
 
-    #PasswordResetView: È responsável por apresentar um formulário para que possamos preencher o e-mail de recuperação.
+    #PasswordResetView: É responsável por apresentar um formulário para que possamos preencher o e-mail de recuperação.
 #Ele também gerará um link único para a redefinição de senha
 #caso o email não exista na base de dados ele simplesmente irá ignorar.
     path('account/reset_password/', auth_views.PasswordResetView.as_view(), name="reset_password"),
@@ -26,4 +26,8 @@ urlpatterns = [
     path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
 #PasswordResetCompleteView:È responsável por exibir ao usuário um template informando que a senha foi alterada com sucesso!
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="password/password-reset-complete.html"), name="password_reset_complete"),
+
+    path('confirm-email/<token>/', views.confirm_email, name='confirm_email'),
+    path('reset_token_confirm/', views.reset_token_confirm, name="reset_token_confirm"),
+    path('resend_token_confirm/', views.resend_token_confirm, name="resend_token_confirm"),
 ]

@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reenviar Token de Ativação!</title>
+</head>
+<body>
+    <main>
+        <form method="post" action="{% url 'resend_token_confirm' %}">
+            {% csrf_token %}
+            <label> Por favor, informe o e-mail registrado para receber novamente o link de ativação </label>
+            <input type="email" name="email" required>
+            <button type="submit">Reenviar</button>
+        </form>
+    </main>
+</body>
+</html>

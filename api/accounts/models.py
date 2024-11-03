@@ -17,7 +17,7 @@ class User(AbstractUser):
     cpf                 = models.CharField(max_length=11, unique=False)
     birth_date          = models.DateField(default=timezone.now)
     cellphone           = models.CharField(max_length=15, null=False)
-    is_active           = models.BooleanField(default=True)
+    is_active           = models.BooleanField(default=False)
 
     coop_number         = models.PositiveIntegerField(unique=True, null=True, blank=True )
     # level               = models.PositiveIntegerField(default=0)         

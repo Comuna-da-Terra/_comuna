@@ -55,6 +55,12 @@ input[type="text"]:hover, select:hover, textarea:hover,
 input[type="text"]:focus-within, select:focus-within, textarea:focus-within{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
 }
+.vue-notification-group{
+  left: 0;
+}
+.notification-content{
+  font-weight: bold;
+}
 
 /* a,
 .green {

@@ -19,7 +19,7 @@
          />
 
         <span class="sp-forgot-passowrd">
-          <a href="http://127.0.0.1:8000/api/account/reset_password/"> Esqueci minha senha... </a>
+          <a :href="`${baseURL}/account/reset_password/`"> Esqueci minha senha... </a>
         </span>
       </div>
 
@@ -55,8 +55,9 @@ export default {
           router: useRouter(),
           formData: {
             email: '',
-            password: ''
+            password: '',
           },
+          baseURL: import.meta.env.VITE_API_BASE_URL,
           is_superuser: null
         }
     },

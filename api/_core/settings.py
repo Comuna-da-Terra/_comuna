@@ -18,7 +18,7 @@ dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_URL = os.getenv("BASE_URL")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -26,15 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
 
 ALLOWED_HOSTS = [
-	#"195.200.1.214",
+    # '192.168.1.103',
 	"api.comunadaterra.com.br",
-	"127.0.0.1",
-	"localhost",
+    "127.0.0.1",
+    "localhost",
 ]
 
 
@@ -60,7 +58,8 @@ PROJECT_APPS = [
     "orders",
     "adresses",
     "etiquette",
-    "payments"
+    "payments",
+    "policies",
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -75,13 +74,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 ROOT_URLCONF = "_core.urls"
+# CORS_ALLOWED_ORIGINS = [
+# 	"http://web.comunadaterra.com.br",
+# 	"http://api.comunadaterra.com.br",
+#     "http://localhost:5173",
+#     "http://127.0.0.1:8000",
+#     ]
 CORS_ALLOWED_ORIGINS = [
-   	#"http://www.comunadaterra.com.br",
-	"http://web.comunadaterra.com.br",
-	"http://api.comunadaterra.com.br"
-    ]
-
-
+    origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',')
+]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -113,7 +114,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "195.200.1.214",
+        "HOST": os.getenv("HOST"),
         "PORT": 5432,
     }
 }
@@ -162,10 +163,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = (
-    BASE_DIR / 'static',
-)
 STATIC_ROOT = BASE_DIR / 'static'  # collectstatic
+# STATICFILES_DIRS = (
+#    BASE_DIR / 'static',
+# )
 
 #MEDIA_URL = 'media/'
 #MEDIA_ROOT = BASE_DIR / 'media'

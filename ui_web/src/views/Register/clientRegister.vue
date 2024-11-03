@@ -1,6 +1,13 @@
 <template>
   <main class="cont-all-register">
-    <form class="form" action="" @submit.prevent="handleSubmit">
+      <div @click="this.$emit('change-page', 'login')" class="notify-register-sucess" v-if="registerSucess">
+      <h1>
+        Foi enviado um link para o E-mail informado, acesse o mesmo para ativar sua conta. 
+      </h1>
+      <h2>Ele ira expirar em 1 hora!</h2>
+    </div>
+    <!-- </div> -->
+    <form v-else class="form" action="" @submit.prevent="handleSubmit">
        <div class="cont_input_form">
         <label for="name">Nome: </label>
       <input v-model="formData.name" type="text" id="name" name="name" placeholder="Nome">
@@ -49,7 +56,6 @@
             <a href="politicadeprivacidade" target="_blank">Polítca de privacidade </a>
           </p>
         </span>
-        <a href="editortexto" target="_blank"> Editor</a>
       </div>
 
       <div class="cont_btn_register">
@@ -83,7 +89,8 @@ export default {
           birthDate: '',
           cpf: '',
           policy: false,
-          passwordFieldType: "password"
+          passwordFieldType: "password",
+          registerSucess: false,
         }
     },
     methods: {
@@ -93,10 +100,7 @@ export default {
         this.formData.cpf = this.cpf.replace(/\D/g, '')
 
         apiAccount.registerAccount(this.formData).then((response)=>{
-          this.$notify({ type: "success", text: "Pronto, estou te enviando para o acesso!", duration: 2000});
-          setTimeout(()=>{
-            this.$emit('change-page', 'login')
-          }, 2000);
+          this.registerSucess = true
         }).catch(()=>{
           this.$notify({ type: "warn", text: "Hum.. tem algo de errado com os dados!", duration: 2000});
 
@@ -235,5 +239,14 @@ export default {
       cursor: pointer;
       font-size: 1.2rem;
       color: #666;
+    }
+    .notify-register-sucess{
+      display: flex;
+      align-items: center; 
+      flex-direction: column; 
+      text-align: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
     }
 </style>
