@@ -151,10 +151,11 @@ export default {
 .menu_list_perfil li {
     list-style: none;
     margin-right: 1rem;
+    cursor: pointer;
 }
 .p-pedido-aberto{
     background-color: green;
-    color: white;
+    color: orange;
     font-weight: bold;
     border-radius: 10px;
     padding: 5px;

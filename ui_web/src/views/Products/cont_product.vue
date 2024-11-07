@@ -156,7 +156,7 @@ export default {
             this.orderAmount[index] = 0
             return this.$notify({ type: "success", text: "Produto adicionado !", duration: 3000});
         }).catch((err)=> {
-          return this.$notify({ type: "warn", text: err.response.data.results, duration: 3000});
+          return this.$notify({ type: "warn", text: err.response.data.detail, duration: 3000});
         })
         
       } else {

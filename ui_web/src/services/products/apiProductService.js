@@ -35,7 +35,6 @@ export default {
         return response;
         })
       .catch(error => {
-        console.log(error.response.data.detail)
         return error.response.data.detail;
       });
   },
@@ -48,7 +47,6 @@ export default {
   async createProduct(data){
     await api.post('/products/', data)
     .then(response=>{
-      console.log(response)
       return response
     })
     .catch(error=> {

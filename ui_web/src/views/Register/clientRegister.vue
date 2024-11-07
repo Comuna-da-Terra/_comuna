@@ -4,7 +4,7 @@
       <h1>
         Foi enviado um link para o E-mail informado, acesse o mesmo para ativar sua conta. 
       </h1>
-      <h2>Ele ira expirar em 1 hora!</h2>
+      <h2>Ele ira expirar em 10 minutos!</h2>
     </div>
     <!-- </div> -->
     <form v-else class="form" action="" @submit.prevent="handleSubmit">

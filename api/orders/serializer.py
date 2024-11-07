@@ -48,7 +48,6 @@ class OrderSerializer(serializers.ModelSerializer):
         instance.delete()
 
 
-
 class ProductOrderSerializer(serializers.ModelSerializer):
     order                                       = OrderSerializer(read_only=True)
     product                                     = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
@@ -63,6 +62,10 @@ class ProductOrderSerializer(serializers.ModelSerializer):
         account                                 = get_object_or_404(User, pk=validated_data['user'])
         product                                 = get_object_or_404(Product, pk=validated_data['product'])
         quantity                                = int(validated_data['quantity'])
+
+        if product.likely_stock < quantity:
+            raise ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]}) 
+        
 
         order, created                          = Order.objects.get_or_create(user=account,**{'status__lte': 3} )
         verify_product_order                    = ProductOrder.objects.filter(order=order, product=product).first()

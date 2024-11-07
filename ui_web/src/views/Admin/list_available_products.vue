@@ -141,7 +141,7 @@ export default {
 };
 </script>
   
-  <style >
+  <style scoped>
 .cont_all{
     height: 100vh;
     width: 100%;

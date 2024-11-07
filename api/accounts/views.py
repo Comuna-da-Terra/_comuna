@@ -28,7 +28,6 @@ class CreateUserView(generics.CreateAPIView):
 
 class ListUserView(generics.ListAPIView):
     authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAccountOwnerOrSuperuser]
     permission_classes = [IsAuthenticated, IsAccountOwnerOrSuperuser]
     serializer_class = UserSerializer
 
@@ -93,6 +92,7 @@ class TokenVerifyView(APIView):
         return Response({'valid': True}, status=status.HTTP_200_OK)
 
 
+# _________________________________________TOKEN_CONFIRM
 def confirm_email(request, token):
     email = confirm_token(token)
     if email == "O token expirou.":

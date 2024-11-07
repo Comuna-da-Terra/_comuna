@@ -14,31 +14,44 @@
                     <button v-if="user.is_superuser" @click="createEtiquette">Etiquetas</button>
                 </div>
             </header>
-            <ul class="list-orders" style="width: 100%;">
-                <li :id="`li-order(${index})`" :class="[ 'li-order', { 'unavailable': checkUnavailableItem(order) }]" v-for="(order, index) in ordersShow" :key="index">
-                    <div :id="`cont-details-order(${index})`" class="cont-details-order change-border-close">
-                        <p>{{ order["client"] }}</p>
-                        <span class="span span-address" @click="toggleSeeAddress(order, index)"> ENDEREÇO </span>
-                        <p v-if="order.see_address" class="written-address" @click="toggleSeeAddress(order, index)" >
-                            {{ order["address"] }}
-                        </p>
-                        <span style="color: green;" v-if="order['delivery'] === true">ENTREGAR</span>
-                        <span style="color: orange;" v-else="order['delivery'] === false">RETIRADA</span>
-                        <p><button @click="toggleSeeProducts(order, index)">PRODUTOS</button></p>
-                    </div>
-                    <div>
-                        <ul v-if="order.see_products">
-                            <li style="list-style: none;" v-for="product, index in order.order_product" :key="index">
-                                <div class="cont-prodycts-order">
-                                    <p v-if="notFindProduct.some(item => item.name === product.name)" style="color: red;">{{ product.name }},  NÃO DISPONÍVEL !</p>
-                                    <p v-else-if="listProductUnavailable.find(item => item.name == product.name) == null">{{ product.name }}</p>
-                                    <p v-else style="color: red;">{{ product.name }}</p>
-                                    <input type="number" v-model="product.quantity">
-                                    <button @click="editOrder(order.order_product[index], product.quantity)" >EDITAR</button>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+            <ul class="list-orders">
+                <li :id="`li-order(${index})`" :class="[ 'li-order']" v-for="(order, index) in ordersShow" :key="index">
+                        <div style="display: flex; justify-content: center; width: 100%;">
+                            <div :id="`cont-details-order(${index})`" 
+                            :class="[
+                                'cont-details-order', 
+                                { 'unavailable': checkUnavailableItem(order)},
+                                {'order-confirmed-color': checkOrderStatus(order)},
+                                'change-border-close']">
+                                <p>{{ order["client"] }}</p>
+                                <span class="span span-address" @click="toggleSeeAddress(order, index)"> ENDEREÇO </span>
+                                <p v-if="order.see_address" class="written-address" @click="toggleSeeAddress(order, index)" >
+                                    {{ order["address"] }}
+                                </p>
+                                <span style="color: green;" v-if="order['delivery'] === true">ENTREGAR</span>
+                                <span style="color: orange;" v-else="order['delivery'] === false">RETIRADA</span>
+                                <p><button @click="toggleSeeProducts(order, index)">PRODUTOS</button></p>
+                            </div>
+                            <div style="display: flex; flex-direction: column; justify-content: space-around; gap: 3px; margin: 2px;">
+                                <button @click="editOrder(order, status=3)" class="btn-order-status order-confirm pi pi-thumbs-up"></button>
+                                <button @click="editOrder(order, status=4)" class="btn-order-status order-delivery pi pi-car" ></button>
+                            </div>
+                        </div>
+                        <div>
+                            <ul v-if="order.see_products">
+                                <li style="list-style: none;" v-for="product, index in order.order_product" :key="index">
+                                    <div class="cont-prodycts-order">
+                                        <p v-if="notFindProduct.some(item => item.name === product.name)" style="color: red;">{{ product.name }},  NÃO DISPONÍVEL !</p>
+                                        <p v-else-if="listProductUnavailable.find(item => item.name == product.name) == null">{{ product.name }}</p>
+                                        <p v-else style="color: red;">{{ product.name }}</p>
+                                        <span style="height: 10px; width: 10px; color: pink;">{{this.products.filter((item)=>item.name == product.name)[0].garanteed_stock}}</span>
+                                        <input type="number" v-model="product.quantity">
+                                        <button @click="editOrderProduct(order.order_product[index], product.quantity)" >EDITAR</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    
                 </li>
             </ul>
         <button @click="this.router.push({ name: 'admin' });">Voltar</button>
@@ -104,6 +117,13 @@ export default {
                         this.ordersUnavailable.push(order) : "_" }
             return check
         },
+        checkOrderStatus(order){
+            let check= false
+            if(order.status > 2) {
+                check = true
+            } 
+            return check
+        },
         filterOrdersAnavailable(){
             this.ordersShow != this.ordersUnavailable ? 
                 this.ordersShow = this.ordersUnavailable 
@@ -113,7 +133,8 @@ export default {
         toggleSeeAddress(order, index) {
             order.see_address = !order.see_address },
         toggleSeeProducts(order, index) {
-            order.see_products = !order.see_products;
+            order.see_products = !order.see_products
+
             const myDiv = document.getElementById(`cont-details-order(${index})`)
             if (myDiv.classList.contains("change-border-close")){
                 myDiv.classList.remove("change-border-close");
@@ -123,14 +144,28 @@ export default {
                 myDiv.classList.add("change-border-close");
             }
         },
-        async editOrder(item, quantity){
+        async editOrderProduct(item, quantity){
             const data = { id: item.id, quantity: quantity }
             await apiOrderProductService.updateOrderProduct(data).then((response)=>{
-                console.log(response)
+                    this.load_data()
+                    return this.$notify({ type: "success", text: "Order alterado com sucesso!", duration: 3000})}).catch((err)=>{
+                            console.log(err)
+                        })
+                },
+        async editOrder(order, status){
+            if (this.checkUnavailableItem(order)){
+                return this.$notify({ type: "warn", text: "Não possuimos todos os itens desse pedido!", duration: 3000})}
+            const data = {
+                id: order.id,
+                status: status
+            }
+            await apiOrderService.updateOrder(data).then((response)=>{
+                data.status == 3 
+                    ? this.$notify({ type: "ok", text: "Pedido confirmado!", duration: 5000})
+                    : this.$notify({ type: "success", text: "Pedido entregue com sucesso!", duration: 5000})
                 this.load_data()
-                return this.$notify({ type: "success", text: "Order alterado com sucesso!", duration: 3000})}).catch((err)=>{
-                    console.log(err)
-                })
+
+            })
         },
 
         async listAmountProductInAllOrders(){
@@ -145,42 +180,6 @@ export default {
                 });
             });
         },
-        // async verifyAmountProductAvailable(){
-        //     await this.listAmountProductInAllOrders()
-        //     this.listProductUnavailable = []
-        //     this.products.forEach(product => {
-        //         this.listProductsInOrder.forEach((item, index) => {
-        //             if (item.name == product.name && item.quantity > product.garanteed_stock){
-        //                 item.id = product.id
-        //                 item.available = product.garanteed_stock
-        //                 item.variation = item.quantity - product.garanteed_stock
-        //                 this.listProductUnavailable.push(item)
-        //             }
-        //             this.listProductUnavailable.length == 0 ?
-        //                 this.stockUnavailable = true 
-        //                 : this.stockUnavailable = false 
-        //         } )
-        //     })
-        // },
-        // async verifyAmountProductAvailable() {
-        //     await this.listAmountProductInAllOrders();
-        //     this.listProductUnavailable = [];
-            
-        //     this.products.forEach(product => {
-        //         this.listProductsInOrder.forEach(item => {
-        //             if (item.name === product.name && item.quantity > product.garanteed_stock) {
-        //                 item.id = product.id;
-        //                 item.available = product.garanteed_stock;
-        //                 item.variation = item.quantity - product.garanteed_stock;
-        //                 this.listProductUnavailable.push(item);
-        //             }
-        //         });
-        //     });
-            
-        //     // Atualiza a disponibilidade de estoque após todos os produtos terem sido verificados
-        //     console.log(this.listProductUnavailable.length != 0)
-        //     this.stockUnavailable = this.listProductUnavailable.length == 0;
-        // },
         async verifyAmountProductAvailable() {
             await this.listAmountProductInAllOrders();
             this.listProductUnavailable = [];
@@ -189,12 +188,10 @@ export default {
             this.listProductsInOrder.forEach(item => {
                 // Verifica se o produto correspondente existe
                 const product = this.products.find(product => product.name === item.name);
-                console.log(product)
                 // Se o produto não for encontrado, pode registrar ou executar lógica adicional
                 if (!product) {
                     console.log(`Produto não encontrado: ${item.name}`);
                     this.notFindProduct.push(item)
-                    console.log(this.notFindProduct)
                     return; // Sai da iteração se o produto não existir
                 }
 
@@ -215,7 +212,6 @@ export default {
             await apiOrderService.getOrdersCSV()
         },
         async createEtiquette(){
-            console.log(this.ordersOpen)
             await apiEtiquetteService.emitEtiquette(this.ordersOpen)
 
         },
@@ -267,10 +263,32 @@ export default {
     margin: 1rem;
     list-style: none;
 }
+.btn-order-status{
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10%;
+    color: white;
+    cursor: pointer;
+}
+.order-confirm{
+    background-color: blue;
+}
+.order-delivery{
+    background-color: green;
+}
 .unavailable{
     background-color: rgba(255, 0, 0, 0.507);
 }
-
+.order-confirmed-color{
+    background-color: rgba(0, 128, 0, 0.332);
+}
+/* .order-delivered-color{
+    background-color: green;
+} */
 .cont-details-order {
     display: grid;
     grid-template-columns: 2fr 2fr 2fr 1fr;
@@ -304,7 +322,7 @@ export default {
 
 .cont-prodycts-order {
     display: grid;
-    grid-template-columns: 1fr 70px 60px;
+    grid-template-columns: 1fr 30px 70px 60px;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem 1rem 2rem;
