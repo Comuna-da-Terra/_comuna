@@ -1,5 +1,5 @@
 <template>
-    <main class="cont_all">
+    <main class="cont-all">
         <div class="cont_header">
             <div>
                 <h1 class="welcome_text">Bem vindo, {{ user.name ? user.name.split(' ')[0] : user}}!</h1>
@@ -27,9 +27,11 @@
                     <li v-else @click="logout">Sair</li>
                 </ul>
             </div>
+        </div>    
+        <div style="width: 100%;">
+            <contProduct></contProduct>
         </div>
-
-        <contProduct></contProduct>
+        
     </main>
 </template>
 
@@ -45,7 +47,7 @@ import apiWalletService from "../../services/wallets/apiWalletService"
 
 export default {
     components: { 
-        contProduct, 
+        contProduct,
     },
     data() {
         const authStore = useAuthStore();
@@ -116,21 +118,31 @@ export default {
 </script>
 
 <style scoped>
-
+.cont-all{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: start;
+    flex-direction: column;
+}
 .cont_header {
     top: 0;
-    position: fixed;
+    /* position: fixed; */
     z-index: 2;
+    font-size: 120%;
     background-color: green;
     color: white;
     width: 100%;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    min-height: 38px;
+    min-height: 55px;
+    height: 10vh;
 }
 
 .welcome_text {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: bold;
     padding: 0.5rem;
 }
 
@@ -166,5 +178,8 @@ export default {
 }
 .pi{
     font-size: 1.3rem;
+}
+.pi-shopping-bag{
+    color: orange;
 }
 </style>

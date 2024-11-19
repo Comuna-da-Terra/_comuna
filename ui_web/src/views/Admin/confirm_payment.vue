@@ -1,7 +1,10 @@
 <template>
     <div class="cont-modal">
       <div class="modal-payment">
-      <h2>Confirmar Pagamento</h2>
+      <div style="display: flex;">
+        <h2>Confirmar Pagamento</h2>
+        <i type="button" @click.prevent="closeModal" class="pi pi-times"></i>
+      </div>
       <form action="" @submit.prevent="handleSubmit">
         <label for="cliente">Cliente: {{ client.name }}</label>
         <input type="date" v-model="formData.date_payment"> 

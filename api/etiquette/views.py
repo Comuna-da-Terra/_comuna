@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.shortcuts import render
 
-from .permissions import IsSuperuser
+from permissions import IsSuperuser
 from accounts.models import User
 
 

@@ -20,6 +20,10 @@
 
         <div class="cont-main">
             <ul>
+                <li @click="changePage('Plano de cestas')">
+                    <h1> Plano de Cestas</h1>
+                    <i class="pi pi-shopping-bag "></i>
+                </li>
                 <li @click="changePage('Produtos disponíveis')">
                     <h2> Produtos Disponíveis </h2> 
                     <figure>
@@ -160,7 +164,8 @@ export default {
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-around;
     align-items:center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -168,13 +173,11 @@ export default {
 .cont-main ul li{
     background-color: green;
     display: flex;
-    justify-content: space-around;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    height: 40vh;
-    width: 45%;
-    text-align: center;
+    height: fit-content;
+    width: 100%;
     font-size: 95%;
     cursor: pointer;
     border-radius: 10px;

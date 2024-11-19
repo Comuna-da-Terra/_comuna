@@ -11,12 +11,12 @@ class IsAccountOwnerOrSuperuser(BasePermission):
         if request.user.is_superuser:
             return True
 
-        return request.user.is_authenticated and obj == request.user
+        return request.user.is_authenticated and obj.user == request.user
 
 
 class IsSuperuser(BasePermission):
     def has_permission(self, request: Request, view):
         if request._request.method == "GET":
-            return True
+            return bool(request.user.is_superuser and request.user.is_authenticated)
 
-        return bool(request.user.is_superuser and request.user.is_authenticated)
+        return True

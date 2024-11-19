@@ -61,6 +61,13 @@ const routes = [
       auth: true
     }
   },
+  {path: "/basketPlans",
+    name: 'Plano de cestas',  
+    component: () => import('../views/Admin/basket_plans.vue'),
+    meta: {
+      auth: true
+    }
+  },
   {path: "/historico",
     name: 'Historico',  
     component: () => import('../views/Historico/historico.vue'),

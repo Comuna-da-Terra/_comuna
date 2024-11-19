@@ -65,7 +65,7 @@ export default {
       async handleSubmit() {
         await serviceAuth.login(this.formData).then(resp=>{
           const authStore = useAuthStore()
-          this.$notify({ type: "success", text: "Wow, Seja bem vindo !", duration: 2000});
+          this.$notify({ type: "success", text: "Olá, seja bem vindo !", duration: 3000});
           setTimeout(()=>{
             this.is_superuser = authStore.user.is_superuser
             this.is_superuser ? 
@@ -75,7 +75,7 @@ export default {
           }, 2000);
           
         }).catch((err)=>{
-          this.$notify({ type: "warn", text: "Hum... algo errado com seu E-mail ou senha !", duration: 3000});
+          this.$notify({ type: "warn", text: "Hum... algo errado com seu E-mail ou senha !" + err.response.data["detail"], duration: 3000});
         })
       },
       goRegisterPage(){

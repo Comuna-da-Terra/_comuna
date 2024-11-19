@@ -4,7 +4,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .models import Address
 from .serializers import AddressSerializer
 from accounts.models import User
-from .permissions import IsAccountOwnerOrSuperuser
+from permissions import IsAccountOwnerOrSuperuser
 import requests
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q

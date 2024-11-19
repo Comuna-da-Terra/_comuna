@@ -14,6 +14,7 @@ export default {
 
       return resp.data;
     }).catch(error => {
+      console.log(error)
       throw error;
     });
   },

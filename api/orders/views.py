@@ -11,8 +11,8 @@ from django.shortcuts import get_object_or_404
 import pandas as pd
 from django.http import HttpResponse, JsonResponse
 
-from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
-from .serializer import ProductOrderSerializer, OrderSerializer
+from permissions import IsAccountOwnerOrSuperuser, IsSuperuser
+from .serializers import ProductOrderSerializer, OrderSerializer
 
 class ProductOrderView(generics.ListCreateAPIView):
 
@@ -75,7 +75,6 @@ class ProductOrderUpdateView(APIView):
 class OrderPartialUpdateView(generics.UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwnerOrSuperuser]
-
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 

@@ -5,7 +5,7 @@ from accounts.models import User
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from orders.serializer import OrderSerializer, ProductOrderSerializer
+from orders.serializers import OrderSerializer, ProductOrderSerializer
 
 
 class ProductSerializer(serializers.ModelSerializer):

@@ -31,6 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 ALLOWED_HOSTS = [
     # '192.168.1.103',
 	"api.comunadaterra.com.br",
+	"web.comunadaterra.com.br",
     "127.0.0.1",
     "localhost",
 ]
@@ -60,6 +61,7 @@ PROJECT_APPS = [
     "etiquette",
     "payments",
     "policies",
+    "basketplans"
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -184,6 +186,10 @@ SIMPLE_JWT = {
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     'UPDATE_LAST_LOGIN': True,
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'utils.exceptions.custom_exception_handler'
 }
 
 #CSRF_TRUSTED_ORIGINS = []

@@ -78,9 +78,7 @@ export default {
              })
         },
         async handleSubmit(){
-            console.log(this.product)
             await apiProductService.createProduct(this.product).then((response)=>{
-                console.log(response)
                 this.$emit(this.closeModal, false)
             })
         },

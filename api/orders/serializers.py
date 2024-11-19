@@ -15,30 +15,6 @@ class OrderSerializer(serializers.ModelSerializer):
         model                                   = Order
         fields                                  = "__all__"
 
-    # def update(self, instance, validated_data):
-    #     status                                  = self.context['request'].data.get('status')
-    #     orders_products                         = ProductOrder.objects.filter(order=instance.id)
-
-    #     if status == 2:
-    #         for order in orders_products:
-    #             product                         = order.product
-    #             quantity                        = order.quantity
-    #             if product.likely_stock >= quantity:
-    #                 product.likely_stock        -= quantity
-    #                 product.save()
-    #             elif product.likely_stock < order.quantity:
-    #                 raise serializers.ValidationError({"detail": ["Não temos essa quantidade solicitada, para o produto " + product.name]})
-    #     elif status == 1:
-    #         for order in orders_products:
-    #             product                         = order.product
-    #             quantity                        = order.quantity
-    #             product.likely_stock            += quantity
-    #             product.save()
-
-    #     instance = super().update(instance, validated_data)
-    #     return instance
-
-
     def delete(self, instance):
         order                                   = instance
         orders_products                         = ProductOrder.objects.filter(order = order.id)

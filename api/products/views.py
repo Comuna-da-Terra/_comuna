@@ -5,8 +5,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
 
-from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
-from .serializer import ProductSerializer, ProductsInOrderAccountSerializer, CategorySerializer
+from permissions import IsAccountOwnerOrSuperuser, IsSuperuser
+from .serializers import ProductSerializer, ProductsInOrderAccountSerializer, CategorySerializer
 from .pagination import PaginationProducts
 
 from rest_framework.response import Response
@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 class ProductView(generics.ListCreateAPIView):
 
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsSuperuser]
+    # permission_classes = [IsSuperuser]
     pagination_class = PaginationProducts
         
     queryset = Product.objects.filter(likely_stock__gt=0).order_by('name')
@@ -26,7 +26,7 @@ class ProductView(generics.ListCreateAPIView):
 class ProductsListView(generics.ListCreateAPIView):
 
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsSuperuser]
+    # permission_classes = [IsSuperuser]
         
     queryset = Product.objects.filter(likely_stock__gt=0).order_by('name')
         
@@ -64,17 +64,21 @@ class ProductsInOrderAccountView(APIView):
 
 class CategoryView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsSuperuser]
+    # permission_classes = [IsSuperuser]
 
     serializer_class = CategorySerializer
 
     def get(self, request):
+        
         categories = Category.objects.all()
         serializer = CategorySerializer(categories, many=True)
 
         return Response(serializer.data)
     
     def post(self, request):
+        self.permission_classes = [IsSuperuser]
+        self.check_permissions(request)
+
         serializer = CategorySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

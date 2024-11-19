@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Wallet
-from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
+from permissions import IsAccountOwnerOrSuperuser, IsSuperuser
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response

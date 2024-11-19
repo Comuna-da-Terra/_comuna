@@ -6,7 +6,7 @@
       </h1>
       <h2>Ele ira expirar em 10 minutos!</h2>
     </div>
-    <!-- </div> -->
+  
     <form v-else class="form" action="" @submit.prevent="handleSubmit">
        <div class="cont_input_form">
         <label for="name">Nome: </label>

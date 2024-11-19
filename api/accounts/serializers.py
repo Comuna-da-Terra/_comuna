@@ -6,6 +6,7 @@ from rest_framework import serializers
 from .models import User
 from policies.models import UserPolicy, Policy
 from django.db import transaction
+from rest_framework.exceptions import AuthenticationFailed
 
 from django.contrib.auth.hashers import make_password
 from .utils.random_username import random_username
@@ -94,7 +95,7 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
 
         if not user.is_active:
-            raise serializers.ValidationError("Conta não ativada. Verifique seu e-mail.")
+            raise AuthenticationFailed("Conta não ativada. Verifique seu e-mail.")
         
 
         token = super().get_token(user)

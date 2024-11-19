@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
-from .permissions import IsAccountOwnerOrSuperuser, IsSuperuser
-from .serializer import CustomJWTSerializer, UserSerializer, PasswordChangeSerializer, ResendTokenConfirm
+from permissions import IsAccountOwnerOrSuperuser, IsSuperuser
+from .serializers import CustomJWTSerializer, UserSerializer, PasswordChangeSerializer, ResendTokenConfirm
 from accounts.utils.random_username import random_username
 
 from django.http import HttpResponse, JsonResponse

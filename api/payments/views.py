@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .permissions import IsSuperuser
+from permissions import IsSuperuser
 from rest_framework import status
 from rest_framework.response import Response
-from .serializer import PaymentSerializer
+from .serializers import PaymentSerializer
 
 class PaymentView(APIView):
     authentication_classes = [JWTAuthentication]

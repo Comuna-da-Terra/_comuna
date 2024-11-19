@@ -1,6 +1,26 @@
 <template>
     <div class="cont-all">
       <div class="cont-search-products">
+        <div class="cont-basket-plan" v-if="this.basketPlan.type == null"
+          style="display: flex; justify-content: center; background-color: orange; cursor: pointer;"
+          @click="this.modalPlan = true"
+          >
+            Aderir ao Plano de Cestas
+        </div>
+        <div v-else
+          @click="this.modalPlan = true"
+          :class="[
+            'cont-basket-plan', 
+            { 'disable-plan': !this.basketPlan.is_active},]"
+          >
+            <p>
+              Plano de Cesta 
+              {{ this.basketPlan.basket_type == "M" ? "Média" : "Grande" }} 
+              {{ this.basketPlan.type == "S"? "Semanal" : "Quinzenal"}}
+            </p>
+            <p v-if="this.basketPlan.is_active">ativo!</p>
+            <p v-else> desativado!</p>
+        </div>
         <div class="cont-input-search">
           <input v-model="searchValue" type="search" placeholder="O que você está procurando?" class="inp-search">
           <button class="btn-search" @click="searchProduct()"><h2 class="pi pi-search"></h2></button>
@@ -58,18 +78,26 @@
         <h1 class="pi pi-shopping-bag" style="text-align: center; font-size: 2rem;"></h1>
       </div>
     </div>
+    <div v-if="modalPlan" class="modal-plan">
+            <modalBasketPlan @close-modal="closeModal"></modalBasketPlan>
+    </div>
 </template>
   
   // ____________SCRIPT____________
 <script>
 import apiOrderProductService from '../../services/orderProduct/apiOrderProductService'
+import apiBasketPlanService from '../../services/basketPlan/apiBasketPlanService'
 import apiCategoryService from "../../services/category/apiCategoryService"
 import apiProductService from "../../services/products/apiProductService"
+import modalBasketPlan from '../basketPlan/basket_plan_modal.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 
 
 export default {
+  components: { 
+        modalBasketPlan 
+    },
   data() {
     const authStore = useAuthStore();
 
@@ -85,11 +113,14 @@ export default {
       categories: [],
       searchValue: '',
       page: 1,
-      maxPage: 0
+      maxPage: 0,
+      modalPlan: false,
+      basketPlan: {}
     };
   },
   props: {},
   methods: {
+    
     filterProducts(idCategory){
       this.productsShow = this.products.filter((product)=> product.category === idCategory)
     },
@@ -188,18 +219,29 @@ export default {
     async finishOrder(){
       this.router.push({name: 'order'});
     },
+    closeModal(){
+      this.modalPlan = false
+      this.load_data()
+    },
+    async getBasketPlan(){
+      await apiBasketPlanService.getBasketPlan().then((response)=>{})
+    },
     async load_data(){
       await apiProductService.getPageProducts().then((response)=>{
         this.maxPage = Math.ceil((response.data.count) / 20)
         this.products = response.data.results
         this.productsShow = this.products
-      })
+      }),
       await apiProductService.ProductsInOrderAccountView().then((response)=>{
         this.cestaToBuy = response.data
-      })
+      }),
       await apiCategoryService.getListCategory().then((response)=>{
           this.categories = response.data
+      }),
+      await apiBasketPlanService.getBasketPlan().then((response)=>{
+        this.basketPlan = response
       })
+
     }
   },
   async mounted() {
@@ -213,14 +255,25 @@ export default {
   height: 100%;
   width: 100vw;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
 }
 .cont-search-products{
-  padding-top: 68px;
+  padding-top: 0px;
   background-color: rgb(255, 255, 255);
   width: 100%;
-  position: fixed;
+  /* position: fixed; */
   z-index: 1;
+}
+.cont-basket-plan{
+  display: flex; 
+  justify-content: center; 
+  background-color: #7FFF00; 
+  cursor: pointer;
+}
+.disable-plan{
+  background-color: red; 
+  color: white;
+  opacity: 0.5;
 }
 input::placeholder {
   color: #000;
@@ -229,7 +282,7 @@ input::placeholder {
   border-radius:0px 7px 7px 0px ;
 }
 .cont-body{
-  margin-top: 130px;
+  /* margin-top: 130px; */
   width: 100%;
   
 }
@@ -237,6 +290,7 @@ input::placeholder {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin: 1rem;
 }
 .cont-input-search input {
   border-radius: 7px 0px 0px 7px ;
@@ -379,6 +433,19 @@ picture{
 .pi{
   cursor: pointer;
    
+}
+.modal-plan{
+  height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2.5px);
 }
 
 @keyframes pulse {
