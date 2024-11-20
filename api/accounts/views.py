@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import User
+from django.conf import settings
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -96,7 +97,7 @@ class TokenVerifyView(APIView):
 def confirm_email(request, token):
     email = confirm_token(token)
     if email == "O token expirou.":
-        link = '<a href="http://localhost:8000/api/reset_token_confirm/"> Novo link de ativação </a>'
+        link = f'<a href="{settings.BASE_URL}/api/reset_token_confirm/"> Novo link de ativação </a>'
         return HttpResponse(f'Token de confirmação inválido ou expirado.{link}')
     elif email == "Token inválido.":
         return HttpResponse("Token Invalido!")
