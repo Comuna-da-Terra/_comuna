@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-from django.core.management.utils import get_random_secret_key
+#from django.core.management.utils import get_random_secret_key
 from pathlib import Path
 from datetime import timedelta
 import os
@@ -19,21 +19,21 @@ dotenv.load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_URL = os.getenv("BASE_URL")
+HOME_URL = os.getenv("HOME_URL")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
+#SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
 ALLOWED_HOSTS = [
-    # '192.168.1.103',
 	"api.comunadaterra.com.br",
 	"web.comunadaterra.com.br",
-    "127.0.0.1",
-    "localhost",
+#    "127.0.0.1",
+#    "localhost",
 ]
 
 
@@ -76,12 +76,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 ROOT_URLCONF = "_core.urls"
-# CORS_ALLOWED_ORIGINS = [
+#CORS_ALLOWED_ORIGINS = [
 # 	"http://web.comunadaterra.com.br",
 # 	"http://api.comunadaterra.com.br",
 #     "http://localhost:5173",
 #     "http://127.0.0.1:8000",
-#     ]
+#]
 CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 ]
@@ -181,7 +181,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     'SLIDING_TOKEN_LIFETIME': timedelta(days=1),  
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
+    "SIGNING_KEY": os.getenv("SECRET_KEY"),
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     'UPDATE_LAST_LOGIN': True,
