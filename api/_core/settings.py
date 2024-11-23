@@ -66,16 +66,16 @@ PROJECT_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.security.SecurityMiddleware",  # Segurança geral
+    "django.contrib.sessions.middleware.SessionMiddleware",  # Gerenciamento de sessões
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # Autenticação de usuários
+    "django.contrib.messages.middleware.MessageMiddleware",  # Mensagens de feedback
+    "django.middleware.common.CommonMiddleware",  # Funções comuns de middleware
+    "django.middleware.csrf.CsrfViewMiddleware",  # Proteção contra CSRF
+    "corsheaders.middleware.CorsMiddleware",  # Suporte ao CORS
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Proteção contra clickjacking
 ]
+
 ROOT_URLCONF = "_core.urls"
 #CORS_ALLOWED_ORIGINS = [
 # 	"http://web.comunadaterra.com.br",
@@ -86,12 +86,6 @@ ROOT_URLCONF = "_core.urls"
 CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 ]
-# CORS_ALLOW_HEADERS = [
-#     "Content-Type",
-#     "Authorization",
-#     "X-Requested-With",
-#     "Access-Control-Allow-Origin",  # Necessário para permitir o acesso entre origens
-# ]
 CORS_ALLOW_CREDENTIALS = True
 TEMPLATES = [
     {
@@ -195,12 +189,6 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN': True,
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
-
-# REST_FRAMEWORK = {
-#     'EXCEPTION_HANDLER': 'utils.exceptions.custom_exception_handler'
-# }
-
-#CSRF_TRUSTED_ORIGINS = []
 
 AUTH_USER_MODEL = "accounts.User"
 
