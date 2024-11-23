@@ -10,7 +10,10 @@
                     <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
                     <button @click="searchProduct()">Search</button>
                 </div>
-
+                <div style="display: flex; justify-content: center;">
+                    <label class="pi pi-upload" for="file"></label>
+                    <input @change="handleFileUpload" type="file" name="file" id="file">
+                </div>
             </header>
             <ul class="list-products">
                 <li>
@@ -106,13 +109,31 @@ export default {
         },
         async editProd(data){
             await apiProductService.editProduct(data)
-            this.load_data()},
+            this.load_data()
+        },
         async closeModal(){
             this.modalCreateProduct = false
             this.modalCreateCategory = false
-            await this.load_data()},
+            await this.load_data()
+        },
         normalizeStrings(string){
-            return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()},
+            return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        },
+        async handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                try {
+                    await apiProductService.uploadProductFile(formData);
+                    this.$notify({ type: "success", text: "Planilha enviada com sucesso!", duration: 2000 });
+                    this.load_data()
+                } catch (error) {
+                    this.$notify({ type: "error", text: "Erro ao enviar a planilha", duration: 2000 });
+                }
+            }
+        },
     },
     async mounted() {
         await this.load_data()},
@@ -142,8 +163,7 @@ export default {
     height: fit-content;
 }
 .list-products li {
-    padding: 0.5rem;
-    margin: 0.5rem;
+    padding: 1rem;
     border-radius: 3px;
     width: 100%;
     display: inline-grid;
@@ -180,6 +200,7 @@ export default {
     font-size: 1rem;
     border-radius: 7px 0px 0px 7px;
     padding: 1rem;
+    border: solid 0.5px;
 }
 .cont_search button {
     cursor: pointer;
@@ -187,6 +208,10 @@ export default {
     border: none;
     box-shadow: 0 0.5px 3px rgba(0, 0, 0, 0.5);
     
+}
+.pi-upload{
+    cursor: pointer;
+    font-size: xx-large;
 }
 .cont_search button:active {
     box-shadow: inset 0 0.5px 3px rgba(0, 0, 0, 0.5);

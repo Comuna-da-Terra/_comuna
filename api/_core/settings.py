@@ -66,14 +66,15 @@ PROJECT_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    'corsheaders.middleware.CorsMiddleware',
-    "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
 ]
 ROOT_URLCONF = "_core.urls"
 #CORS_ALLOWED_ORIGINS = [
@@ -85,6 +86,13 @@ ROOT_URLCONF = "_core.urls"
 CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 ]
+# CORS_ALLOW_HEADERS = [
+#     "Content-Type",
+#     "Authorization",
+#     "X-Requested-With",
+#     "Access-Control-Allow-Origin",  # Necessário para permitir o acesso entre origens
+# ]
+# CORS_ALLOW_CREDENTIALS = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -188,9 +196,9 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
-REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'utils.exceptions.custom_exception_handler'
-}
+# REST_FRAMEWORK = {
+#     'EXCEPTION_HANDLER': 'utils.exceptions.custom_exception_handler'
+# }
 
 #CSRF_TRUSTED_ORIGINS = []
 

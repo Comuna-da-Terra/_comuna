@@ -52,5 +52,26 @@ export default {
     .catch(error=> {
       return error
     })   
+  },
+  async uploadProductFile(data) {
+    try {
+      const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+
+      if (!csrfToken) {
+        throw new Error("Token CSRF não encontrado.");
+      }
+      const csrfValue = csrfToken.split('=')[1];
+      
+      const response = await api.post("upload_products/", data, {
+        headers: {
+          'Content-Type': 'multipart/form-data', 
+          'X-CSRFToken': csrfValue,
+        }
+      });
+
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
   }
 }

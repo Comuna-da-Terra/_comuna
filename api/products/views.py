@@ -2,6 +2,7 @@ from .models import Product,Category
 from orders.models import ProductOrder, Order
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
 
@@ -11,6 +12,10 @@ from .pagination import PaginationProducts
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from .utils import process_product_file
+from django.core.exceptions import ValidationError
+
 
 class ProductView(generics.ListCreateAPIView):
 
@@ -31,7 +36,6 @@ class ProductsListView(generics.ListCreateAPIView):
     queryset = Product.objects.filter(likely_stock__gt=0).order_by('name')
         
     serializer_class = ProductSerializer
-
     
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
@@ -84,3 +88,19 @@ class CategoryView(APIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class UploadProdutosView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        if 'file' not in request.FILES:
+            return Response({"error": "Nenhum arquivo enviado"}, status=status.HTTP_400_BAD_REQUEST)
+
+        excel_file = request.FILES['file']
+        
+        try:
+            process_product_file(excel_file)
+            return Response({"message": "Produtos importados com sucesso!"}, status=status.HTTP_200_OK)
+        
+        except ValidationError as e:
+            return Response({"error": f"Erro: {e}"}, status=status.HTTP_400_BAD_REQUEST)

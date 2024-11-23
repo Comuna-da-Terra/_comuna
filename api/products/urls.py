@@ -7,4 +7,5 @@ urlpatterns = [
     path("products/order/", view=views.ProductsInOrderAccountView.as_view(), name='products'),
     path("product/<uuid:pk>/", view=views.ProductDetailView.as_view(), name='product'),
     path("product/category/", view=views.CategoryView.as_view(), name='categories'),
+    path('upload_products/', view=views.UploadProdutosView.as_view(), name='upload_produtos'),
 ]

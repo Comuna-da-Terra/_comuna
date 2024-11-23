@@ -47,8 +47,6 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
             
 
-        #  return super().create(validated_data)
-
     def update(self, instance: Product, validated_data: dict) -> Product:
 
         for key, value in validated_data.items():

@@ -13,6 +13,11 @@
                     <input v-model="searchValue" type="search" placeholder="O que você está procurando?">
                     <button @click="searchProduct()">Search</button>
                 </div>
+                <div style="display: flex; justify-content: center;">
+                    <label class="pi pi-upload" for="file"></label>
+                    <input @change="handleFileUpload" type="file" name="file" id="file">
+                </div>
+
 
             </header>
             <ul class="list-products">
@@ -107,7 +112,6 @@ export default {
             })
              await apiCategoryService.getListCategory().then((response)=>{
                 this.categories = response.data
-                console.log(this.categories)
              })
             
             
@@ -121,7 +125,6 @@ export default {
                         return this.$notify({ type: "error", text: "Hum... Não temos nada sobre isso!", duration: 2000});
         },
         async editProd(data){
-            console.log(data)
             await apiProductService.editProduct(data)
             this.load_data()
         },
@@ -133,6 +136,22 @@ export default {
         normalizeStrings(string){
             return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
         },
+        async handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                try {
+                    await apiProductService.uploadProductFile(formData);
+                    this.$notify({ type: "success", text: "Planilha enviada com sucesso!", duration: 2000 });
+                    this.load_data()
+                } catch (error) {
+                    this.$notify({ type: "error", text: "Erro ao enviar a planilha", duration: 2000 });
+                }
+            }
+        },
+
         async requestCSV(){},
     },
     async mounted() {
@@ -165,8 +184,8 @@ export default {
     overflow-y: scroll;
 }
 .list-products li {
-    padding: 0.5rem;
-    margin: 0.5rem;
+    padding: 1rem;
+    /* margin: 0.5rem; */
     border-radius: 3px;
     width: 100%;
     display: inline-grid;
@@ -203,6 +222,11 @@ export default {
     font-size: 1rem;
     border-radius: 7px 0px 0px 7px;
     padding: 1rem;
+    border: solid 0.5px;
+}
+.pi-upload{
+    cursor: pointer;
+    font-size: xx-large;
 }
 .cont_search button {
     cursor: pointer;
