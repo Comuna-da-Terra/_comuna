@@ -23,7 +23,7 @@
   // ____________SCRIPT____________
   <script>
   import apiAccountService from '@/services/clients/apiClientService';
-  import PasswordInput from '../../components/passwordInput.vue';
+  import PasswordInput from '../../components/PasswordInput.vue';
   
   export default {
     components:{

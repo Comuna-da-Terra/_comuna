@@ -43,7 +43,7 @@ import serviceAuth from '@/services/clients/apiAuthService';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 
-import PasswordInput from '../../components/passwordInput.vue';
+import PasswordInput from '../../components/PasswordInput.vue';
 
 export default {
     components : {

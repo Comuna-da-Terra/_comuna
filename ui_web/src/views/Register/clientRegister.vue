@@ -74,7 +74,7 @@
 <script>
 import apiAccount from '@/services/clients/apiClientService'; // Certifique-se de ajustar o caminho correto
 import { useRoute, useRouter } from 'vue-router';
-import PasswordInput from '../../components/passwordInput.vue';
+import PasswordInput from '../../components/PasswordInput.vue';
 
 export default {  
     components: {
