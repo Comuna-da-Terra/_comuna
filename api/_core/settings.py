@@ -87,6 +87,7 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 ]
 CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = False  # Permite que o cookie CSRF seja enviado via HTTP
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
