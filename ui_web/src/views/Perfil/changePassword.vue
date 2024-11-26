@@ -12,7 +12,7 @@
           <PasswordInput name="new_password"  v-model="formData.new_password" placeholder="Nova senha"/>
           <PasswordInput name="confirm_password"  v-model="formData.confirm_password" placeholder="Redigite a nova senha"/>
           
-          <a href="http://127.0.0.1:8000/api/account/reset_password/">Esqueceu a senha?</a>
+          <a href="`${baseURL}/account/reset_password/`">Esqueceu a senha?</a>
           <button type="submit" class="btn-code-confirm">Alterar senha</button>
 
       </form>
@@ -35,6 +35,7 @@
         formData: {},
         user: {},
         changePassword: false,
+        baseURL: import.meta.env.VITE_API_BASE_URL
       }
     },
     emits: ['close-modal'],

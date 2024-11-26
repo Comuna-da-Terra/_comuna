@@ -77,17 +77,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "_core.urls"
-#CORS_ALLOWED_ORIGINS = [
-# 	"http://web.comunadaterra.com.br",
-# 	"http://api.comunadaterra.com.br",
-#     "http://localhost:5173",
-#     "http://127.0.0.1:8000",
-#]
+
 CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 ]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = False  # Permite que o cookie CSRF seja enviado via HTTP
+CSRF_COOKIE_SECURE = True
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

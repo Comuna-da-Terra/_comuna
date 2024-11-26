@@ -39,9 +39,7 @@ export default {
       });
   },
   async getOrdersCSV() {
-    const csvURL = "http://127.0.0.1:8000/api/orders/csv/";
-    
-    // const csvURL = "http://192.168.1.103:8000/api/orders/csv/";
+    const csvURL = `${import.meta.env.VITE_API_BASE_URL}/orders/csv/`;
     window.location.href = csvURL
   }
 }

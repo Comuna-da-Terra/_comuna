@@ -1,6 +1,6 @@
 <template>
     <div class="app-logo">
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg"   @animationend="logoAnimationEnd"/>
+      <img alt="Vue logo" class="logo" src="@/assets/logo.png"   @animationend="logoAnimationEnd"/>
     </div>
     <div class="cont-login" v-if="!showLogo">
       <loginPage v-if="page == 'login'"  @change-page="changePage"></loginPage>

@@ -4,7 +4,7 @@
 
           <i type="button" @click="this.router.push({name: 'dashboard'});" class="pi pi-arrow-left"></i>
           <h1 style="margin: 2rem 0 2rem 1rem ;">Pedido</h1>
-          <img alt="Vue logo" src="@/assets/logo.svg" width="80" />
+          <img alt="Vue logo" src="@/assets/logo.png" width="100"  height="100"/>
 
       </header>
       
