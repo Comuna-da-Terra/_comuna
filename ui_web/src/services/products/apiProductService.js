@@ -55,18 +55,18 @@ export default {
   },
   async uploadProductFile(data) {
     try {
-      const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+      //const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
 
-      if (!csrfToken) {
-        console.log("Token CSRF não encontrado.")
-        throw new Error("Token CSRF não encontrado.");
-      }
-      const csrfValue = csrfToken.split('=')[1];
+      // if (!csrfToken) {
+      //   console.log("Token CSRF não encontrado.")
+      //   throw new Error("Token CSRF não encontrado.");
+      // }
+      //const csrfValue = csrfToken.split('=')[1];
       
       const response = await api.post("upload_products/", data, {
         headers: {
           'Content-Type': 'multipart/form-data', 
-          'X-CSRFToken': csrfValue,
+          //'X-CSRFToken': csrfValue,
         }
       });
       
