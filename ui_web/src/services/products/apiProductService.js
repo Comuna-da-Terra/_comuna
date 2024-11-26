@@ -58,6 +58,7 @@ export default {
       const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
 
       if (!csrfToken) {
+        console.log("Token CSRF não encontrado.")
         throw new Error("Token CSRF não encontrado.");
       }
       const csrfValue = csrfToken.split('=')[1];
@@ -68,9 +69,10 @@ export default {
           'X-CSRFToken': csrfValue,
         }
       });
-
+      
       return response.data;
     } catch (err) {
+      console.log(err)
       throw err;
     }
   }

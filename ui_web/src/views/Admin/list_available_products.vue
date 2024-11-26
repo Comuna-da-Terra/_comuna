@@ -147,6 +147,7 @@ export default {
                     this.$notify({ type: "success", text: "Planilha enviada com sucesso!", duration: 2000 });
                     this.load_data()
                 } catch (error) {
+                    console.log(error)
                     this.$notify({ type: "error", text: "Erro ao enviar a planilha", duration: 2000 });
                 }
             }
